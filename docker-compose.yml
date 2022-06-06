@@ -32,7 +32,7 @@ services:
     links:
      - graphite
     ports:
-     - "1338:3000"
+     - "1337:3000"
   # grafana_setup_datasource:
   #   image: appropriate/curl
   #   links:
