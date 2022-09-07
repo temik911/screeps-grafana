@@ -70,17 +70,17 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "alias(screeps.cpu.used, 'Used')",
+              "target": "alias(stats.gauges.cpu.used, 'Used')",
               "textEditor": false
             },
             {
               "refId": "B",
-              "target": "alias(screeps.cpu.bucket, 'Bucket')"
+              "target": "alias(stats.gauges.cpu.bucket, 'Bucket')"
             },
             {
               "hide": false,
               "refId": "C",
-              "target": "alias(screeps.cpu.limit, 'Limit')"
+              "target": "alias(stats.gauges.cpu.limit, 'Limit')"
             }
           ],
           "timeFrom": null,
@@ -174,7 +174,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "screeps.cpu.bucket"
+              "target": "stats.gauges.cpu.bucket"
             }
           ],
           "thresholds": "5000,9500",
@@ -229,7 +229,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(derivative(screeps.time), 'Ticks Per Update')"
+              "target": "alias(derivative(stats.gauges.time), 'Ticks Per Update')"
             }
           ],
           "timeFrom": null,
@@ -331,7 +331,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "screeps.gcl.level"
+              "target": "stats.gauges.gcl.level"
             }
           ],
           "thresholds": "",
@@ -406,12 +406,12 @@
           "targets": [
             {
               "refId": "A",
-              "target": "divideSeries(screeps.gcl.progress, #B)"
+              "target": "divideSeries(stats.gauges.gcl.progress, #B)"
             },
             {
               "hide": true,
               "refId": "B",
-              "target": "screeps.gcl.progressTotal"
+              "target": "stats.gauges.gcl.progressTotal"
             }
           ],
           "thresholds": "",
@@ -486,17 +486,17 @@
           "targets": [
             {
               "refId": "A",
-              "target": "divideSeries(diffSeries(screeps.gcl.progressTotal, #B), #C)"
+              "target": "divideSeries(diffSeries(stats.gauges.gcl.progressTotal, #B), #C)"
             },
             {
               "hide": true,
               "refId": "B",
-              "target": "screeps.gcl.progress"
+              "target": "stats.gauges.gcl.progress"
             },
             {
               "hide": true,
               "refId": "C",
-              "target": "scaleToSeconds(movingAverage(nonNegativeDerivative(screeps.gcl.progress), '1hour'), 1)"
+              "target": "scaleToSeconds(movingAverage(nonNegativeDerivative(stats.gauges.gcl.progress), '1hour'), 1)"
             }
           ],
           "thresholds": "",
@@ -558,16 +558,16 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(divideSeries(nonNegativeDerivative(screeps.gcl.progress), #B), 'GCL per tick')",
+              "target": "alias(divideSeries(nonNegativeDerivative(stats.gauges.gcl.progress), #B), 'GCL per tick')",
               "textEditor": false
             },
             {
               "hide": true,
               "refId": "B",
-              "target": "derivative(screeps.time)"
+              "target": "derivative(stats.gauges.time)"
             },
             {
-              "target": "alias(movingAverage(divideSeries(nonNegativeDerivative(screeps.gcl.progress), #B), '1hour'), '1hr Moving Average')",
+              "target": "alias(movingAverage(divideSeries(nonNegativeDerivative(stats.gauges.gcl.progress), #B), '1hour'), '1hr Moving Average')",
               "refId": "C"
             }
           ],
@@ -649,17 +649,17 @@
           "targets": [
             {
               "refId": "B",
-              "target": "alias(sumSeries(screeps.rooms.*.energyAvailable), 'Spawns and Extensions')",
+              "target": "alias(sumSeries(stats.gauges.rooms.*.energyAvailable), 'Spawns and Extensions')",
               "hide": false,
               "textEditor": false
             },
             {
               "refId": "A",
-              "target": "alias(sumSeries(screeps.rooms.*.storageEnergy), 'Storage')",
+              "target": "alias(sumSeries(stats.gauges.rooms.*.storageEnergy), 'Storage')",
               "hide": false
             },
             {
-              "target": "alias(sumSeries(screeps.rooms.*.terminalEnergy), 'Terminals')",
+              "target": "alias(sumSeries(stats.gauges.rooms.*.terminalEnergy), 'Terminals')",
               "refId": "C",
               "textEditor": false,
               "hide": false
@@ -777,7 +777,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "screeps.rooms.$room.controllerLevel"
+              "target": "stats.gauges.rooms.$room.controllerLevel"
             }
           ],
           "thresholds": "4.01,7.01",
@@ -860,12 +860,12 @@
           "targets": [
             {
               "refId": "A",
-              "target": "divideSeries(screeps.rooms.$room.controllerProgress, #B)"
+              "target": "divideSeries(stats.gauges.rooms.$room.controllerProgress, #B)"
             },
             {
               "hide": true,
               "refId": "B",
-              "target": "screeps.rooms.$room.controllerProgressTotal"
+              "target": "stats.gauges.rooms.$room.controllerProgressTotal"
             }
           ],
           "thresholds": "",
@@ -948,18 +948,18 @@
           "targets": [
             {
               "refId": "A",
-              "target": "divideSeries(diffSeries(screeps.rooms.$room.controllerProgressTotal, #B), #C)",
+              "target": "divideSeries(diffSeries(stats.gauges.rooms.$room.controllerProgressTotal, #B), #C)",
               "textEditor": false
             },
             {
               "hide": true,
               "refId": "B",
-              "target": "screeps.rooms.$room.controllerProgress"
+              "target": "stats.gauges.rooms.$room.controllerProgress"
             },
             {
               "hide": true,
               "refId": "C",
-              "target": "scaleToSeconds(movingAverage(nonNegativeDerivative(screeps.rooms.$room.controllerProgress), '1hour'), 1)"
+              "target": "scaleToSeconds(movingAverage(nonNegativeDerivative(stats.gauges.rooms.$room.controllerProgress), '1hour'), 1)"
             }
           ],
           "thresholds": "",
@@ -1029,16 +1029,16 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(divideSeries(nonNegativeDerivative(screeps.rooms.$room.controllerProgress), #C), 'RCL per tick')",
+              "target": "alias(divideSeries(nonNegativeDerivative(stats.gauges.rooms.$room.controllerProgress), #C), 'RCL per tick')",
               "textEditor": false
             },
             {
               "hide": true,
               "refId": "C",
-              "target": "derivative(screeps.time)"
+              "target": "derivative(stats.gauges.time)"
             },
             {
-              "target": "alias(movingAverage(divideSeries(nonNegativeDerivative(screeps.rooms.$room.controllerProgress), #C), '1hour'), '1hr Moving Average')",
+              "target": "alias(movingAverage(divideSeries(nonNegativeDerivative(stats.gauges.rooms.$room.controllerProgress), #C), '1hour'), '1hr Moving Average')",
               "refId": "B"
             }
           ],
@@ -1130,14 +1130,14 @@
           "targets": [
             {
               "refId": "B",
-              "target": "alias(screeps.rooms.$room.energyAvailable, 'Spawns and Extensions')"
+              "target": "alias(stats.gauges.rooms.$room.energyAvailable, 'Spawns and Extensions')"
             },
             {
               "refId": "A",
-              "target": "alias(screeps.rooms.$room.storageEnergy, 'Storage')"
+              "target": "alias(stats.gauges.rooms.$room.storageEnergy, 'Storage')"
             },
             {
-              "target": "alias(screeps.rooms.$room.terminalEnergy, 'Terminal')",
+              "target": "alias(stats.gauges.rooms.$room.terminalEnergy, 'Terminal')",
               "refId": "C",
               "textEditor": false
             },
@@ -1246,7 +1246,7 @@
             "selected": false
           }
         ],
-        "query": "screeps.room.*",
+        "query": "stats.gauges.room.*",
         "refresh": 1,
         "regex": "",
         "type": "query"

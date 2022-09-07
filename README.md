@@ -47,6 +47,7 @@ You're now ready to run this whale of a command. Replace the stuff in caps with 
 ansible-playbook \
   -e screeps_username=YOURUSERNAME \
   -e screeps_password=YOURPASSWORD \
+  -e screeps_host=https://screeps.com/ \
   -e screeps_email=YOUREMAIL \
   --user ubuntu \
   --private-key YOURPRIVATEKEY \
@@ -93,7 +94,7 @@ to apply. Refresh your browser and voila!
 
 ## Development
 If you need to alter the container e.g. because you edited the coffeescript that fetches the stats, you can rebuild and restart the container like this:
-`docker-compose down && docker-compose build node && docker-compose up -d`
+`docker-compose down && docker-compose up --build -d`
 The stats data and grafana config are stored in persistent volumes so will be preserved after you restart the container.
 Note: older versions of the docker-compose.yml container description file did not store these data in persistent volumes so they will disappear after you run this command. These still exist on disc in anonymous volumes so could be recovered with some effort.
 

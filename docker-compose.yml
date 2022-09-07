@@ -1,5 +1,6 @@
 version: "2"
 volumes:
+  graphite_conf:
   graphite_data:
   grafana_data:
 services:
@@ -21,7 +22,7 @@ services:
     image: ennexa/graphite
     restart: always
     volumes:
-     - /opt/graphite/conf
+     - graphite_conf:/opt/graphite/conf
      - graphite_data:/opt/graphite/storage/whisper
   grafana:
     image: grafana/grafana
