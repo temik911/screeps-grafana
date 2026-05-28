@@ -1,0 +1,59 @@
+# Production deploy on temik911.ru VPS.
+#
+# Differs from docker-compose.yml in three ways:
+#   1. no `ports: 1337:3000` on grafana — only countdown-nginx reaches it
+#   2. grafana joins external network `countdown-site_default` (the existing
+#      countdown-site reverse proxy stack), so countdown-nginx can resolve
+#      it by the hostname `grafana`
+#   3. GF_SERVER_* env so Grafana serves itself under /screeps-grafana/
+#
+# Usage on VPS:
+#   docker compose -f docker-compose.prod.yml --env-file docker-compose.env up -d --build
+#
+# countdown-nginx side needs a `location ^~ /screeps-grafana/` block that
+# proxies to http://grafana:3000 (the ^~ modifier matters — it prevents the
+# regex `\.(css|js|...)$` location from stealing Grafana's asset requests).
+version: "2"
+volumes:
+  graphite_conf:
+  graphite_data:
+  grafana_data:
+networks:
+  countdown:
+    external:
+      name: countdown-site_default
+services:
+  node:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    restart: always
+    links:
+     - statsd
+    environment:
+      GRAPHITE_PORT_8125_UDP_ADDR: "statsd"
+    env_file: docker-compose.env
+  statsd:
+    image: ennexa/statsd
+    links:
+     - graphite
+  graphite:
+    image: ennexa/graphite
+    restart: always
+    volumes:
+     - graphite_conf:/opt/graphite/conf
+     - graphite_data:/opt/graphite/storage/whisper
+  grafana:
+    image: grafana/grafana
+    restart: always
+    volumes:
+     - grafana_data:/var/lib/grafana
+    links:
+     - graphite
+    networks:
+     - default
+     - countdown
+    environment:
+      GF_SERVER_ROOT_URL: "https://temik911.ru/screeps-grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_USERS_ALLOW_SIGN_UP: "false"
