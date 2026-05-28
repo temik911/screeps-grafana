@@ -1,100 +1,48 @@
-/**
- * hopsoft\screeps-statsd
- *
- * Licensed under the MIT license
- * For full copyright and license information, please see the LICENSE file
- * 
- * @author     Bryan Conrad <bkconrad@gmail.com>
- * @copyright  2016 Bryan Conrad
- * @link       https://github.com/hopsoft/docker-graphite-statsd
- * @license    http://choosealicense.com/licenses/MIT  MIT License
- */
-
-/**
- * SimpleClass documentation
- *
- * @since  0.1.0
- */
 import fetch from 'node-fetch';
 import StatsD from 'node-statsd';
-import zlib from 'zlib';
+
+const FETCH_INTERVAL_MS = 10_000;
 
 export default class ScreepsStatsd {
-  _host;
-  _email;
-  _password;
-  _shard;
-  _graphite;
-  _token;
-  _success;
-  constructor(host, email, password, shard, graphite) {
+  constructor(host, token, shard, segment, graphite) {
     this._host = host;
-    this._email = email;
-    this._password = password;
+    this._token = token;
     this._shard = shard;
-    this._graphite = graphite;
-    this._client = new StatsD({host: this._graphite});
-  }
-  run( string ) {
-    this.signin();
-
-    setInterval(() => this.loop(), 15000);
+    this._segment = Number(segment);
+    this._client = new StatsD({host: graphite});
   }
 
-  loop() {
-    this.getMemory();
-  }
-
-  async signin() {
-    if(this.token) {
-      return;
-    }
-    console.log("New login request -", new Date());
-    const response = await fetch(this._host + '/api/auth/signin', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: this._email,
-        password: this._password
-      }),
-      headers: {
-        'content-type': 'application/json'
-      }
-    });
-    const data = await response.json();
-    this._token = data.token;
+  run() {
+    setInterval(() => this.getMemory(), FETCH_INTERVAL_MS);
   }
 
   async getMemory() {
     try {
-      await this.signin();
-
-      const response = await fetch(this._host + `/api/user/memory?path=stats&shard=${this._shard}`, {
+      const url = `${this._host}/api/user/memory-segment?segment=${this._segment}&shard=${this._shard}`;
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
-          "X-Token": this._token,
-          "X-Username": this._token,
+          'X-Token': this._token,
           'content-type': 'application/json',
-        }
+        },
       });
-      const data = await response.json();
-      
-      this._token = response.headers['x-token'];
-      if (!data?.data || data.error) throw new Error(data?.error ?? 'No data');
-      const unzippedData = JSON.parse(zlib.gunzipSync(Buffer.from(data.data.split('gz:')[1], 'base64')).toString())
-      this.report(unzippedData);
+      const body = await response.json();
+      if (body.error || body.ok !== 1) throw new Error(body.error ?? `bad response: ${JSON.stringify(body)}`);
+      if (!body.data) return;
+      const data = JSON.parse(body.data);
+      this.report(data);
     } catch (e) {
       console.error(e);
-      this._token = undefined;
     }
   }
 
-  report(data, prefix="") {
-    if (prefix === '') console.log("Pushing to gauges -", new Date())
-    for (const [k,v] of Object.entries(data)) {
-      if (typeof v === 'object') {
-        this.report(v, prefix+k+'.');
-      } else {
-        this._client.gauge(prefix+k, v);
+  report(data, prefix = "") {
+    if (prefix === '') console.log("Pushing to gauges -", new Date());
+    for (const [k, v] of Object.entries(data)) {
+      if (v && typeof v === 'object') {
+        this.report(v, prefix + k + '.');
+      } else if (typeof v === 'number') {
+        this._client.gauge(prefix + k, v);
       }
     }
   }
