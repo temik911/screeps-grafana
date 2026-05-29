@@ -977,6 +977,72 @@
           "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
           "tooltip": {"mode": "multi", "sort": "none"}
         }
+      },
+      {
+        "id": 31,
+        "type": "timeseries",
+        "title": "Pathfind — calls / cross-room / incomplete",
+        "description": "PathFinder.search invocations per tick from creep.travelTo. `calls` = total; `crossRoom` = subset that crossed room borders (after Tier 1 multi-room serialization a multi-room trip should produce ~1 call instead of one per border); `incomplete` = calls that hit maxOps without reaching the goal (high values mean we need a higher maxOps or the route is genuinely blocked).",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 110},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "alias(stats.gauges.pathfind.calls, 'calls')", "refId": "A"},
+          {"target": "alias(stats.gauges.pathfind.crossRoom, 'crossRoom')", "refId": "B"},
+          {"target": "alias(stats.gauges.pathfind.incomplete, 'incomplete')", "refId": "C"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {"id": "byName", "options": "incomplete"},
+              "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "red"}}]
+            }
+          ]
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
+      },
+      {
+        "id": 32,
+        "type": "timeseries",
+        "title": "Pathfind — ops per tick (≈ CPU × 1000)",
+        "description": "Sum of `PathFinder.Path.ops` across all searches this tick. Per the API one op is ~0.001 CPU, so opsTotal/1000 ≈ CPU spent in pathfinding alone. A healthy mid-game colony sits well under 5000 ops/tick. Spikes line up with replans (e.g. construction sites added invalidates cached paths via stuck → repath).",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 110},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "alias(stats.gauges.pathfind.opsTotal, 'opsTotal')", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
       }
     ]
   },
