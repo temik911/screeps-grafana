@@ -499,6 +499,220 @@
           "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
           "tooltip": {"mode": "multi", "sort": "none"}
         }
+      },
+      {
+        "id": 16,
+        "type": "timeseries",
+        "title": "Remote — reservation countdown",
+        "description": "controller.reservation.ticksToEnd per remote. Below 1500 ReserverProcess spawns a replacement; below 0 means we lost the reservation (source caps drop to 1500e and decay rate doubles for containers).",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 52},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.remotes.*.reservedUntil, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "max": 5000,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 1500},
+                {"color": "green", "value": 3000}
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
+      },
+      {
+        "id": 17,
+        "type": "timeseries",
+        "title": "Remote — container HP (min across containers)",
+        "description": "Minimum HP among built source containers per remote. 0 means no container built yet. 250000 is full. RemoteRoomProcess flips needsRepair when this drops below 187500 (75%); RemoteRepairProcess targets 90% (225000).",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 52},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.remotes.*.containerHpMin, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "max": 250000,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 187500},
+                {"color": "green", "value": 225000}
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
+      },
+      {
+        "id": 18,
+        "type": "timeseries",
+        "title": "Remote — creep pool per role",
+        "description": "Live creep counts per role per remote. reserver should be 1 most of the time; miner = containers built; vision = 0 once reserver/miner provide visibility; repairer = 1 while needsRepair flag is set.",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 60},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.reserverCount, 3), '$', ' reserver')", "refId": "A"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.minerCount, 3), '$', ' miner')", "refId": "B"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.visionCount, 3), '$', ' vision')", "refId": "C"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.repairerCount, 3), '$', ' repair')", "refId": "D"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "table", "placement": "right", "calcs": ["lastNotNull"]},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
+      },
+      {
+        "id": 19,
+        "type": "timeseries",
+        "title": "Remote — container energy queue (waiting for haulers)",
+        "description": "Sum of energy sitting in remote source containers per remote. Steady oscillation between 0 and ~1600 is normal (miner deposits, hauler drains). Sustained climb to ~2000 (cap) means the hauler pool is undersized for this remote's travelTicks.",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 68},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.remotes.*.containerEnergyTotal, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
+      },
+      {
+        "id": 20,
+        "type": "timeseries",
+        "title": "Remote — build progress (containers + roads done / planned)",
+        "description": "Counts of sources whose container is built and whose roads are fully laid, per remote. Both should reach `sourceCount` shortly after enableRemote; until they do RemoteSourceProcess holds off spawning miners and HaulerScheduler excludes the container from the pool.",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 68},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.sourceCount, 3), '$', ' planned')", "refId": "A"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.containersBuilt, 3), '$', ' containers')", "refId": "B"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.roadsBuilt, 3), '$', ' roads')", "refId": "C"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byRegexp", "options": ".*planned$"},
+                "properties": [
+                  {"id": "custom.lineStyle", "value": {"fill": "dash", "dash": [10, 10]}},
+                  {"id": "custom.fillOpacity", "value": 0}
+                ]
+              }
+            ]
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
+      },
+      {
+        "id": 21,
+        "type": "timeseries",
+        "title": "Remote — needsRepair flag",
+        "description": "Binary 0/1 per remote — 1 means RemoteRoomProcess saw a road/container below 75% HP. RemoteRepairProcess spawns a 200e repairer (1W/1C/1M) while the flag is set; flag drops when everything's back above 75%.",
+        "gridPos": {"h": 6, "w": 24, "x": 0, "y": 76},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.remotes.*.needsRepair, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "max": 1,
+            "custom": {
+              "drawStyle": "bars",
+              "lineWidth": 1,
+              "fillOpacity": 80,
+              "spanNulls": false,
+              "showPoints": "never"
+            },
+            "color": {"mode": "fixed", "fixedColor": "orange"}
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
       }
     ]
   },
