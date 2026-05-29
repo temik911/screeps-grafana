@@ -713,6 +713,270 @@
           "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
           "tooltip": {"mode": "multi", "sort": "none"}
         }
+      },
+      {
+        "id": 22,
+        "type": "stat",
+        "title": "Memory bytes",
+        "description": "JSON.stringify(Memory).length. Watch the trend — linear growth is normal as RCL/remotes scale; sharp spikes mean a leak (a process accumulating state in memory without bounding it). Cached every 100 ticks.",
+        "gridPos": {"h": 4, "w": 8, "x": 0, "y": 82},
+        "datasource": "localGraphite",
+        "targets": [{"target": "stats.gauges.memory.bytes", "refId": "A"}],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "decbytes",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 100000},
+                {"color": "red", "value": 500000}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 23,
+        "type": "stat",
+        "title": "Market credits",
+        "description": "Game.market.credits — bottom line. Drops on order placement, rises on settled trades.",
+        "gridPos": {"h": 4, "w": 8, "x": 8, "y": 82},
+        "datasource": "localGraphite",
+        "targets": [{"target": "stats.gauges.market.credits", "refId": "A"}],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 24,
+        "type": "stat",
+        "title": "TrafficManager intents (snapshot)",
+        "description": "Count of move intents registered in TrafficManager when StatsProcess writes the segment — i.e. how many creeps are *trying* to move this tick. Sanity check: spike near 0 means everyone is stationary (potential deadlock).",
+        "gridPos": {"h": 4, "w": 8, "x": 16, "y": 82},
+        "datasource": "localGraphite",
+        "targets": [{"target": "stats.gauges.processes.intentCount", "refId": "A"}],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 25,
+        "type": "timeseries",
+        "title": "Spawn busy %",
+        "description": "Per-room: percent of spawns currently spawning (snapshot). Grafana's avg over a window shows utilisation. Sustained 100% = spawn-bound — add a spawn or reduce churn. Sustained 0% = idle capacity.",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 86},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.rooms.*.spawnBusyPct, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 0,
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
+      },
+      {
+        "id": 26,
+        "type": "timeseries",
+        "title": "Tower energy min",
+        "description": "Per-room: minimum energy among our towers. Below 200 (1 ranged attack) we can't punch anything. Drops on combat ticks; should recover quickly via Filler.",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 86},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.rooms.*.towerEnergyMin, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "max": 1000,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 200},
+                {"color": "green", "value": 500}
+              ]
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
+      },
+      {
+        "id": 27,
+        "type": "timeseries",
+        "title": "Hostile body parts per room",
+        "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per room. Rough threat assessment: small numbers = invader / scout; large = a player raid.",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 94},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.attack, 3), '$', ' attack')", "refId": "A"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.ranged, 3), '$', ' ranged')", "refId": "B"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.heal, 3), '$', ' heal')", "refId": "C"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.work, 3), '$', ' work')", "refId": "D"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "stacking": {"mode": "normal", "group": "A"},
+              "spanNulls": false,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
+      },
+      {
+        "id": 28,
+        "type": "timeseries",
+        "title": "Bunker plan progress %",
+        "description": "Per-room: percentage of basePlan structures that are currently *allowed at this RCL* AND actually built. Drops at every RCL bump (new slots unlock) and climbs as ConstructionProcess catches up. Plateaus = bunker complete for this RCL tier.",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 94},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.rooms.*.bunkerPlanProgressPct, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 0,
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
+      },
+      {
+        "id": 29,
+        "type": "timeseries",
+        "title": "Creeps by role (colony-wide)",
+        "description": "Live creep counts grouped by ownerTag prefix-before-colon (e.g. logistics, worker, mining, filler, queen, construction, upgrade, reserver, remote-source, remote-vision, remote-repair). At-a-glance pool composition without drilling per-process.",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 102},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.creepsByRole.*, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 1,
+              "fillOpacity": 30,
+              "stacking": {"mode": "normal", "group": "A"},
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"]},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
+      },
+      {
+        "id": 30,
+        "type": "timeseries",
+        "title": "TrafficManager swaps + pushes",
+        "description": "Number of head-on swaps and push-chains the TrafficManager resolved on the last reconcile. High values = busy corridors with bidirectional or cross-priority traffic. Per-tick snapshot — use Grafana's sum over a window for cumulative.",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 102},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "alias(stats.gauges.traffic.swaps, 'swaps')", "refId": "A"},
+          {"target": "alias(stats.gauges.traffic.pushes, 'pushes')", "refId": "B"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "none"}
+        }
       }
     ]
   },
