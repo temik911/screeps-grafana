@@ -542,19 +542,19 @@
       {
         "id": 17,
         "type": "timeseries",
-        "title": "Remote — container HP (min across containers)",
-        "description": "Minimum HP among built source containers per remote. 0 means no container built yet. 250000 is full. RemoteRoomProcess flips needsRepair when this drops below 187500 (75%); RemoteRepairProcess targets 90% (225000).",
+        "title": "Remote — most damaged infra HP %",
+        "description": "Lowest HP percentage across ALL our roads + containers in the remote (0-100). Thresholds match the repair policy: RemoteRoomProcess flips needsRepair when this drops below 75%; RemoteRepairProcess targets 90% on each structure. \"No data\" = remote not visible this tick (we don't have a creep there to enumerate structures).",
         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 52},
         "datasource": "localGraphite",
         "targets": [
-          {"target": "aliasByNode(stats.gauges.remotes.*.containerHpMin, 3)", "refId": "A"}
+          {"target": "aliasByNode(stats.gauges.remotes.*.minInfraHpPct, 3)", "refId": "A"}
         ],
         "fieldConfig": {
           "defaults": {
-            "unit": "none",
+            "unit": "percent",
             "decimals": 0,
             "min": 0,
-            "max": 250000,
+            "max": 100,
             "custom": {
               "drawStyle": "line",
               "lineWidth": 2,
@@ -566,8 +566,8 @@
               "mode": "absolute",
               "steps": [
                 {"color": "red", "value": null},
-                {"color": "yellow", "value": 187500},
-                {"color": "green", "value": 225000}
+                {"color": "yellow", "value": 75},
+                {"color": "green", "value": 90}
               ]
             }
           },
