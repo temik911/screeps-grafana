@@ -1043,6 +1043,108 @@
           "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
           "tooltip": {"mode": "multi", "sort": "none"}
         }
+      },
+      {
+        "id": 33,
+        "type": "timeseries",
+        "title": "Haulers — target / alive / pending (per room)",
+        "description": "HaulerScheduler.optimalHaulerCount (target) vs current alive logistics creeps vs pending spawn queue requests. Big and persistent target>alive gap = pool is under-spawning (check pending: should pile up if energyAvailable is the blocker). target=alive+pending and stable = steady-state. Lines named '<room>.<metric>'.",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 118},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.rooms.*.haulers.target, 3, 5)", "refId": "A"},
+          {"target": "aliasByNode(stats.gauges.rooms.*.haulers.alive, 3, 5)", "refId": "B"},
+          {"target": "aliasByNode(stats.gauges.rooms.*.haulers.pending, 3, 5)", "refId": "C"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"]},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
+      },
+      {
+        "id": 34,
+        "type": "timeseries",
+        "title": "Haulers — distribution (atStorage / loaded / empty)",
+        "description": "Where the live haulers are RIGHT NOW. atStorage = within 3 tiles of storage (parked / dispatching / dropping off). loaded = carrying any energy (delivering). empty = zero carry (in flight toward pickup OR parked at storage). loaded+empty = alive. atStorage stays high while containers visibly hold energy = wait-for-fill is over-conservative or pool is over-sized; investigate via haulerDiag().",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 118},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.rooms.*.haulers.atStorage, 3, 5)", "refId": "A"},
+          {"target": "aliasByNode(stats.gauges.rooms.*.haulers.loaded, 3, 5)", "refId": "B"},
+          {"target": "aliasByNode(stats.gauges.rooms.*.haulers.empty, 3, 5)", "refId": "C"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "mean"]},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
+      },
+      {
+        "id": 35,
+        "type": "timeseries",
+        "title": "HaulerScheduler — cache age (per room) + recomputes/tick",
+        "description": "Per-room cacheAge = ticks since last full HaulerScheduler.ensureCache rebuild. Should hover near 0 during active construction (C4 + B2 invalidate the cache on home/remote structure changes), and climb toward the 250-tick TTL backstop during steady-state late-game. recomputes = number of rooms that triggered a full rebuild this tick (separate single series); sparse spikes are healthy, a flat ridge means something is invalidating every tick.",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 126},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.rooms.*.haulers.cacheAge, 3)", "refId": "A"},
+          {"target": "alias(stats.gauges.haulerSched.recomputes, 'recomputes/tick')", "refId": "B"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {"id": "byName", "options": "recomputes/tick"},
+              "properties": [
+                {"id": "color", "value": {"mode": "fixed", "fixedColor": "orange"}},
+                {"id": "custom.lineWidth", "value": 1},
+                {"id": "custom.fillOpacity", "value": 25}
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
       }
     ]
   },
