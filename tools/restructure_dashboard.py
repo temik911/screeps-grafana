@@ -129,7 +129,7 @@ ROWS = [
     ('Logistics (HaulerScheduler)', [33, 34, 35], False),
     ('Remote mining', [16, 17, 18, 19, 20, 21], False),
     ('Hostiles & Defense', [27, 36, 37], False),
-    ('Scout & Routing', [38, 39, 40, 41, 42, 43], False),
+    ('Scout & Routing', [44, 38, 39, 40, 41, 42, 43], False),
 ]
 DROP_IDS = {1, 2, 3, 4, 22}
 
