@@ -2533,7 +2533,7 @@
         "id": 39,
         "type": "timeseries",
         "title": "Scout \u2014 intel count, stale, oldest age",
-        "description": "intelCount: total rooms ever scouted. intelStaleCount: rooms past ScoutProcess.RESCAN (20000 ticks \u2248 20h on shard3) \u2014 should be small in steady state, growth means scout falls behind refill cadence. oldestIntelAge: worst-case staleness across the whole map. Reaching RoutePolicy.STALE_INTEL_TICKS (100k \u2248 100h) triggers soft-block downgrade in routeCost.",
+        "description": "intelCount: total rooms ever scouted. intelStaleCount: rooms past ScoutProcess.RESCAN (20000 ticks \u2248 20h on shard3) \u2014 should be small in steady state, growth means scout falls behind refill cadence. oldestIntelAge: worst-case staleness across the whole map. Reaching RoutePolicy.STALE_INTEL_TICKS (100k \u2248 100h) triggers soft-block downgrade in routeCost. unreachableCount: rooms scout tried + failed (travelTo ERR_NO_PATH) within the last UNREACHABLE_BACKOFF=50000 ticks. Skipped from enqueue until the window expires.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2553,6 +2553,10 @@
           {
             "target": "aliasByNode(stats.gauges.scout.oldestIntelAge, 3)",
             "refId": "C"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.unreachableCount, 3)",
+            "refId": "D"
           }
         ],
         "fieldConfig": {
