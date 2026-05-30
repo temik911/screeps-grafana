@@ -2385,6 +2385,369 @@
             "sort": "desc"
           }
         }
+      },
+      {
+        "id": 208,
+        "type": "row",
+        "title": "Scout & Routing",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 166
+        },
+        "panels": []
+      },
+      {
+        "id": 38,
+        "type": "timeseries",
+        "title": "Scout \u2014 alive / pending / queue depth",
+        "description": "Scout creep population: alive count + pending spawn requests, plus the BFS queue of rooms still to visit. Healthy: alive \u2265 1 when queueDepth > 0; pending settles to 0 once the scout body lands. Sustained queueDepth >> 0 with alive=0 \u2192 spawn-side problem.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 167
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.scout.scoutAlive, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.scoutPending, 3)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.queueDepth, 3)",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 39,
+        "type": "timeseries",
+        "title": "Scout \u2014 intel count, stale, oldest age",
+        "description": "intelCount: total rooms ever scouted. intelStaleCount: rooms past ScoutProcess.RESCAN (20000 ticks \u2248 20h on shard3) \u2014 should be small in steady state, growth means scout falls behind refill cadence. oldestIntelAge: worst-case staleness across the whole map. Reaching RoutePolicy.STALE_INTEL_TICKS (100k \u2248 100h) triggers soft-block downgrade in routeCost.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 175
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.scout.intelCount, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.intelStaleCount, 3)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.oldestIntelAge, 3)",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 40,
+        "type": "timeseries",
+        "title": "Sealed intel \u2014 rooms sealed / dangerous / sides fully blocked",
+        "description": "roomsSealed: scouted rooms with at least one sealed exit tile (terrain wall or hostile rampart blocking interior). roomsDangerous: rooms with dangerousOwned flag (hostile owner + \u22651 active tower). sidesFullyBlocked: count of room-sides where EVERY exit tile is sealed \u2014 these reject at the route layer (routeCost = Infinity). Per-tile partially-sealed sides only block at PathFinder layer (PathFinder finds an open segment).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 183
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.sealed.roomsSealed, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.roomsDangerous, 3)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.sidesFullyBlocked, 3)",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 41,
+        "type": "timeseries",
+        "title": "Sealed tiles \u2014 total + per side (N/S/W/E)",
+        "description": "totalSealedTiles: sum of \"1\" bits across all rooms \u00d7 all sides \u2014 total barricade density on the carved map. bySide.{N,S,W,E}: how many sides on each compass direction are fully blocked. Asymmetry hints at where the abandoned bases sit.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 191
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.sealed.totalSealedTiles, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.bySide.N, 4)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.bySide.S, 4)",
+            "refId": "C"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.bySide.W, 4)",
+            "refId": "D"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.bySide.E, 4)",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 42,
+        "type": "timeseries",
+        "title": "Route policy \u2014 decisions per tick (allowed / soft / blocked)",
+        "description": "Per-tick decisions from RoutePolicy.routeCost (the routeCallback fed to Game.map.findRoute). allowed: cost 1.0 baseline. softBlocked: cost SOFT_BLOCK_COST=20 (stale-sealed side \u2014 try if no alternative). blocked: POSITIVE_INFINITY (hostile-owned tower, SK, fresh-sealed side). Stacked to show the rejection share; rate-of-change (irate over 5m) shows how active routing is right now.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 199
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.allowed, 4), '$', ' allowed')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.softBlocked, 4), '$', ' soft-blocked')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.blocked, 4), '$', ' blocked')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 1,
+              "fillOpacity": 40,
+              "spanNulls": true,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 43,
+        "type": "timeseries",
+        "title": "Route overlay \u2014 applySealedExits calls & tiles marked",
+        "description": "Per-tick from RoutePolicy.applySealedExits: overlay.calls = how many PathFinder roomCallbacks marked \u22651 sealed tile, tilesApplied = sum of those marks. Ratio tiles/calls is the average per-room sealed density when PathFinder is forced to consider a sealed corridor. Zero means no PathFinder.search ran through a known-sealed room this tick.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 207
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.route.overlay.calls, 4)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.route.overlay.tilesApplied, 4)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
       }
     ]
   },
