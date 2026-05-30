@@ -2400,6 +2400,79 @@
         "panels": []
       },
       {
+        "id": 44,
+        "type": "timeseries",
+        "title": "Route version \u2014 counter & mutation rate",
+        "description": "Memory.colony.routeVersion is a monotonic counter bumped by ScoutProcess every time route-affecting intel changes (sealedExits flips, dangerousOwned toggle). Read by cached paths (GoState.routeVersion) and HaulerScheduler haulerSignature \u2014 mismatch invalidates the cache. Series A: current value (stair-step line). Series B: rate of change per minute, via nonNegativeDerivative + scaleToSeconds \u2014 spikes line up with scout discoveries; near-zero = intel stable.",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 167
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.sealed.routeVersion, 'routeVersion (current)')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(scaleToSeconds(nonNegativeDerivative(stats.gauges.sealed.routeVersion), 60), 'mutations / minute')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "auto"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "mutations / minute"
+              },
+              "properties": [
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "right"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "orange"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
         "id": 38,
         "type": "timeseries",
         "title": "Scout \u2014 alive / pending / queue depth",
@@ -2408,7 +2481,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 167
+          "y": 175
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2465,7 +2538,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 175
+          "y": 183
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2522,7 +2595,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 183
+          "y": 191
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2579,7 +2652,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 191
+          "y": 199
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2644,7 +2717,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 199
+          "y": 207
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2705,7 +2778,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 207
+          "y": 215
         },
         "datasource": "localGraphite",
         "targets": [
