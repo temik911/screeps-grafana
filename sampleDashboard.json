@@ -1145,6 +1145,76 @@
           "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
           "tooltip": {"mode": "multi", "sort": "desc"}
         }
+      },
+      {
+        "id": 36,
+        "type": "timeseries",
+        "title": "Remote — hostile creep count",
+        "description": "Number of hostile creeps in each visible remote (visibility-gated — \"no data\" when the remote isn't observed). Counts include SK creeps (Keepers + invader cores) when applicable; for ordinary reserved remotes any non-zero is a real raid signal. Defenders only react to home-room hostiles, so this is the primary watch for remote attacks.",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 134},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasByNode(stats.gauges.remotes.*.hostiles, 3)", "refId": "A"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": false,
+              "showPoints": "auto"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "orange", "value": 1},
+                {"color": "red", "value": 3}
+              ]
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"]},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
+      },
+      {
+        "id": 37,
+        "type": "timeseries",
+        "title": "Remote — hostile body parts (per remote)",
+        "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per visible remote. Stacked per remote so the bar height = total threat for that remote. Mirrors the home-room \"Hostile body parts per room\" panel — visibility-gated, omitted when the remote isn't observed.",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 134},
+        "datasource": "localGraphite",
+        "targets": [
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.attack, 3), '$', ' attack')", "refId": "A"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.ranged, 3), '$', ' ranged')", "refId": "B"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.heal, 3), '$', ' heal')", "refId": "C"},
+          {"target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.work, 3), '$', ' work')", "refId": "D"}
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "stacking": {"mode": "normal", "group": "A"},
+              "spanNulls": false,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {"showLegend": true, "displayMode": "list", "placement": "bottom"},
+          "tooltip": {"mode": "multi", "sort": "desc"}
+        }
       }
     ]
   },
