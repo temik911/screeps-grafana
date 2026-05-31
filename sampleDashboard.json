@@ -641,6 +641,10 @@
           {
             "target": "aliasByNode(stats.gauges.processes.cpu.*, 4)",
             "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.cpu.statsSegmentCost, \"writeStatsSegment (meta)\")",
+            "refId": "B"
           }
         ],
         "fieldConfig": {
@@ -675,7 +679,8 @@
             "mode": "multi",
             "sort": "desc"
           }
-        }
+        },
+        "description": "Per-process CPU breakdown (from kernel.cpuByName) + writeStatsSegment meta-overhead. Stacked. The writeStatsSegment series shows how much the stats-collection itself costs each tick \u2014 useful to detect when telemetry overhead grows out of proportion (e.g. after adding heavy new gauges)."
       },
       {
         "id": 23,
