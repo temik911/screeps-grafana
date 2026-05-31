@@ -1128,6 +1128,140 @@
         }
       },
       {
+        "id": 45,
+        "type": "timeseries",
+        "title": "Controller \u2014 progress % to next level",
+        "description": "Per-room controller progress as a percentage of the energy required for the next RCL. Source: stats.gauges.rooms.<name>.{controllerProgress,controllerProgressTotal}. RCL 8 rooms have progressTotal=0 \u2192 series silently disappears (no next level). Thresholds: green up to 80%, yellow above 80%, almost-leveled at 95%.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 58
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(asPercent(stats.gauges.rooms.*.controllerProgress, stats.gauges.rooms.*.controllerProgressTotal), 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 1,
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 15,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 80
+                },
+                {
+                  "color": "orange",
+                  "value": 95
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 46,
+        "type": "timeseries",
+        "title": "Controller \u2014 ETA to next level (hours)",
+        "description": "Estimated wall-clock hours until the controller reaches the next RCL. Computed as (controllerProgressTotal - controllerProgress) / upgradeRate, with upgradeRate smoothed via movingAverage(6h) for stability (the raw rate from the bot is averaged over ~36 min of statsHistory; 6h captures sustained trend). Tick rate on shard3 \u2248 3.6 s/tick (1000 ticks \u2248 1 hour) \u2014 applied as the 0.001 scale factor at the end. RCL 8 rooms drop out (upgradeRate=0 \u2192 div-by-zero NaN).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 58
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(scale(divideSeries(diffSeries(stats.gauges.rooms.*.controllerProgressTotal, stats.gauges.rooms.*.controllerProgress), movingAverage(stats.gauges.rooms.*.upgradeRate, '6h')), 0.001), 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "h",
+            "decimals": 1,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 15,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "orange",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 12
+                },
+                {
+                  "color": "green",
+                  "value": 4
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "asc"
+          }
+        }
+      },
+      {
         "id": 202,
         "type": "row",
         "title": "Throughput",
@@ -1136,7 +1270,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 58
+          "y": 66
         },
         "panels": []
       },
@@ -1149,7 +1283,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 59
+          "y": 67
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1207,7 +1341,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 59
+          "y": 67
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1252,7 +1386,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 67
+          "y": 75
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1310,7 +1444,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 75
+          "y": 83
         },
         "panels": []
       },
@@ -1323,7 +1457,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 76
+          "y": 84
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1368,7 +1502,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 76
+          "y": 84
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1413,7 +1547,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 84
+          "y": 92
         },
         "panels": []
       },
@@ -1426,7 +1560,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 85
+          "y": 93
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1472,7 +1606,7 @@
           "h": 8,
           "w": 12,
           "x": 8,
-          "y": 85
+          "y": 93
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1520,7 +1654,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 93
+          "y": 101
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1589,7 +1723,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 93
+          "y": 101
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1633,7 +1767,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 101
+          "y": 109
         },
         "panels": []
       },
@@ -1646,7 +1780,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 102
+          "y": 110
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1702,7 +1836,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 102
+          "y": 110
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1758,7 +1892,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 110
+          "y": 118
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1831,7 +1965,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 118
+          "y": 126
         },
         "panels": []
       },
@@ -1844,7 +1978,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 119
+          "y": 127
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1907,7 +2041,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 119
+          "y": 127
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1970,7 +2104,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 127
+          "y": 135
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2030,7 +2164,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 135
+          "y": 143
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2075,7 +2209,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 135
+          "y": 143
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2152,7 +2286,7 @@
           "h": 6,
           "w": 24,
           "x": 0,
-          "y": 143
+          "y": 151
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2202,7 +2336,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 149
+          "y": 157
         },
         "panels": []
       },
@@ -2215,7 +2349,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 150
+          "y": 158
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2275,7 +2409,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 158
+          "y": 166
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2340,7 +2474,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 158
+          "y": 166
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2400,7 +2534,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 166
+          "y": 174
         },
         "panels": []
       },
@@ -2413,7 +2547,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 167
+          "y": 175
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2486,7 +2620,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 175
+          "y": 183
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2543,7 +2677,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 183
+          "y": 191
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2604,7 +2738,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 191
+          "y": 199
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2661,7 +2795,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 199
+          "y": 207
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2726,7 +2860,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 207
+          "y": 215
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2787,7 +2921,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 215
+          "y": 223
         },
         "datasource": "localGraphite",
         "targets": [
