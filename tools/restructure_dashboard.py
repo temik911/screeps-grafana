@@ -122,7 +122,7 @@ for i, p in enumerate(STATUS_STRIP):
 # Drop memory bytes (22) — now in status strip.
 ROWS = [
     ('Health & CPU', [5, 6, 7, 23], False),
-    ('Per-room economy', [8, 9, 10, 11, 25, 26, 29], False),
+    ('Per-room economy', [8, 9, 10, 11, 25, 26, 29, 45, 46], False),
     ('Throughput', [12, 13, 14], False),
     ('Construction', [15, 28], False),
     ('Movement & Traffic', [24, 30, 31, 32], False),
