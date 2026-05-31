@@ -3090,7 +3090,7 @@
         "id": 49,
         "type": "timeseries",
         "title": "Logistics broker — matches / prunes / link transfers per tick",
-        "description": "matchedPerTick: how many tasks the matcher created (broker activity). prunedPerTick: how many tasks cleanup() removed (completed-then-pruned or deadline-expired). linkTransfers: successful transferEnergy() returns OK calls. Steady-state: matches ≈ prunes (flow balance); linkTransfers tracks matches with ~1-tick delay (dispatcher executes after match).",
+        "description": "Per-tick broker activity: matchedPerTick (tasks created), prunedPerTick (tasks removed in cleanup), linkTransfers (successful LinkDispatcher transferEnergy), queenTransfers + queenWithdraws (QueenDispatcher intents). Steady-state: matches ≈ prunes (flow balance); transfers/withdraws together ≈ matches (each task = 1 withdraw + 1 transfer over 2 ticks).",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3110,6 +3110,14 @@
           {
             "target": "aliasByNode(stats.gauges.logistics.linkTransfers, 3)",
             "refId": "C"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.logistics.queenTransfers, 3)",
+            "refId": "D"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.logistics.queenWithdraws, 3)",
+            "refId": "E"
           }
         ],
         "fieldConfig": {
