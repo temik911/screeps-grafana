@@ -3524,7 +3524,7 @@
                   "id": "color",
                   "value": {
                     "mode": "fixed",
-                    "fixedColor": "semi-dark-cyan"
+                    "fixedColor": "#33B5B5"
                   }
                 }
               ]
