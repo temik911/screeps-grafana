@@ -1,3320 +1,3565 @@
 {
- "dashboard": {
-  "uid": "screeps-overview",
-  "title": "Screeps Colony Overview",
-  "tags": [
-   "screeps"
-  ],
-  "timezone": "browser",
-  "schemaVersion": 38,
-  "version": 1,
-  "refresh": "10s",
-  "time": {
-   "from": "now-1h",
-   "to": "now"
-  },
-  "graphTooltip": 1,
-  "editable": true,
-  "fiscalYearStartMonth": 0,
-  "annotations": {
-   "list": []
-  },
-  "templating": {
-   "list": []
-  },
-  "panels": [
-   {
-    "id": 101,
-    "type": "stat",
-    "title": "CPU / tick",
-    "description": "Average CPU consumed per tick. limit=20 on shard3.",
-    "gridPos": {
-     "h": 4,
-     "w": 3,
-     "x": 0,
-     "y": 0
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.cpu.used, 2)",
-      "refId": "A"
-     }
+  "dashboard": {
+    "uid": "screeps-overview",
+    "title": "Screeps Colony Overview",
+    "tags": [
+      "screeps"
     ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 1,
-      "unit": "none",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "green",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 14
-        },
-        {
-         "color": "red",
-         "value": 18
-        }
-       ]
-      },
-      "color": {
-       "mode": "thresholds"
-      }
-     },
-     "overrides": []
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
     },
-    "options": {
-     "graphMode": "area",
-     "colorMode": "value",
-     "textMode": "auto",
-     "justifyMode": "auto",
-     "orientation": "auto",
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     }
-    }
-   },
-   {
-    "id": 102,
-    "type": "stat",
-    "title": "CPU bucket",
-    "description": "Bucket = CPU savings buffer (max 10000). <2000 = burning into reserve. <500 = critical.",
-    "gridPos": {
-     "h": 4,
-     "w": 3,
-     "x": 3,
-     "y": 0
+    "graphTooltip": 1,
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "annotations": {
+      "list": []
     },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.cpu.bucket, 2)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 0,
-      "unit": "none",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "red",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 2000
-        },
-        {
-         "color": "green",
-         "value": 7000
-        }
-       ]
-      },
-      "color": {
-       "mode": "thresholds"
-      }
-     },
-     "overrides": []
+    "templating": {
+      "list": []
     },
-    "options": {
-     "graphMode": "area",
-     "colorMode": "value",
-     "textMode": "auto",
-     "justifyMode": "auto",
-     "orientation": "auto",
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     }
-    }
-   },
-   {
-    "id": 103,
-    "type": "stat",
-    "title": "GCL",
-    "description": "Global Control Level — caps the number of rooms we can own.",
-    "gridPos": {
-     "h": 4,
-     "w": 3,
-     "x": 6,
-     "y": 0
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.gcl.level, 2)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 0,
-      "unit": "none",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "blue",
-         "value": null
-        }
-       ]
-      },
-      "color": {
-       "mode": "thresholds"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "graphMode": "area",
-     "colorMode": "value",
-     "textMode": "auto",
-     "justifyMode": "auto",
-     "orientation": "auto",
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     }
-    }
-   },
-   {
-    "id": 104,
-    "type": "stat",
-    "title": "Hostiles (colony+remotes)",
-    "description": "Total hostile creeps across home rooms + visible remotes. Any non-zero = check now.",
-    "gridPos": {
-     "h": 4,
-     "w": 3,
-     "x": 9,
-     "y": 0
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "sumSeries(stats.gauges.rooms.*.hostiles, stats.gauges.remotes.*.hostiles)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 0,
-      "unit": "none",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "green",
-         "value": null
-        },
-        {
-         "color": "orange",
-         "value": 1
-        },
-        {
-         "color": "red",
-         "value": 3
-        }
-       ]
-      },
-      "color": {
-       "mode": "thresholds"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "graphMode": "area",
-     "colorMode": "value",
-     "textMode": "auto",
-     "justifyMode": "auto",
-     "orientation": "auto",
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     }
-    }
-   },
-   {
-    "id": 105,
-    "type": "stat",
-    "title": "Storage Δ/tick",
-    "description": "Sum of net energy flow into storage across owned rooms (sum of throughput). Negative = drawing down.",
-    "gridPos": {
-     "h": 4,
-     "w": 3,
-     "x": 12,
-     "y": 0
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "sumSeries(stats.gauges.rooms.*.storageRate)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 1,
-      "unit": "none",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "red",
-         "value": null
-        },
-        {
-         "color": "orange",
-         "value": 0
-        },
-        {
-         "color": "green",
-         "value": 1
-        }
-       ]
-      },
-      "color": {
-       "mode": "thresholds"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "graphMode": "area",
-     "colorMode": "value",
-     "textMode": "auto",
-     "justifyMode": "auto",
-     "orientation": "auto",
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     }
-    }
-   },
-   {
-    "id": 106,
-    "type": "stat",
-    "title": "Spawn busy %",
-    "description": "Spawn utilization across owned rooms (average). 100% = spawn is the bottleneck.",
-    "gridPos": {
-     "h": 4,
-     "w": 3,
-     "x": 15,
-     "y": 0
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "averageSeries(stats.gauges.rooms.*.spawnBusyPct)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 0,
-      "unit": "percent",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "green",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 80
-        },
-        {
-         "color": "orange",
-         "value": 95
-        }
-       ]
-      },
-      "color": {
-       "mode": "thresholds"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "graphMode": "area",
-     "colorMode": "value",
-     "textMode": "auto",
-     "justifyMode": "auto",
-     "orientation": "auto",
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     }
-    }
-   },
-   {
-    "id": 107,
-    "type": "stat",
-    "title": "Haulers alive",
-    "description": "Live logistics creeps colony-wide. Compare to per-room target in the Logistics row.",
-    "gridPos": {
-     "h": 4,
-     "w": 3,
-     "x": 18,
-     "y": 0
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.creepsByRole.logistics, 2)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 0,
-      "unit": "none",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "blue",
-         "value": null
-        }
-       ]
-      },
-      "color": {
-       "mode": "thresholds"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "graphMode": "area",
-     "colorMode": "value",
-     "textMode": "auto",
-     "justifyMode": "auto",
-     "orientation": "auto",
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     }
-    }
-   },
-   {
-    "id": 108,
-    "type": "stat",
-    "title": "Memory bytes",
-    "description": "JSON.stringify(Memory).length, refreshed every 100 ticks. Soft limit ~2MB on shard3.",
-    "gridPos": {
-     "h": 4,
-     "w": 3,
-     "x": 21,
-     "y": 0
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.memory.bytes, 2)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 0,
-      "unit": "bytes",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "green",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 1500000
-        },
-        {
-         "color": "red",
-         "value": 1900000
-        }
-       ]
-      },
-      "color": {
-       "mode": "thresholds"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "graphMode": "area",
-     "colorMode": "value",
-     "textMode": "auto",
-     "justifyMode": "auto",
-     "orientation": "auto",
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     }
-    }
-   },
-   {
-    "id": 200,
-    "type": "row",
-    "title": "Health & CPU",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 4
-    },
-    "panels": []
-   },
-   {
-    "id": 5,
-    "type": "timeseries",
-    "title": "CPU used vs limit",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 5
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "alias(stats.gauges.cpu.used, 'used')",
-      "refId": "A"
-     },
-     {
-      "target": "alias(stats.gauges.cpu.limit, 'limit')",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 2,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": [
+    "panels": [
       {
-       "matcher": {
-        "id": "byName",
-        "options": "limit"
-       },
-       "properties": [
-        {
-         "id": "color",
-         "value": {
-          "mode": "fixed",
-          "fixedColor": "red"
-         }
+        "id": 101,
+        "type": "stat",
+        "title": "CPU / tick",
+        "description": "Average CPU consumed per tick. limit=20 on shard3.",
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 0,
+          "y": 0
         },
-        {
-         "id": "custom.lineStyle",
-         "value": {
-          "fill": "dash",
-          "dash": [
-           10,
-           10
-          ]
-         }
-        },
-        {
-         "id": "custom.fillOpacity",
-         "value": 0
-        }
-       ]
-      }
-     ]
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 6,
-    "type": "timeseries",
-    "title": "CPU bucket",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 5
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "stats.gauges.cpu.bucket",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "max": 10000,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 25,
-       "spanNulls": true,
-       "showPoints": "never",
-       "gradientMode": "scheme"
-      },
-      "color": {
-       "mode": "continuous-RdYlGr"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": false,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "single",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 7,
-    "type": "timeseries",
-    "title": "CPU per process",
-    "gridPos": {
-     "h": 8,
-     "w": 24,
-     "x": 0,
-     "y": 13
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.processes.cpu.*, 4)",
-      "refId": "A"
-     },
-     {
-      "target": "alias(stats.gauges.cpu.statsSegmentCost, \"writeStatsSegment (meta)\")",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 2,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 1,
-       "fillOpacity": 30,
-       "stacking": {
-        "mode": "normal",
-        "group": "A"
-       },
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "mean",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    },
-    "description": "Per-process CPU breakdown (from kernel.cpuByName) + writeStatsSegment meta-overhead. Stacked. The writeStatsSegment series shows how much the stats-collection itself costs each tick — useful to detect when telemetry overhead grows out of proportion (e.g. after adding heavy new gauges)."
-   },
-   {
-    "id": 23,
-    "type": "stat",
-    "title": "Market credits",
-    "description": "Game.market.credits — bottom line. Drops on order placement, rises on settled trades.",
-    "gridPos": {
-     "h": 4,
-     "w": 8,
-     "x": 0,
-     "y": 21
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "stats.gauges.market.credits",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 0,
-      "unit": "none",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "green",
-         "value": null
-        }
-       ]
-      }
-     }
-    },
-    "options": {
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     },
-     "colorMode": "value",
-     "graphMode": "area",
-     "textMode": "auto"
-    }
-   },
-   {
-    "id": 201,
-    "type": "row",
-    "title": "Per-room economy",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 25
-    },
-    "panels": []
-   },
-   {
-    "id": 8,
-    "type": "timeseries",
-    "title": "Room — energy available / capacity",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 26
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.energy, 3)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.energyCap, 3), '$', ' (cap)')",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": [
-      {
-       "matcher": {
-        "id": "byRegexp",
-        "options": ".*\\(cap\\)$"
-       },
-       "properties": [
-        {
-         "id": "custom.lineStyle",
-         "value": {
-          "fill": "dash",
-          "dash": [
-           10,
-           10
-          ]
-         }
-        },
-        {
-         "id": "custom.fillOpacity",
-         "value": 0
-        }
-       ]
-      }
-     ]
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 9,
-    "type": "timeseries",
-    "title": "Room — storage energy",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 26
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.storageEnergy, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 10,
-    "type": "timeseries",
-    "title": "Room — creeps vs hostiles",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 34
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.creeps, 3), '$', ' creeps')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostiles, 3), '$', ' hostiles')",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": [
-      {
-       "matcher": {
-        "id": "byRegexp",
-        "options": ".*hostiles$"
-       },
-       "properties": [
-        {
-         "id": "color",
-         "value": {
-          "mode": "fixed",
-          "fixedColor": "red"
-         }
-        },
-        {
-         "id": "custom.fillOpacity",
-         "value": 40
-        }
-       ]
-      }
-     ]
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 11,
-    "type": "timeseries",
-    "title": "Room — spawn queue depth & build sites",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 34
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.spawnQueueDepth, 3), '$', ' queue')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.sites, 3), '$', ' sites')",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 25,
-    "type": "timeseries",
-    "title": "Spawn busy %",
-    "description": "Per-room: percent of spawns currently spawning (snapshot). Grafana's avg over a window shows utilisation. Sustained 100% = spawn-bound — add a spawn or reduce churn. Sustained 0% = idle capacity.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 42
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.spawnBusyPct, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "percent",
-      "decimals": 0,
-      "min": 0,
-      "max": 100,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 26,
-    "type": "timeseries",
-    "title": "Tower energy min",
-    "description": "Per-room: minimum energy among our towers. Below 200 (1 ranged attack) we can't punch anything. Drops on combat ticks; should recover quickly via Filler.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 42
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.towerEnergyMin, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "max": 1000,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      },
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "red",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 200
-        },
-        {
-         "color": "green",
-         "value": 500
-        }
-       ]
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 29,
-    "type": "timeseries",
-    "title": "Creeps by role (colony-wide)",
-    "description": "Live creep counts grouped by ownerTag prefix-before-colon (e.g. logistics, worker, mining, filler, queen, construction, upgrade, reserver, remote-source, remote-vision, remote-repair). At-a-glance pool composition without drilling per-process.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 50
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.creepsByRole.*, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 1,
-       "fillOpacity": 30,
-       "stacking": {
-        "mode": "normal",
-        "group": "A"
-       },
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 45,
-    "type": "timeseries",
-    "title": "Controller — progress % to next level",
-    "description": "Per-room controller progress as % of energy needed for next RCL. Computed in the bot (StatsProcess) for direct passthrough — RCL 8 rooms report 100% (no next level). Thresholds: green ≤80, yellow 80-95, orange >95 (almost leveled).",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 58
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.controllerProgressPct, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "percent",
-      "decimals": 1,
-      "min": 0,
-      "max": 100,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 15,
-       "spanNulls": true,
-       "showPoints": "never"
-      },
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "green",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 80
-        },
-        {
-         "color": "orange",
-         "value": 95
-        }
-       ]
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 46,
-    "type": "timeseries",
-    "title": "Controller — ETA to next level (hours)",
-    "description": "Estimated wall-clock hours until controller reaches next RCL. Bot computes (remaining points) / upgradeRate per tick using the ~36-min statsHistory window; Grafana wraps with movingAverage(6h) for the user-requested 3-6h smoothing. RCL 8 rooms have no gauge → series disappears.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 58
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(movingAverage(stats.gauges.rooms.*.controllerEtaHours, '6h'), 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "h",
-      "decimals": 1,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 15,
-       "spanNulls": true,
-       "showPoints": "never"
-      },
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "orange",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 12
-        },
-        {
-         "color": "green",
-         "value": 4
-        }
-       ]
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "min",
-       "mean"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "asc"
-     }
-    }
-   },
-   {
-    "id": 202,
-    "type": "row",
-    "title": "Throughput",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 66
-    },
-    "panels": []
-   },
-   {
-    "id": 12,
-    "type": "timeseries",
-    "title": "Throughput — storage rate (e/tick)",
-    "description": "Net energy flow into storage, averaged over the statsHistory window (~600 ticks). Negative = drawing down.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 67
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.storageRate, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 2,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never",
-       "axisSoftMin": 0
-      },
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "red",
-         "value": null
-        },
-        {
-         "color": "green",
-         "value": 0
-        }
-       ]
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 13,
-    "type": "timeseries",
-    "title": "Throughput — upgrade rate (pt/tick)",
-    "description": "Controller progress per tick, averaged over statsHistory window. RCL-8 cap is 15 pt/t.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 67
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.upgradeRate, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 2,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 14,
-    "type": "timeseries",
-    "title": "Throughput — build rate (pt/tick)",
-    "description": "Construction progress per tick. Drops negative when a site completes (its progress disappears from the sum) — real signal, not a bug.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 75
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.buildRate, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 2,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never",
-       "axisSoftMin": 0
-      },
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "red",
-         "value": null
-        },
-        {
-         "color": "blue",
-         "value": 0
-        }
-       ]
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 203,
-    "type": "row",
-    "title": "Construction",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 83
-    },
-    "panels": []
-   },
-   {
-    "id": 15,
-    "type": "timeseries",
-    "title": "Construction work outstanding",
-    "description": "Sum of in-flight construction site progress, per room. Goes up when new sites are placed, down as builders work, jumps to 0 when the last site completes.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 84
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.sitesProgress, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 28,
-    "type": "timeseries",
-    "title": "Bunker plan progress %",
-    "description": "Per-room: percentage of basePlan structures that are currently *allowed at this RCL* AND actually built. Drops at every RCL bump (new slots unlock) and climbs as ConstructionProcess catches up. Plateaus = bunker complete for this RCL tier.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 84
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.bunkerPlanProgressPct, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "percent",
-      "decimals": 0,
-      "min": 0,
-      "max": 100,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 204,
-    "type": "row",
-    "title": "Movement & Traffic",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 92
-    },
-    "panels": []
-   },
-   {
-    "id": 24,
-    "type": "stat",
-    "title": "TrafficManager intents (snapshot)",
-    "description": "Count of move intents registered in TrafficManager when StatsProcess writes the segment — i.e. how many creeps are *trying* to move this tick. Sanity check: spike near 0 means everyone is stationary (potential deadlock).",
-    "gridPos": {
-     "h": 4,
-     "w": 8,
-     "x": 0,
-     "y": 93
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "stats.gauges.processes.intentCount",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "decimals": 0,
-      "unit": "none",
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "blue",
-         "value": null
-        }
-       ]
-      }
-     }
-    },
-    "options": {
-     "reduceOptions": {
-      "calcs": [
-       "lastNotNull"
-      ],
-      "fields": "",
-      "values": false
-     },
-     "colorMode": "value",
-     "graphMode": "area",
-     "textMode": "auto"
-    }
-   },
-   {
-    "id": 30,
-    "type": "timeseries",
-    "title": "TrafficManager swaps + pushes",
-    "description": "Number of head-on swaps and push-chains the TrafficManager resolved on the last reconcile. High values = busy corridors with bidirectional or cross-priority traffic. Per-tick snapshot — use Grafana's sum over a window for cumulative.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 8,
-     "y": 93
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "alias(stats.gauges.traffic.swaps, 'swaps')",
-      "refId": "A"
-     },
-     {
-      "target": "alias(stats.gauges.traffic.pushes, 'pushes')",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 31,
-    "type": "timeseries",
-    "title": "Pathfind — calls / cross-room / incomplete",
-    "description": "PathFinder.search invocations per tick from creep.travelTo. `calls` = total; `crossRoom` = subset that crossed room borders (after Tier 1 multi-room serialization a multi-room trip should produce ~1 call instead of one per border); `incomplete` = calls that hit maxOps without reaching the goal (high values mean we need a higher maxOps or the route is genuinely blocked).",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 101
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "alias(stats.gauges.pathfind.calls, 'calls')",
-      "refId": "A"
-     },
-     {
-      "target": "alias(stats.gauges.pathfind.crossRoom, 'crossRoom')",
-      "refId": "B"
-     },
-     {
-      "target": "alias(stats.gauges.pathfind.incomplete, 'incomplete')",
-      "refId": "C"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": [
-      {
-       "matcher": {
-        "id": "byName",
-        "options": "incomplete"
-       },
-       "properties": [
-        {
-         "id": "color",
-         "value": {
-          "mode": "fixed",
-          "fixedColor": "red"
-         }
-        }
-       ]
-      }
-     ]
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 32,
-    "type": "timeseries",
-    "title": "Pathfind — ops per tick (≈ CPU × 1000)",
-    "description": "Sum of `PathFinder.Path.ops` across all searches this tick. Per the API one op is ~0.001 CPU, so opsTotal/1000 ≈ CPU spent in pathfinding alone. A healthy mid-game colony sits well under 5000 ops/tick. Spikes line up with replans (e.g. construction sites added invalidates cached paths via stuck → repath).",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 101
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "alias(stats.gauges.pathfind.opsTotal, 'opsTotal')",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 205,
-    "type": "row",
-    "title": "Logistics (HaulerScheduler)",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 109
-    },
-    "panels": []
-   },
-   {
-    "id": 33,
-    "type": "timeseries",
-    "title": "Haulers — target / alive / pending (per room)",
-    "description": "HaulerScheduler.optimalHaulerCount (target) vs current alive logistics creeps vs pending spawn queue requests. Big and persistent target>alive gap = pool is under-spawning (check pending: should pile up if energyAvailable is the blocker). target=alive+pending and stable = steady-state. Lines named '<room>.<metric>'.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 110
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.haulers.target, 3, 5)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.haulers.alive, 3, 5)",
-      "refId": "B"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.haulers.pending, 3, 5)",
-      "refId": "C"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 34,
-    "type": "timeseries",
-    "title": "Haulers — distribution (atStorage / loaded / empty)",
-    "description": "Where the live haulers are RIGHT NOW. atStorage = within 3 tiles of storage (parked / dispatching / dropping off). loaded = carrying any energy (delivering). empty = zero carry (in flight toward pickup OR parked at storage). loaded+empty = alive. atStorage stays high while containers visibly hold energy = wait-for-fill is over-conservative or pool is over-sized; investigate via haulerDiag().",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 110
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.haulers.atStorage, 3, 5)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.haulers.loaded, 3, 5)",
-      "refId": "B"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.haulers.empty, 3, 5)",
-      "refId": "C"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "mean"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 35,
-    "type": "timeseries",
-    "title": "HaulerScheduler — cache age (per room) + recomputes/tick",
-    "description": "Per-room cacheAge = ticks since last full HaulerScheduler.ensureCache rebuild. Should hover near 0 during active construction (C4 + B2 invalidate the cache on home/remote structure changes), and climb toward the 250-tick TTL backstop during steady-state late-game. recomputes = number of rooms that triggered a full rebuild this tick (separate single series); sparse spikes are healthy, a flat ridge means something is invalidating every tick.",
-    "gridPos": {
-     "h": 8,
-     "w": 24,
-     "x": 0,
-     "y": 118
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.rooms.*.haulers.cacheAge, 3)",
-      "refId": "A"
-     },
-     {
-      "target": "alias(stats.gauges.haulerSched.recomputes, 'recomputes/tick')",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": [
-      {
-       "matcher": {
-        "id": "byName",
-        "options": "recomputes/tick"
-       },
-       "properties": [
-        {
-         "id": "color",
-         "value": {
-          "mode": "fixed",
-          "fixedColor": "orange"
-         }
-        },
-        {
-         "id": "custom.lineWidth",
-         "value": 1
-        },
-        {
-         "id": "custom.fillOpacity",
-         "value": 25
-        }
-       ]
-      }
-     ]
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 206,
-    "type": "row",
-    "title": "Remote mining",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 126
-    },
-    "panels": []
-   },
-   {
-    "id": 16,
-    "type": "timeseries",
-    "title": "Remote — reservation countdown",
-    "description": "controller.reservation.ticksToEnd per remote. Below 1500 ReserverProcess spawns a replacement; below 0 means we lost the reservation (source caps drop to 1500e and decay rate doubles for containers).",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 127
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.remotes.*.reservedUntil, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "max": 5000,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      },
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "red",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 1500
-        },
-        {
-         "color": "green",
-         "value": 3000
-        }
-       ]
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 17,
-    "type": "timeseries",
-    "title": "Remote — most damaged infra HP %",
-    "description": "Lowest HP percentage across ALL our roads + containers in the remote (0-100). Thresholds match the repair policy: RemoteRoomProcess flips needsRepair when this drops below 75%; RemoteRepairProcess targets 90% on each structure. \"No data\" = remote not visible this tick (we don't have a creep there to enumerate structures).",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 127
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.remotes.*.minInfraHpPct, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "percent",
-      "decimals": 0,
-      "min": 0,
-      "max": 100,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      },
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "red",
-         "value": null
-        },
-        {
-         "color": "yellow",
-         "value": 75
-        },
-        {
-         "color": "green",
-         "value": 90
-        }
-       ]
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 18,
-    "type": "timeseries",
-    "title": "Remote — creep pool per role",
-    "description": "Live creep counts per role per remote. reserver should be 1 most of the time; miner = containers built; vision = 0 once reserver/miner provide visibility; repairer = 1 while needsRepair flag is set.",
-    "gridPos": {
-     "h": 8,
-     "w": 24,
-     "x": 0,
-     "y": 135
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.reserverCount, 3), '$', ' reserver')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.minerCount, 3), '$', ' miner')",
-      "refId": "B"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.visionCount, 3), '$', ' vision')",
-      "refId": "C"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.repairerCount, 3), '$', ' repair')",
-      "refId": "D"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 19,
-    "type": "timeseries",
-    "title": "Remote — container energy queue (waiting for haulers)",
-    "description": "Sum of energy sitting in remote source containers per remote. Steady oscillation between 0 and ~1600 is normal (miner deposits, hauler drains). Sustained climb to ~2000 (cap) means the hauler pool is undersized for this remote's travelTicks.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 143
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.remotes.*.containerEnergyTotal, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 20,
-    "type": "timeseries",
-    "title": "Remote — build progress (containers + roads done / planned)",
-    "description": "Counts of sources whose container is built and whose roads are fully laid, per remote. Both should reach `sourceCount` shortly after enableRemote; until they do RemoteSourceProcess holds off spawning miners and HaulerScheduler excludes the container from the pool.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 143
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.sourceCount, 3), '$', ' planned')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.containersBuilt, 3), '$', ' containers')",
-      "refId": "B"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.roadsBuilt, 3), '$', ' roads')",
-      "refId": "C"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "never"
-      },
-      "overrides": [
-       {
-        "matcher": {
-         "id": "byRegexp",
-         "options": ".*planned$"
-        },
-        "properties": [
-         {
-          "id": "custom.lineStyle",
-          "value": {
-           "fill": "dash",
-           "dash": [
-            10,
-            10
-           ]
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.cpu.used, 2)",
+            "refId": "A"
           }
-         },
-         {
-          "id": "custom.fillOpacity",
-          "value": 0
-         }
-        ]
-       }
-      ]
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 21,
-    "type": "timeseries",
-    "title": "Remote — needsRepair flag",
-    "description": "Binary 0/1 per remote — 1 means RemoteRoomProcess saw a road/container below 75% HP. RemoteRepairProcess spawns a 200e repairer (1W/1C/1M) while the flag is set; flag drops when everything's back above 75%.",
-    "gridPos": {
-     "h": 6,
-     "w": 24,
-     "x": 0,
-     "y": 151
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.remotes.*.needsRepair, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "max": 1,
-      "custom": {
-       "drawStyle": "bars",
-       "lineWidth": 1,
-       "fillOpacity": 80,
-       "spanNulls": false,
-       "showPoints": "never"
-      },
-      "color": {
-       "mode": "fixed",
-       "fixedColor": "orange"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 207,
-    "type": "row",
-    "title": "Hostiles & Defense",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 157
-    },
-    "panels": []
-   },
-   {
-    "id": 27,
-    "type": "timeseries",
-    "title": "Hostile body parts per room",
-    "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per room. Rough threat assessment: small numbers = invader / scout; large = a player raid.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 158
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.attack, 3), '$', ' attack')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.ranged, 3), '$', ' ranged')",
-      "refId": "B"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.heal, 3), '$', ' heal')",
-      "refId": "C"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.work, 3), '$', ' work')",
-      "refId": "D"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "stacking": {
-        "mode": "normal",
-        "group": "A"
-       },
-       "spanNulls": false,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 36,
-    "type": "timeseries",
-    "title": "Remote — hostile creep count",
-    "description": "Number of hostile creeps in each visible remote (visibility-gated — \"no data\" when the remote isn't observed). Counts include SK creeps (Keepers + invader cores) when applicable; for ordinary reserved remotes any non-zero is a real raid signal. Defenders only react to home-room hostiles, so this is the primary watch for remote attacks.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 166
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.remotes.*.hostiles, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": false,
-       "showPoints": "auto"
-      },
-      "thresholds": {
-       "mode": "absolute",
-       "steps": [
-        {
-         "color": "green",
-         "value": null
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 1,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 14
+                },
+                {
+                  "color": "red",
+                  "value": 18
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
         },
-        {
-         "color": "orange",
-         "value": 1
-        },
-        {
-         "color": "red",
-         "value": 3
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
         }
-       ]
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 37,
-    "type": "timeseries",
-    "title": "Remote — hostile body parts (per remote)",
-    "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per visible remote. Stacked per remote so the bar height = total threat for that remote. Mirrors the home-room \"Hostile body parts per room\" panel — visibility-gated, omitted when the remote isn't observed.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 166
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.attack, 3), '$', ' attack')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.ranged, 3), '$', ' ranged')",
-      "refId": "B"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.heal, 3), '$', ' heal')",
-      "refId": "C"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.work, 3), '$', ' work')",
-      "refId": "D"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "stacking": {
-        "mode": "normal",
-        "group": "A"
-       },
-       "spanNulls": false,
-       "showPoints": "never"
-      }
-     }
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 208,
-    "type": "row",
-    "title": "Scout & Routing",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 174
-    },
-    "panels": []
-   },
-   {
-    "id": 44,
-    "type": "timeseries",
-    "title": "Route version — counter & mutation rate",
-    "description": "Memory.colony.routeVersion is a monotonic counter bumped by ScoutProcess every time route-affecting intel changes (sealedExits flips, dangerousOwned toggle). Read by cached paths (GoState.routeVersion) and HaulerScheduler haulerSignature — mismatch invalidates the cache. Series A: current value (stair-step line). Series B: rate of change per minute, via nonNegativeDerivative + scaleToSeconds — spikes line up with scout discoveries; near-zero = intel stable.",
-    "gridPos": {
-     "h": 8,
-     "w": 24,
-     "x": 0,
-     "y": 175
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "alias(stats.gauges.sealed.routeVersion, 'routeVersion (current)')",
-      "refId": "A"
-     },
-     {
-      "target": "alias(scaleToSeconds(nonNegativeDerivative(stats.gauges.sealed.routeVersion), 60), 'mutations / minute')",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 2,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 10,
-       "spanNulls": true,
-       "showPoints": "auto"
-      }
-     },
-     "overrides": [
+      },
       {
-       "matcher": {
-        "id": "byName",
-        "options": "mutations / minute"
-       },
-       "properties": [
-        {
-         "id": "custom.axisPlacement",
-         "value": "right"
+        "id": 102,
+        "type": "stat",
+        "title": "CPU bucket",
+        "description": "Bucket = CPU savings buffer (max 10000). <2000 = burning into reserve. <500 = critical.",
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 3,
+          "y": 0
         },
-        {
-         "id": "color",
-         "value": {
-          "mode": "fixed",
-          "fixedColor": "orange"
-         }
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.cpu.bucket, 2)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 2000
+                },
+                {
+                  "color": "green",
+                  "value": 7000
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
         }
-       ]
+      },
+      {
+        "id": 103,
+        "type": "stat",
+        "title": "GCL",
+        "description": "Global Control Level \u2014 caps the number of rooms we can own.",
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 6,
+          "y": 0
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.gcl.level, 2)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "blue",
+                  "value": null
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 104,
+        "type": "stat",
+        "title": "Hostiles (colony+remotes)",
+        "description": "Total hostile creeps across home rooms + visible remotes. Any non-zero = check now.",
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 9,
+          "y": 0
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "sumSeries(stats.gauges.rooms.*.hostiles, stats.gauges.remotes.*.hostiles)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 1
+                },
+                {
+                  "color": "red",
+                  "value": 3
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 105,
+        "type": "stat",
+        "title": "Storage \u0394/tick",
+        "description": "Sum of net energy flow into storage across owned rooms (sum of throughput). Negative = drawing down.",
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 12,
+          "y": 0
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "sumSeries(stats.gauges.rooms.*.storageRate)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 1,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 106,
+        "type": "stat",
+        "title": "Spawn busy %",
+        "description": "Spawn utilization across owned rooms (average). 100% = spawn is the bottleneck.",
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 15,
+          "y": 0
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "averageSeries(stats.gauges.rooms.*.spawnBusyPct)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 80
+                },
+                {
+                  "color": "orange",
+                  "value": 95
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 107,
+        "type": "stat",
+        "title": "Haulers alive",
+        "description": "Live logistics creeps colony-wide. Compare to per-room target in the Logistics row.",
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 18,
+          "y": 0
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.creepsByRole.logistics, 2)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "blue",
+                  "value": null
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 108,
+        "type": "stat",
+        "title": "Memory bytes",
+        "description": "JSON.stringify(Memory).length, refreshed every 100 ticks. Soft limit ~2MB on shard3.",
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 21,
+          "y": 0
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.memory.bytes, 2)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "bytes",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 1500000
+                },
+                {
+                  "color": "red",
+                  "value": 1900000
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 200,
+        "type": "row",
+        "title": "Health & CPU",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 4
+        },
+        "panels": []
+      },
+      {
+        "id": 5,
+        "type": "timeseries",
+        "title": "CPU used vs limit",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 5
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.cpu.used, 'used')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.cpu.limit, 'limit')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "limit"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "red"
+                  }
+                },
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "fill": "dash",
+                    "dash": [
+                      10,
+                      10
+                    ]
+                  }
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "type": "timeseries",
+        "title": "CPU bucket",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 5
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.cpu.bucket",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "max": 10000,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 25,
+              "spanNulls": true,
+              "showPoints": "never",
+              "gradientMode": "scheme"
+            },
+            "color": {
+              "mode": "continuous-RdYlGr"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": false,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "type": "timeseries",
+        "title": "CPU per process",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 13
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.processes.cpu.*, 4)",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.cpu.statsSegmentCost, \"writeStatsSegment (meta)\")",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 1,
+              "fillOpacity": 30,
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              },
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "mean",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "description": "Per-process CPU breakdown (from kernel.cpuByName) + writeStatsSegment meta-overhead. Stacked. The writeStatsSegment series shows how much the stats-collection itself costs each tick \u2014 useful to detect when telemetry overhead grows out of proportion (e.g. after adding heavy new gauges)."
+      },
+      {
+        "id": 23,
+        "type": "stat",
+        "title": "Market credits",
+        "description": "Game.market.credits \u2014 bottom line. Drops on order placement, rises on settled trades.",
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 0,
+          "y": 21
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.market.credits",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 201,
+        "type": "row",
+        "title": "Per-room economy",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 25
+        },
+        "panels": []
+      },
+      {
+        "id": 8,
+        "type": "timeseries",
+        "title": "Room \u2014 energy available / capacity",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 26
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.energy, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.energyCap, 3), '$', ' (cap)')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": ".*\\(cap\\)$"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "fill": "dash",
+                    "dash": [
+                      10,
+                      10
+                    ]
+                  }
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "type": "timeseries",
+        "title": "Room \u2014 storage energy",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 26
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.storageEnergy, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 10,
+        "type": "timeseries",
+        "title": "Room \u2014 creeps vs hostiles",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 34
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.creeps, 3), '$', ' creeps')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostiles, 3), '$', ' hostiles')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": ".*hostiles$"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "red"
+                  }
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 40
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 11,
+        "type": "timeseries",
+        "title": "Room \u2014 spawn queue depth & build sites",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 34
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.spawnQueueDepth, 3), '$', ' queue')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.sites, 3), '$', ' sites')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 25,
+        "type": "timeseries",
+        "title": "Spawn busy %",
+        "description": "Per-room: percent of spawns currently spawning (snapshot). Grafana's avg over a window shows utilisation. Sustained 100% = spawn-bound \u2014 add a spawn or reduce churn. Sustained 0% = idle capacity.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 42
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.spawnBusyPct, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 0,
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 26,
+        "type": "timeseries",
+        "title": "Tower energy min",
+        "description": "Per-room: minimum energy among our towers. Below 200 (1 ranged attack) we can't punch anything. Drops on combat ticks; should recover quickly via Filler.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 42
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.towerEnergyMin, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "max": 1000,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 200
+                },
+                {
+                  "color": "green",
+                  "value": 500
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 29,
+        "type": "timeseries",
+        "title": "Creeps by role (colony-wide)",
+        "description": "Live creep counts grouped by ownerTag prefix-before-colon (e.g. logistics, worker, mining, filler, queen, construction, upgrade, reserver, remote-source, remote-vision, remote-repair). At-a-glance pool composition without drilling per-process.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 50
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.creepsByRole.*, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 1,
+              "fillOpacity": 30,
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              },
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 45,
+        "type": "timeseries",
+        "title": "Controller \u2014 progress % to next level",
+        "description": "Per-room controller progress as % of energy needed for next RCL. Computed in the bot (StatsProcess) for direct passthrough \u2014 RCL 8 rooms report 100% (no next level). Thresholds: green \u226480, yellow 80-95, orange >95 (almost leveled).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 58
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.controllerProgressPct, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 1,
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 15,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 80
+                },
+                {
+                  "color": "orange",
+                  "value": 95
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 46,
+        "type": "timeseries",
+        "title": "Controller \u2014 ETA to next level (hours)",
+        "description": "Estimated wall-clock hours until controller reaches next RCL. Bot computes (remaining points) / upgradeRate per tick using the ~36-min statsHistory window; Grafana wraps with movingAverage(6h) for the user-requested 3-6h smoothing. RCL 8 rooms have no gauge \u2192 series disappears.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 58
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(movingAverage(stats.gauges.rooms.*.controllerEtaHours, '6h'), 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "h",
+            "decimals": 1,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 15,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "orange",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 12
+                },
+                {
+                  "color": "green",
+                  "value": 4
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "asc"
+          }
+        }
+      },
+      {
+        "id": 202,
+        "type": "row",
+        "title": "Throughput",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 66
+        },
+        "panels": []
+      },
+      {
+        "id": 12,
+        "type": "timeseries",
+        "title": "Throughput \u2014 storage rate (e/tick)",
+        "description": "Net energy flow into storage, averaged over the statsHistory window (~600 ticks). Negative = drawing down.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 67
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.storageRate, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never",
+              "axisSoftMin": 0
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 13,
+        "type": "timeseries",
+        "title": "Throughput \u2014 upgrade rate (pt/tick)",
+        "description": "Controller progress per tick, averaged over statsHistory window. RCL-8 cap is 15 pt/t.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 67
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.upgradeRate, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 14,
+        "type": "timeseries",
+        "title": "Throughput \u2014 build rate (pt/tick)",
+        "description": "Construction progress per tick. Drops negative when a site completes (its progress disappears from the sum) \u2014 real signal, not a bug.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 75
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.buildRate, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never",
+              "axisSoftMin": 0
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "blue",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 203,
+        "type": "row",
+        "title": "Construction",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 83
+        },
+        "panels": []
+      },
+      {
+        "id": 15,
+        "type": "timeseries",
+        "title": "Construction work outstanding",
+        "description": "Sum of in-flight construction site progress, per room. Goes up when new sites are placed, down as builders work, jumps to 0 when the last site completes.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 84
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.sitesProgress, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 28,
+        "type": "timeseries",
+        "title": "Bunker plan progress %",
+        "description": "Per-room: percentage of basePlan structures that are currently *allowed at this RCL* AND actually built. Drops at every RCL bump (new slots unlock) and climbs as ConstructionProcess catches up. Plateaus = bunker complete for this RCL tier.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 84
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.bunkerPlanProgressPct, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 0,
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 204,
+        "type": "row",
+        "title": "Movement & Traffic",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 92
+        },
+        "panels": []
+      },
+      {
+        "id": 24,
+        "type": "stat",
+        "title": "TrafficManager intents (snapshot)",
+        "description": "Count of move intents registered in TrafficManager when StatsProcess writes the segment \u2014 i.e. how many creeps are *trying* to move this tick. Sanity check: spike near 0 means everyone is stationary (potential deadlock).",
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 0,
+          "y": 93
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.processes.intentCount",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "blue",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 30,
+        "type": "timeseries",
+        "title": "TrafficManager swaps + pushes",
+        "description": "Number of head-on swaps and push-chains the TrafficManager resolved on the last reconcile. High values = busy corridors with bidirectional or cross-priority traffic. Per-tick snapshot \u2014 use Grafana's sum over a window for cumulative.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 8,
+          "y": 93
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.traffic.swaps, 'swaps')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.pushes, 'pushes')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 31,
+        "type": "timeseries",
+        "title": "Pathfind \u2014 calls / cross-room / incomplete",
+        "description": "PathFinder.search invocations per tick from creep.travelTo. `calls` = total; `crossRoom` = subset that crossed room borders (after Tier 1 multi-room serialization a multi-room trip should produce ~1 call instead of one per border); `incomplete` = calls that hit maxOps without reaching the goal (high values mean we need a higher maxOps or the route is genuinely blocked).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 101
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.pathfind.calls, 'calls')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.pathfind.crossRoom, 'crossRoom')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.pathfind.incomplete, 'incomplete')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "incomplete"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "red"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 32,
+        "type": "timeseries",
+        "title": "Pathfind \u2014 ops per tick (\u2248 CPU \u00d7 1000)",
+        "description": "Sum of `PathFinder.Path.ops` across all searches this tick. Per the API one op is ~0.001 CPU, so opsTotal/1000 \u2248 CPU spent in pathfinding alone. A healthy mid-game colony sits well under 5000 ops/tick. Spikes line up with replans (e.g. construction sites added invalidates cached paths via stuck \u2192 repath).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 101
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.pathfind.opsTotal, 'opsTotal')",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 205,
+        "type": "row",
+        "title": "Logistics (HaulerScheduler)",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 109
+        },
+        "panels": []
+      },
+      {
+        "id": 33,
+        "type": "timeseries",
+        "title": "Haulers \u2014 target / alive / pending (per room)",
+        "description": "HaulerScheduler.optimalHaulerCount (target) vs current alive logistics creeps vs pending spawn queue requests. Big and persistent target>alive gap = pool is under-spawning (check pending: should pile up if energyAvailable is the blocker). target=alive+pending and stable = steady-state. Lines named '<room>.<metric>'.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 110
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.haulers.target, 3, 5)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.haulers.alive, 3, 5)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.haulers.pending, 3, 5)",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 34,
+        "type": "timeseries",
+        "title": "Haulers \u2014 distribution (atStorage / loaded / empty)",
+        "description": "Where the live haulers are RIGHT NOW. atStorage = within 3 tiles of storage (parked / dispatching / dropping off). loaded = carrying any energy (delivering). empty = zero carry (in flight toward pickup OR parked at storage). loaded+empty = alive. atStorage stays high while containers visibly hold energy = wait-for-fill is over-conservative or pool is over-sized; investigate via haulerDiag().",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 110
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.haulers.atStorage, 3, 5)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.haulers.loaded, 3, 5)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.haulers.empty, 3, 5)",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 35,
+        "type": "timeseries",
+        "title": "HaulerScheduler \u2014 cache age (per room) + recomputes/tick",
+        "description": "Per-room cacheAge = ticks since last full HaulerScheduler.ensureCache rebuild. Should hover near 0 during active construction (C4 + B2 invalidate the cache on home/remote structure changes), and climb toward the 250-tick TTL backstop during steady-state late-game. recomputes = number of rooms that triggered a full rebuild this tick (separate single series); sparse spikes are healthy, a flat ridge means something is invalidating every tick.",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 118
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.rooms.*.haulers.cacheAge, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.haulerSched.recomputes, 'recomputes/tick')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "recomputes/tick"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "orange"
+                  }
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 1
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 25
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 206,
+        "type": "row",
+        "title": "Remote mining",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 126
+        },
+        "panels": []
+      },
+      {
+        "id": 16,
+        "type": "timeseries",
+        "title": "Remote \u2014 reservation countdown",
+        "description": "controller.reservation.ticksToEnd per remote. Below 1500 ReserverProcess spawns a replacement; below 0 means we lost the reservation (source caps drop to 1500e and decay rate doubles for containers).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 127
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.remotes.*.reservedUntil, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "max": 5000,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 1500
+                },
+                {
+                  "color": "green",
+                  "value": 3000
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 17,
+        "type": "timeseries",
+        "title": "Remote \u2014 most damaged infra HP %",
+        "description": "Lowest HP percentage across ALL our roads + containers in the remote (0-100). Thresholds match the repair policy: RemoteRoomProcess flips needsRepair when this drops below 75%; RemoteRepairProcess targets 90% on each structure. \"No data\" = remote not visible this tick (we don't have a creep there to enumerate structures).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 127
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.remotes.*.minInfraHpPct, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 0,
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 75
+                },
+                {
+                  "color": "green",
+                  "value": 90
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 18,
+        "type": "timeseries",
+        "title": "Remote \u2014 creep pool per role",
+        "description": "Live creep counts per role per remote. reserver should be 1 most of the time; miner = containers built; vision = 0 once reserver/miner provide visibility; repairer = 1 while needsRepair flag is set.",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 135
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.reserverCount, 3), '$', ' reserver')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.minerCount, 3), '$', ' miner')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.visionCount, 3), '$', ' vision')",
+            "refId": "C"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.repairerCount, 3), '$', ' repair')",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 19,
+        "type": "timeseries",
+        "title": "Remote \u2014 container energy queue (waiting for haulers)",
+        "description": "Sum of energy sitting in remote source containers per remote. Steady oscillation between 0 and ~1600 is normal (miner deposits, hauler drains). Sustained climb to ~2000 (cap) means the hauler pool is undersized for this remote's travelTicks.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 143
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.remotes.*.containerEnergyTotal, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 20,
+        "type": "timeseries",
+        "title": "Remote \u2014 build progress (containers + roads done / planned)",
+        "description": "Counts of sources whose container is built and whose roads are fully laid, per remote. Both should reach `sourceCount` shortly after enableRemote; until they do RemoteSourceProcess holds off spawning miners and HaulerScheduler excludes the container from the pool.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 143
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.sourceCount, 3), '$', ' planned')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.containersBuilt, 3), '$', ' containers')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.roadsBuilt, 3), '$', ' roads')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*planned$"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "fill": "dash",
+                      "dash": [
+                        10,
+                        10
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 0
+                  }
+                ]
+              }
+            ]
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 21,
+        "type": "timeseries",
+        "title": "Remote \u2014 needsRepair flag",
+        "description": "Binary 0/1 per remote \u2014 1 means RemoteRoomProcess saw a road/container below 75% HP. RemoteRepairProcess spawns a 200e repairer (1W/1C/1M) while the flag is set; flag drops when everything's back above 75%.",
+        "gridPos": {
+          "h": 6,
+          "w": 24,
+          "x": 0,
+          "y": 151
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.remotes.*.needsRepair, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "max": 1,
+            "custom": {
+              "drawStyle": "bars",
+              "lineWidth": 1,
+              "fillOpacity": 80,
+              "spanNulls": false,
+              "showPoints": "never"
+            },
+            "color": {
+              "mode": "fixed",
+              "fixedColor": "orange"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 207,
+        "type": "row",
+        "title": "Hostiles & Defense",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 157
+        },
+        "panels": []
+      },
+      {
+        "id": 27,
+        "type": "timeseries",
+        "title": "Hostile body parts per room",
+        "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per room. Rough threat assessment: small numbers = invader / scout; large = a player raid.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 158
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.attack, 3), '$', ' attack')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.ranged, 3), '$', ' ranged')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.heal, 3), '$', ' heal')",
+            "refId": "C"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.work, 3), '$', ' work')",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              },
+              "spanNulls": false,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 36,
+        "type": "timeseries",
+        "title": "Remote \u2014 hostile creep count",
+        "description": "Number of hostile creeps in each visible remote (visibility-gated \u2014 \"no data\" when the remote isn't observed). Counts include SK creeps (Keepers + invader cores) when applicable; for ordinary reserved remotes any non-zero is a real raid signal. Defenders only react to home-room hostiles, so this is the primary watch for remote attacks.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 166
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.remotes.*.hostiles, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": false,
+              "showPoints": "auto"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 1
+                },
+                {
+                  "color": "red",
+                  "value": 3
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 37,
+        "type": "timeseries",
+        "title": "Remote \u2014 hostile body parts (per remote)",
+        "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per visible remote. Stacked per remote so the bar height = total threat for that remote. Mirrors the home-room \"Hostile body parts per room\" panel \u2014 visibility-gated, omitted when the remote isn't observed.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 166
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.attack, 3), '$', ' attack')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.ranged, 3), '$', ' ranged')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.heal, 3), '$', ' heal')",
+            "refId": "C"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.remotes.*.hostileBodyParts.work, 3), '$', ' work')",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              },
+              "spanNulls": false,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 208,
+        "type": "row",
+        "title": "Scout & Routing",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 174
+        },
+        "panels": []
+      },
+      {
+        "id": 44,
+        "type": "timeseries",
+        "title": "Route version \u2014 counter & mutation rate",
+        "description": "Memory.colony.routeVersion is a monotonic counter bumped by ScoutProcess every time route-affecting intel changes (sealedExits flips, dangerousOwned toggle). Read by cached paths (GoState.routeVersion) and HaulerScheduler haulerSignature \u2014 mismatch invalidates the cache. Series A: current value (stair-step line). Series B: rate of change per minute, via nonNegativeDerivative + scaleToSeconds \u2014 spikes line up with scout discoveries; near-zero = intel stable.",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 175
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.sealed.routeVersion, 'routeVersion (current)')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(scaleToSeconds(nonNegativeDerivative(stats.gauges.sealed.routeVersion), 60), 'mutations / minute')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "auto"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "mutations / minute"
+              },
+              "properties": [
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "right"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "orange"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 38,
+        "type": "timeseries",
+        "title": "Scout \u2014 alive / pending / queue depth",
+        "description": "Scout creep population: alive count + pending spawn requests, plus the BFS queue of rooms still to visit. Healthy: alive \u2265 1 when queueDepth > 0; pending settles to 0 once the scout body lands. Sustained queueDepth >> 0 with alive=0 \u2192 spawn-side problem.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 183
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.scout.scoutAlive, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.scoutPending, 3)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.queueDepth, 3)",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 39,
+        "type": "timeseries",
+        "title": "Scout \u2014 intel count, stale, oldest age",
+        "description": "intelCount: total rooms ever scouted. intelStaleCount: rooms past ScoutProcess.RESCAN (20000 ticks \u2248 20h on shard3) \u2014 should be small in steady state, growth means scout falls behind refill cadence. oldestIntelAge: worst-case staleness across the whole map. Reaching RoutePolicy.STALE_INTEL_TICKS (100k \u2248 100h) triggers soft-block downgrade in routeCost. unreachableCount: rooms scout tried + failed (travelTo ERR_NO_PATH) within the last UNREACHABLE_BACKOFF=50000 ticks. Skipped from enqueue until the window expires.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 191
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.scout.intelCount, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.intelStaleCount, 3)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.oldestIntelAge, 3)",
+            "refId": "C"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.scout.unreachableCount, 3)",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 40,
+        "type": "timeseries",
+        "title": "Sealed intel \u2014 rooms sealed / dangerous / sides fully blocked",
+        "description": "roomsSealed: scouted rooms with at least one sealed exit tile (terrain wall or hostile rampart blocking interior). roomsDangerous: rooms with dangerousOwned flag (hostile owner + \u22651 active tower). sidesFullyBlocked: count of room-sides where EVERY exit tile is sealed \u2014 these reject at the route layer (routeCost = Infinity). Per-tile partially-sealed sides only block at PathFinder layer (PathFinder finds an open segment).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 199
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.sealed.roomsSealed, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.roomsDangerous, 3)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.sidesFullyBlocked, 3)",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 41,
+        "type": "timeseries",
+        "title": "Sealed tiles \u2014 total + per side (N/S/W/E)",
+        "description": "totalSealedTiles: sum of \"1\" bits across all rooms \u00d7 all sides \u2014 total barricade density on the carved map. bySide.{N,S,W,E}: how many sides on each compass direction are fully blocked. Asymmetry hints at where the abandoned bases sit.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 207
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.sealed.totalSealedTiles, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.bySide.N, 4)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.bySide.S, 4)",
+            "refId": "C"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.bySide.W, 4)",
+            "refId": "D"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.sealed.bySide.E, 4)",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 42,
+        "type": "timeseries",
+        "title": "Route policy \u2014 decisions per tick (allowed / soft / blocked)",
+        "description": "Per-tick decisions from RoutePolicy.routeCost (the routeCallback fed to Game.map.findRoute). allowed: cost 1.0 baseline. softBlocked: cost SOFT_BLOCK_COST=20 (stale-sealed side \u2014 try if no alternative). blocked: POSITIVE_INFINITY (hostile-owned tower, SK, fresh-sealed side). Stacked to show the rejection share; rate-of-change (irate over 5m) shows how active routing is right now.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 215
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.allowed, 4), '$', ' allowed')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.softBlocked, 4), '$', ' soft-blocked')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.blocked, 4), '$', ' blocked')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 1,
+              "fillOpacity": 40,
+              "spanNulls": true,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 43,
+        "type": "timeseries",
+        "title": "Route overlay \u2014 applySealedExits calls & tiles marked",
+        "description": "Per-tick from RoutePolicy.applySealedExits: overlay.calls = how many PathFinder roomCallbacks marked \u22651 sealed tile, tilesApplied = sum of those marks. Ratio tiles/calls is the average per-room sealed density when PathFinder is forced to consider a sealed corridor. Zero means no PathFinder.search ran through a known-sealed room this tick.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 223
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.route.overlay.calls, 4)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.route.overlay.tilesApplied, 4)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 209,
+        "type": "row",
+        "title": "Logistics broker",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 231
+        },
+        "panels": []
+      },
+      {
+        "id": 47,
+        "type": "timeseries",
+        "title": "Logistics broker \u2014 task table",
+        "description": "Memory.logistics.tasks size. `tasks` = all entries (including pending-cleanup completed); `activeTasks` = in-flight (completedAt is null). In Phase 1 (link-only) tasks are usually instant \u2014 number sits at 0-3 at any moment. Phase 2-3 will see hauler tasks live for ~50 ticks; Phase 4 terminal tasks ~10 ticks. Growing without draining = matcher bug or dispatcher stuck.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 232
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.logistics.tasks, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.logistics.activeTasks, 3)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 48,
+        "type": "timeseries",
+        "title": "Logistics broker \u2014 active by transport",
+        "description": "Active task count broken down by transport mechanism. link/queen/hauler/terminal/creep. Phase 1: only `link` populated. Each new phase adds another series.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 240
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.logistics.byTransport.*, 4)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 40,
+              "spanNulls": true,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 49,
+        "type": "timeseries",
+        "title": "Logistics broker \u2014 matches / prunes / link transfers per tick",
+        "description": "Per-tick broker activity: matchedPerTick (tasks created), prunedPerTick (tasks removed in cleanup), linkTransfers (successful LinkDispatcher transferEnergy), queenTransfers + queenWithdraws (QueenDispatcher intents). Steady-state: matches \u2248 prunes (flow balance); transfers/withdraws together \u2248 matches (each task = 1 withdraw + 1 transfer over 2 ticks).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 248
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.logistics.matchedPerTick, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.logistics.prunedPerTick, 3)",
+            "refId": "B"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.logistics.linkTransfers, 3)",
+            "refId": "C"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.logistics.queenTransfers, 3)",
+            "refId": "D"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.logistics.queenWithdraws, 3)",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 50,
+        "type": "timeseries",
+        "title": "Logistics broker \u2014 CPU per tick",
+        "description": "Total CPU consumed by cleanup + match + appendTasks + LinkDispatcher (the broker phase in Main.loop). Phase 1 typical: 0.2-0.5 CPU on a 3-link colony. Will grow as more transports + room counts come online (Phase 2-5). Track to catch regressions early.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 256
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.logistics.cpu, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 15,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 210,
+        "type": "row",
+        "title": "Mineral mining",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 264
+        },
+        "panels": []
+      },
+      {
+        "id": 211,
+        "type": "timeseries",
+        "title": "Mineral \u2014 deposit & stockpile",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 265
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.amount, 3), '$', ' deposit')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.stored, 3), '$', ' stored')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 212,
+        "type": "timeseries",
+        "title": "Mineral \u2014 backlog / rate / miner",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 265
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.container, 3), '$', ' container')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.rate, 3), '$', ' rate/t')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.minerAlive, 3), '$', ' miner')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 213,
+        "type": "row",
+        "title": "Energy flow (event log)",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 273
+        },
+        "panels": []
+      },
+      {
+        "id": 214,
+        "type": "timeseries",
+        "title": "Energy ledger (event log, per tick)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 274
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.energyFlow.harvest, 'harvest (income)')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.energyFlow.upgrade, 'upgrade')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.energyFlow.build, 'build')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(stats.gauges.energyFlow.repair, 'repair')",
+            "refId": "D"
+          },
+          {
+            "target": "alias(stats.gauges.energyFlow.net, 'net (in - sinks)')",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "harvest (income)"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "green"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "net (in - sinks)"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "blue"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "upgrade"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "orange"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "build"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "yellow"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "repair"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "red"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 215,
+        "type": "timeseries",
+        "title": "Throughput & mineral (event log, per tick)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 274
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.energyFlow.transfer, 'transfer (energy moved)')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.energyFlow.harvestMineral, 'mineral harvested')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.energyFlow.events, 'events scanned')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "transfer (energy moved)"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "purple"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "mineral harvested"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "semi-dark-cyan"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "events scanned"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "text"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
       }
-     ]
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 38,
-    "type": "timeseries",
-    "title": "Scout — alive / pending / queue depth",
-    "description": "Scout creep population: alive count + pending spawn requests, plus the BFS queue of rooms still to visit. Healthy: alive ≥ 1 when queueDepth > 0; pending settles to 0 once the scout body lands. Sustained queueDepth >> 0 with alive=0 → spawn-side problem.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 183
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.scout.scoutAlive, 3)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.scout.scoutPending, 3)",
-      "refId": "B"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.scout.queueDepth, 3)",
-      "refId": "C"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 39,
-    "type": "timeseries",
-    "title": "Scout — intel count, stale, oldest age",
-    "description": "intelCount: total rooms ever scouted. intelStaleCount: rooms past ScoutProcess.RESCAN (20000 ticks ≈ 20h on shard3) — should be small in steady state, growth means scout falls behind refill cadence. oldestIntelAge: worst-case staleness across the whole map. Reaching RoutePolicy.STALE_INTEL_TICKS (100k ≈ 100h) triggers soft-block downgrade in routeCost. unreachableCount: rooms scout tried + failed (travelTo ERR_NO_PATH) within the last UNREACHABLE_BACKOFF=50000 ticks. Skipped from enqueue until the window expires.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 191
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.scout.intelCount, 3)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.scout.intelStaleCount, 3)",
-      "refId": "B"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.scout.oldestIntelAge, 3)",
-      "refId": "C"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.scout.unreachableCount, 3)",
-      "refId": "D"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 40,
-    "type": "timeseries",
-    "title": "Sealed intel — rooms sealed / dangerous / sides fully blocked",
-    "description": "roomsSealed: scouted rooms with at least one sealed exit tile (terrain wall or hostile rampart blocking interior). roomsDangerous: rooms with dangerousOwned flag (hostile owner + ≥1 active tower). sidesFullyBlocked: count of room-sides where EVERY exit tile is sealed — these reject at the route layer (routeCost = Infinity). Per-tile partially-sealed sides only block at PathFinder layer (PathFinder finds an open segment).",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 199
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.sealed.roomsSealed, 3)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.sealed.roomsDangerous, 3)",
-      "refId": "B"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.sealed.sidesFullyBlocked, 3)",
-      "refId": "C"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 41,
-    "type": "timeseries",
-    "title": "Sealed tiles — total + per side (N/S/W/E)",
-    "description": "totalSealedTiles: sum of \"1\" bits across all rooms × all sides — total barricade density on the carved map. bySide.{N,S,W,E}: how many sides on each compass direction are fully blocked. Asymmetry hints at where the abandoned bases sit.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 207
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.sealed.totalSealedTiles, 3)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.sealed.bySide.N, 4)",
-      "refId": "B"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.sealed.bySide.S, 4)",
-      "refId": "C"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.sealed.bySide.W, 4)",
-      "refId": "D"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.sealed.bySide.E, 4)",
-      "refId": "E"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 42,
-    "type": "timeseries",
-    "title": "Route policy — decisions per tick (allowed / soft / blocked)",
-    "description": "Per-tick decisions from RoutePolicy.routeCost (the routeCallback fed to Game.map.findRoute). allowed: cost 1.0 baseline. softBlocked: cost SOFT_BLOCK_COST=20 (stale-sealed side — try if no alternative). blocked: POSITIVE_INFINITY (hostile-owned tower, SK, fresh-sealed side). Stacked to show the rejection share; rate-of-change (irate over 5m) shows how active routing is right now.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 215
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.route.policy.allowed, 4), '$', ' allowed')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.route.policy.softBlocked, 4), '$', ' soft-blocked')",
-      "refId": "B"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.route.policy.blocked, 4), '$', ' blocked')",
-      "refId": "C"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 1,
-       "fillOpacity": 40,
-       "spanNulls": true,
-       "showPoints": "never",
-       "stacking": {
-        "mode": "normal",
-        "group": "A"
-       }
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 43,
-    "type": "timeseries",
-    "title": "Route overlay — applySealedExits calls & tiles marked",
-    "description": "Per-tick from RoutePolicy.applySealedExits: overlay.calls = how many PathFinder roomCallbacks marked ≥1 sealed tile, tilesApplied = sum of those marks. Ratio tiles/calls is the average per-room sealed density when PathFinder is forced to consider a sealed corridor. Zero means no PathFinder.search ran through a known-sealed room this tick.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 223
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.route.overlay.calls, 4)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.route.overlay.tilesApplied, 4)",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 209,
-    "type": "row",
-    "title": "Logistics broker",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 231
-    },
-    "panels": []
-   },
-   {
-    "id": 47,
-    "type": "timeseries",
-    "title": "Logistics broker — task table",
-    "description": "Memory.logistics.tasks size. `tasks` = all entries (including pending-cleanup completed); `activeTasks` = in-flight (completedAt is null). In Phase 1 (link-only) tasks are usually instant — number sits at 0-3 at any moment. Phase 2-3 will see hauler tasks live for ~50 ticks; Phase 4 terminal tasks ~10 ticks. Growing without draining = matcher bug or dispatcher stuck.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 232
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.logistics.tasks, 3)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.logistics.activeTasks, 3)",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max",
-       "mean"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 48,
-    "type": "timeseries",
-    "title": "Logistics broker — active by transport",
-    "description": "Active task count broken down by transport mechanism. link/queen/hauler/terminal/creep. Phase 1: only `link` populated. Each new phase adds another series.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 240
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.logistics.byTransport.*, 4)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 40,
-       "spanNulls": true,
-       "showPoints": "never",
-       "stacking": {
-        "mode": "normal",
-        "group": "A"
-       }
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max",
-       "mean"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 49,
-    "type": "timeseries",
-    "title": "Logistics broker — matches / prunes / link transfers per tick",
-    "description": "Per-tick broker activity: matchedPerTick (tasks created), prunedPerTick (tasks removed in cleanup), linkTransfers (successful LinkDispatcher transferEnergy), queenTransfers + queenWithdraws (QueenDispatcher intents). Steady-state: matches ≈ prunes (flow balance); transfers/withdraws together ≈ matches (each task = 1 withdraw + 1 transfer over 2 ticks).",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 248
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.logistics.matchedPerTick, 3)",
-      "refId": "A"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.logistics.prunedPerTick, 3)",
-      "refId": "B"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.logistics.linkTransfers, 3)",
-      "refId": "C"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.logistics.queenTransfers, 3)",
-      "refId": "D"
-     },
-     {
-      "target": "aliasByNode(stats.gauges.logistics.queenWithdraws, 3)",
-      "refId": "E"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max",
-       "mean"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 50,
-    "type": "timeseries",
-    "title": "Logistics broker — CPU per tick",
-    "description": "Total CPU consumed by cleanup + match + appendTasks + LinkDispatcher (the broker phase in Main.loop). Phase 1 typical: 0.2-0.5 CPU on a 3-link colony. Will grow as more transports + room counts come online (Phase 2-5). Track to catch regressions early.",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 256
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasByNode(stats.gauges.logistics.cpu, 3)",
-      "refId": "A"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 2,
-      "min": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 15,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "table",
-      "placement": "right",
-      "calcs": [
-       "lastNotNull",
-       "max",
-       "mean"
-      ]
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "desc"
-     }
-    }
-   },
-   {
-    "id": 210,
-    "type": "row",
-    "title": "Mineral mining",
-    "collapsed": false,
-    "gridPos": {
-     "h": 1,
-     "w": 24,
-     "x": 0,
-     "y": 264
-    },
-    "panels": []
-   },
-   {
-    "id": 211,
-    "type": "timeseries",
-    "title": "Mineral — deposit & stockpile",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 0,
-     "y": 265
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.amount, 3), '$', ' deposit')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.stored, 3), '$', ' stored')",
-      "refId": "B"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   },
-   {
-    "id": 212,
-    "type": "timeseries",
-    "title": "Mineral — backlog / rate / miner",
-    "gridPos": {
-     "h": 8,
-     "w": 12,
-     "x": 12,
-     "y": 265
-    },
-    "datasource": "localGraphite",
-    "targets": [
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.container, 3), '$', ' container')",
-      "refId": "A"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.rate, 3), '$', ' rate/t')",
-      "refId": "B"
-     },
-     {
-      "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.minerAlive, 3), '$', ' miner')",
-      "refId": "C"
-     }
-    ],
-    "fieldConfig": {
-     "defaults": {
-      "unit": "none",
-      "decimals": 0,
-      "custom": {
-       "drawStyle": "line",
-       "lineWidth": 2,
-       "fillOpacity": 20,
-       "spanNulls": true,
-       "showPoints": "never"
-      }
-     },
-     "overrides": []
-    },
-    "options": {
-     "legend": {
-      "showLegend": true,
-      "displayMode": "list",
-      "placement": "bottom"
-     },
-     "tooltip": {
-      "mode": "multi",
-      "sort": "none"
-     }
-    }
-   }
-  ]
- },
- "overwrite": true,
- "folderUid": ""
+    ]
+  },
+  "overwrite": true,
+  "folderUid": ""
 }
