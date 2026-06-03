@@ -3557,6 +3557,117 @@
             "sort": "none"
           }
         }
+      },
+      {
+        "id": 216,
+        "type": "row",
+        "title": "Pathfind attribution",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 282
+        },
+        "panels": []
+      },
+      {
+        "id": 217,
+        "type": "timeseries",
+        "title": "Pathfind ops/tick by role (+ worst single search)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 283
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.pathfind.byRole.*.ops, 4)",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.pathfind.maxOps, 'max single search')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 218,
+        "type": "timeseries",
+        "title": "Pathfind exhausted/incomplete by role (budget-hit fails)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 283
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.pathfind.byRole.*.exhausted, 4)",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.pathfind.exhausted, 'total exhausted')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.pathfind.incomplete, 'total incomplete')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
       }
     ]
   },
