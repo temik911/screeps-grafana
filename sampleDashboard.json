@@ -3668,6 +3668,133 @@
             "sort": "none"
           }
         }
+      },
+      {
+        "id": 219,
+        "type": "row",
+        "title": "Lossless counters (perSecond of running totals \u2014 Idea 1)",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 291
+        },
+        "panels": []
+      },
+      {
+        "id": 220,
+        "type": "timeseries",
+        "title": "Pathfind rate (lossless, /s)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 292
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.opsTotal), 'ops/s')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.incomplete), 'incomplete/s')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.exhausted), 'exhausted/s')",
+            "refId": "C"
+          },
+          {
+            "target": "aliasByNode(perSecond(stats.gauges.totals.pathfind.byRole.*.ops), 5)",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 1,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 221,
+        "type": "timeseries",
+        "title": "Energy ledger rate (lossless, /s)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 292
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.harvest), 'harvest/s')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.upgrade), 'upgrade/s')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.build), 'build/s')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.repair), 'repair/s')",
+            "refId": "D"
+          },
+          {
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.transfer), 'transfer/s')",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 1,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
       }
     ]
   },
