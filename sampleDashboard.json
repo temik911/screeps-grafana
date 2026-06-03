@@ -1648,7 +1648,7 @@
       {
         "id": 31,
         "type": "timeseries",
-        "title": "Pathfind \u2014 calls / cross-room / incomplete",
+        "title": "Pathfind \u2014 calls / cross-room / incomplete (/s, lossless)",
         "description": "PathFinder.search invocations per tick from creep.travelTo. `calls` = total; `crossRoom` = subset that crossed room borders (after Tier 1 multi-room serialization a multi-room trip should produce ~1 call instead of one per border); `incomplete` = calls that hit maxOps without reaching the goal (high values mean we need a higher maxOps or the route is genuinely blocked).",
         "gridPos": {
           "h": 8,
@@ -1659,15 +1659,15 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.pathfind.calls, 'calls')",
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.calls), 'calls/s')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.pathfind.crossRoom, 'crossRoom')",
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.crossRoom), 'crossRoom/s')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.pathfind.incomplete, 'incomplete')",
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.incomplete), 'incomplete/s')",
             "refId": "C"
           }
         ],
@@ -1717,7 +1717,7 @@
       {
         "id": 32,
         "type": "timeseries",
-        "title": "Pathfind \u2014 ops per tick (\u2248 CPU \u00d7 1000)",
+        "title": "Pathfind \u2014 ops/s (\u2248 CPU, lossless)",
         "description": "Sum of `PathFinder.Path.ops` across all searches this tick. Per the API one op is ~0.001 CPU, so opsTotal/1000 \u2248 CPU spent in pathfinding alone. A healthy mid-game colony sits well under 5000 ops/tick. Spikes line up with replans (e.g. construction sites added invalidates cached paths via stuck \u2192 repath).",
         "gridPos": {
           "h": 8,
@@ -1728,7 +1728,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.pathfind.opsTotal, 'opsTotal')",
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.opsTotal), 'ops/s')",
             "refId": "A"
           }
         ],
@@ -2854,7 +2854,7 @@
       {
         "id": 42,
         "type": "timeseries",
-        "title": "Route policy \u2014 decisions per tick (allowed / soft / blocked)",
+        "title": "Route policy \u2014 decisions/s (allowed / soft / blocked, lossless)",
         "description": "Per-tick decisions from RoutePolicy.routeCost (the routeCallback fed to Game.map.findRoute). allowed: cost 1.0 baseline. softBlocked: cost SOFT_BLOCK_COST=20 (stale-sealed side \u2014 try if no alternative). blocked: POSITIVE_INFINITY (hostile-owned tower, SK, fresh-sealed side). Stacked to show the rejection share; rate-of-change (irate over 5m) shows how active routing is right now.",
         "gridPos": {
           "h": 8,
@@ -2865,15 +2865,15 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.allowed, 4), '$', ' allowed')",
+            "target": "alias(perSecond(stats.gauges.totals.policy.allowed), 'allowed/s')",
             "refId": "A"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.softBlocked, 4), '$', ' soft-blocked')",
+            "target": "alias(perSecond(stats.gauges.totals.policy.softBlocked), 'softBlocked/s')",
             "refId": "B"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.route.policy.blocked, 4), '$', ' blocked')",
+            "target": "alias(perSecond(stats.gauges.totals.policy.blocked), 'blocked/s')",
             "refId": "C"
           }
         ],
@@ -2915,7 +2915,7 @@
       {
         "id": 43,
         "type": "timeseries",
-        "title": "Route overlay \u2014 applySealedExits calls & tiles marked",
+        "title": "Route overlay \u2014 applySealedExits calls & tiles/s (lossless)",
         "description": "Per-tick from RoutePolicy.applySealedExits: overlay.calls = how many PathFinder roomCallbacks marked \u22651 sealed tile, tilesApplied = sum of those marks. Ratio tiles/calls is the average per-room sealed density when PathFinder is forced to consider a sealed corridor. Zero means no PathFinder.search ran through a known-sealed room this tick.",
         "gridPos": {
           "h": 8,
@@ -2926,11 +2926,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.route.overlay.calls, 4)",
+            "target": "alias(perSecond(stats.gauges.totals.overlay.calls), 'overlay calls/s')",
             "refId": "A"
           },
           {
-            "target": "aliasByNode(stats.gauges.route.overlay.tilesApplied, 4)",
+            "target": "alias(perSecond(stats.gauges.totals.overlay.tilesApplied), 'tiles/s')",
             "refId": "B"
           }
         ],
@@ -3329,7 +3329,7 @@
       {
         "id": 214,
         "type": "timeseries",
-        "title": "Energy ledger (event log, 1-min avg/tick)",
+        "title": "Energy ledger (lossless, /s)",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3339,23 +3339,23 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.harvest, '1min', 'avg'), 'harvest (income)')",
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.harvest), 'harvest (income)')",
             "refId": "A"
           },
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.upgrade, '1min', 'avg'), 'upgrade')",
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.upgrade), 'upgrade')",
             "refId": "B"
           },
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.build, '1min', 'avg'), 'build')",
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.build), 'build')",
             "refId": "C"
           },
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.repair, '1min', 'avg'), 'repair')",
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.repair), 'repair')",
             "refId": "D"
           },
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.net, '1min', 'avg'), 'net (in - sinks)')",
+            "target": "alias(diffSeries(perSecond(stats.gauges.totals.energyFlow.harvest), perSecond(stats.gauges.totals.energyFlow.upgrade), perSecond(stats.gauges.totals.energyFlow.build), perSecond(stats.gauges.totals.energyFlow.repair)), 'net (in - sinks)')",
             "refId": "E"
           }
         ],
@@ -3464,7 +3464,7 @@
       {
         "id": 215,
         "type": "timeseries",
-        "title": "Throughput & mineral (event log, per tick)",
+        "title": "Throughput & mineral (lossless, /s)",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3474,15 +3474,15 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.energyFlow.transfer, 'transfer (energy moved)')",
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.transfer), 'transfer (energy moved)')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.energyFlow.harvestMineral, 'mineral harvested')",
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.harvestMineral), 'mineral harvested')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.energyFlow.events, 'events scanned')",
+            "target": "alias(perSecond(stats.gauges.totals.energyFlow.events), 'events scanned')",
             "refId": "C"
           }
         ],
@@ -3574,7 +3574,7 @@
       {
         "id": 217,
         "type": "timeseries",
-        "title": "Pathfind ops/tick by role (+ worst single search)",
+        "title": "Pathfind ops/s by role (+ worst single search)",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3584,7 +3584,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.pathfind.byRole.*.ops, 4)",
+            "target": "aliasByNode(perSecond(stats.gauges.totals.pathfind.byRole.*.ops), 5)",
             "refId": "A"
           },
           {
@@ -3621,7 +3621,7 @@
       {
         "id": 218,
         "type": "timeseries",
-        "title": "Pathfind exhausted/incomplete by role (budget-hit fails)",
+        "title": "Pathfind exhausted/incomplete by role (/s, lossless)",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3631,15 +3631,15 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.pathfind.byRole.*.exhausted, 4)",
+            "target": "aliasByNode(perSecond(stats.gauges.totals.pathfind.byRole.*.exhausted), 5)",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.pathfind.exhausted, 'total exhausted')",
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.exhausted), 'total exhausted')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.pathfind.incomplete, 'total incomplete')",
+            "target": "alias(perSecond(stats.gauges.totals.pathfind.incomplete), 'total incomplete')",
             "refId": "C"
           }
         ],
@@ -3647,133 +3647,6 @@
           "defaults": {
             "unit": "none",
             "decimals": 0,
-            "custom": {
-              "drawStyle": "line",
-              "lineWidth": 2,
-              "fillOpacity": 10,
-              "spanNulls": true,
-              "showPoints": "never"
-            }
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "showLegend": true,
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "multi",
-            "sort": "none"
-          }
-        }
-      },
-      {
-        "id": 219,
-        "type": "row",
-        "title": "Lossless counters (perSecond of running totals \u2014 Idea 1)",
-        "collapsed": false,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 291
-        },
-        "panels": []
-      },
-      {
-        "id": 220,
-        "type": "timeseries",
-        "title": "Pathfind rate (lossless, /s)",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 292
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "alias(perSecond(stats.gauges.totals.pathfind.opsTotal), 'ops/s')",
-            "refId": "A"
-          },
-          {
-            "target": "alias(perSecond(stats.gauges.totals.pathfind.incomplete), 'incomplete/s')",
-            "refId": "B"
-          },
-          {
-            "target": "alias(perSecond(stats.gauges.totals.pathfind.exhausted), 'exhausted/s')",
-            "refId": "C"
-          },
-          {
-            "target": "aliasByNode(perSecond(stats.gauges.totals.pathfind.byRole.*.ops), 5)",
-            "refId": "D"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none",
-            "decimals": 1,
-            "custom": {
-              "drawStyle": "line",
-              "lineWidth": 2,
-              "fillOpacity": 10,
-              "spanNulls": true,
-              "showPoints": "never"
-            }
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "showLegend": true,
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "multi",
-            "sort": "none"
-          }
-        }
-      },
-      {
-        "id": 221,
-        "type": "timeseries",
-        "title": "Energy ledger rate (lossless, /s)",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 12,
-          "y": 292
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "alias(perSecond(stats.gauges.totals.energyFlow.harvest), 'harvest/s')",
-            "refId": "A"
-          },
-          {
-            "target": "alias(perSecond(stats.gauges.totals.energyFlow.upgrade), 'upgrade/s')",
-            "refId": "B"
-          },
-          {
-            "target": "alias(perSecond(stats.gauges.totals.energyFlow.build), 'build/s')",
-            "refId": "C"
-          },
-          {
-            "target": "alias(perSecond(stats.gauges.totals.energyFlow.repair), 'repair/s')",
-            "refId": "D"
-          },
-          {
-            "target": "alias(perSecond(stats.gauges.totals.energyFlow.transfer), 'transfer/s')",
-            "refId": "E"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none",
-            "decimals": 1,
             "custom": {
               "drawStyle": "line",
               "lineWidth": 2,
