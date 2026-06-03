@@ -3329,7 +3329,7 @@
       {
         "id": 214,
         "type": "timeseries",
-        "title": "Energy ledger (event log, per tick)",
+        "title": "Energy ledger (event log, 1-min avg/tick)",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3339,23 +3339,23 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.energyFlow.harvest, 'harvest (income)')",
+            "target": "alias(summarize(stats.gauges.energyFlow.harvest, '1min', 'avg'), 'harvest (income)')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.energyFlow.upgrade, 'upgrade')",
+            "target": "alias(summarize(stats.gauges.energyFlow.upgrade, '1min', 'avg'), 'upgrade')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.energyFlow.build, 'build')",
+            "target": "alias(summarize(stats.gauges.energyFlow.build, '1min', 'avg'), 'build')",
             "refId": "C"
           },
           {
-            "target": "alias(stats.gauges.energyFlow.repair, 'repair')",
+            "target": "alias(summarize(stats.gauges.energyFlow.repair, '1min', 'avg'), 'repair')",
             "refId": "D"
           },
           {
-            "target": "alias(stats.gauges.energyFlow.net, 'net (in - sinks)')",
+            "target": "alias(summarize(stats.gauges.energyFlow.net, '1min', 'avg'), 'net (in - sinks)')",
             "refId": "E"
           }
         ],
