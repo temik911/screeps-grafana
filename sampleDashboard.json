@@ -3668,6 +3668,113 @@
             "sort": "none"
           }
         }
+      },
+      {
+        "id": 219,
+        "type": "row",
+        "title": "Pocket recovery (no-exit)",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 291
+        },
+        "panels": []
+      },
+      {
+        "id": 220,
+        "type": "timeseries",
+        "title": "Pathfind — no-exit by role (trapped in room / pocket)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 292
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.pathfind.byRole.*.noExit, 4)",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.pathfind.noExit, 'total no-exit')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 221,
+        "type": "timeseries",
+        "title": "Scout — pocket retreats / drops",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 292
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.scout.noExitRetreats, 'retreats')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.scout.noExitDrops, 'drops')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
       }
     ]
   },
