@@ -147,7 +147,7 @@
         "id": 103,
         "type": "stat",
         "title": "GCL",
-        "description": "Global Control Level \u2014 caps the number of rooms we can own.",
+        "description": "Global Control Level — caps the number of rooms we can own.",
         "gridPos": {
           "h": 4,
           "w": 3,
@@ -258,7 +258,7 @@
       {
         "id": 105,
         "type": "stat",
-        "title": "Storage \u0394/tick",
+        "title": "Storage Δ/tick",
         "description": "Sum of net energy flow into storage across owned rooms (sum of throughput). Negative = drawing down.",
         "gridPos": {
           "h": 4,
@@ -680,13 +680,13 @@
             "sort": "desc"
           }
         },
-        "description": "Per-process CPU breakdown (from kernel.cpuByName) + writeStatsSegment meta-overhead. Stacked. The writeStatsSegment series shows how much the stats-collection itself costs each tick \u2014 useful to detect when telemetry overhead grows out of proportion (e.g. after adding heavy new gauges)."
+        "description": "Per-process CPU breakdown (from kernel.cpuByName) + writeStatsSegment meta-overhead. Stacked. The writeStatsSegment series shows how much the stats-collection itself costs each tick — useful to detect when telemetry overhead grows out of proportion (e.g. after adding heavy new gauges)."
       },
       {
         "id": 23,
         "type": "stat",
         "title": "Market credits",
-        "description": "Game.market.credits \u2014 bottom line. Drops on order placement, rises on settled trades.",
+        "description": "Game.market.credits — bottom line. Drops on order placement, rises on settled trades.",
         "gridPos": {
           "h": 4,
           "w": 8,
@@ -744,7 +744,7 @@
       {
         "id": 8,
         "type": "timeseries",
-        "title": "Room \u2014 energy available / capacity",
+        "title": "Room — energy available / capacity",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -814,7 +814,7 @@
       {
         "id": 9,
         "type": "timeseries",
-        "title": "Room \u2014 storage energy",
+        "title": "Room — storage energy",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -857,7 +857,7 @@
       {
         "id": 10,
         "type": "timeseries",
-        "title": "Room \u2014 creeps vs hostiles",
+        "title": "Room — creeps vs hostiles",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -924,7 +924,7 @@
       {
         "id": 11,
         "type": "timeseries",
-        "title": "Room \u2014 spawn queue depth & build sites",
+        "title": "Room — spawn queue depth & build sites",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -972,7 +972,7 @@
         "id": 25,
         "type": "timeseries",
         "title": "Spawn busy %",
-        "description": "Per-room: percent of spawns currently spawning (snapshot). Grafana's avg over a window shows utilisation. Sustained 100% = spawn-bound \u2014 add a spawn or reduce churn. Sustained 0% = idle capacity.",
+        "description": "Per-room: percent of spawns currently spawning (snapshot). Grafana's avg over a window shows utilisation. Sustained 100% = spawn-bound — add a spawn or reduce churn. Sustained 0% = idle capacity.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1130,8 +1130,8 @@
       {
         "id": 45,
         "type": "timeseries",
-        "title": "Controller \u2014 progress % to next level",
-        "description": "Per-room controller progress as % of energy needed for next RCL. Computed in the bot (StatsProcess) for direct passthrough \u2014 RCL 8 rooms report 100% (no next level). Thresholds: green \u226480, yellow 80-95, orange >95 (almost leveled).",
+        "title": "Controller — progress % to next level",
+        "description": "Per-room controller progress as % of energy needed for next RCL. Computed in the bot (StatsProcess) for direct passthrough — RCL 8 rooms report 100% (no next level). Thresholds: green ≤80, yellow 80-95, orange >95 (almost leveled).",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1197,8 +1197,8 @@
       {
         "id": 46,
         "type": "timeseries",
-        "title": "Controller \u2014 ETA to next level (hours)",
-        "description": "Estimated wall-clock hours until controller reaches next RCL. Bot computes (remaining points) / upgradeRate per tick using the ~36-min statsHistory window; Grafana wraps with movingAverage(6h) for the user-requested 3-6h smoothing. RCL 8 rooms have no gauge \u2192 series disappears.",
+        "title": "Controller — ETA to next level (hours)",
+        "description": "Estimated wall-clock hours until controller reaches next RCL. Bot computes (remaining points) / upgradeRate per tick using the ~36-min statsHistory window; Grafana wraps with movingAverage(6h) for the user-requested 3-6h smoothing. RCL 8 rooms have no gauge → series disappears.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1277,7 +1277,7 @@
       {
         "id": 12,
         "type": "timeseries",
-        "title": "Throughput \u2014 storage rate (e/tick)",
+        "title": "Throughput — storage rate (e/tick)",
         "description": "Net energy flow into storage, averaged over the statsHistory window (~600 ticks). Negative = drawing down.",
         "gridPos": {
           "h": 8,
@@ -1335,7 +1335,7 @@
       {
         "id": 13,
         "type": "timeseries",
-        "title": "Throughput \u2014 upgrade rate (pt/tick)",
+        "title": "Throughput — upgrade rate (pt/tick)",
         "description": "Controller progress per tick, averaged over statsHistory window. RCL-8 cap is 15 pt/t.",
         "gridPos": {
           "h": 8,
@@ -1380,8 +1380,8 @@
       {
         "id": 14,
         "type": "timeseries",
-        "title": "Throughput \u2014 build rate (pt/tick)",
-        "description": "Construction progress per tick. Drops negative when a site completes (its progress disappears from the sum) \u2014 real signal, not a bug.",
+        "title": "Throughput — build rate (pt/tick)",
+        "description": "Construction progress per tick. Drops negative when a site completes (its progress disappears from the sum) — real signal, not a bug.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1555,7 +1555,7 @@
         "id": 24,
         "type": "stat",
         "title": "TrafficManager intents (snapshot)",
-        "description": "Count of move intents registered in TrafficManager when StatsProcess writes the segment \u2014 i.e. how many creeps are *trying* to move this tick. Sanity check: spike near 0 means everyone is stationary (potential deadlock).",
+        "description": "Count of move intents registered in TrafficManager when StatsProcess writes the segment — i.e. how many creeps are *trying* to move this tick. Sanity check: spike near 0 means everyone is stationary (potential deadlock).",
         "gridPos": {
           "h": 4,
           "w": 8,
@@ -1601,7 +1601,7 @@
         "id": 30,
         "type": "timeseries",
         "title": "TrafficManager swaps + pushes",
-        "description": "Number of head-on swaps and push-chains the TrafficManager resolved on the last reconcile. High values = busy corridors with bidirectional or cross-priority traffic. Per-tick snapshot \u2014 use Grafana's sum over a window for cumulative.",
+        "description": "Number of head-on swaps and push-chains the TrafficManager resolved on the last reconcile. High values = busy corridors with bidirectional or cross-priority traffic. Per-tick snapshot — use Grafana's sum over a window for cumulative.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1648,7 +1648,7 @@
       {
         "id": 31,
         "type": "timeseries",
-        "title": "Pathfind \u2014 calls / cross-room / incomplete",
+        "title": "Pathfind — calls / cross-room / incomplete",
         "description": "PathFinder.search invocations per tick from creep.travelTo. `calls` = total; `crossRoom` = subset that crossed room borders (after Tier 1 multi-room serialization a multi-room trip should produce ~1 call instead of one per border); `incomplete` = calls that hit maxOps without reaching the goal (high values mean we need a higher maxOps or the route is genuinely blocked).",
         "gridPos": {
           "h": 8,
@@ -1717,8 +1717,8 @@
       {
         "id": 32,
         "type": "timeseries",
-        "title": "Pathfind \u2014 ops per tick (\u2248 CPU \u00d7 1000)",
-        "description": "Sum of `PathFinder.Path.ops` across all searches this tick. Per the API one op is ~0.001 CPU, so opsTotal/1000 \u2248 CPU spent in pathfinding alone. A healthy mid-game colony sits well under 5000 ops/tick. Spikes line up with replans (e.g. construction sites added invalidates cached paths via stuck \u2192 repath).",
+        "title": "Pathfind — ops per tick (≈ CPU × 1000)",
+        "description": "Sum of `PathFinder.Path.ops` across all searches this tick. Per the API one op is ~0.001 CPU, so opsTotal/1000 ≈ CPU spent in pathfinding alone. A healthy mid-game colony sits well under 5000 ops/tick. Spikes line up with replans (e.g. construction sites added invalidates cached paths via stuck → repath).",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1774,7 +1774,7 @@
       {
         "id": 33,
         "type": "timeseries",
-        "title": "Haulers \u2014 target / alive / pending (per room)",
+        "title": "Haulers — target / alive / pending (per room)",
         "description": "HaulerScheduler.optimalHaulerCount (target) vs current alive logistics creeps vs pending spawn queue requests. Big and persistent target>alive gap = pool is under-spawning (check pending: should pile up if energyAvailable is the blocker). target=alive+pending and stable = steady-state. Lines named '<room>.<metric>'.",
         "gridPos": {
           "h": 8,
@@ -1830,7 +1830,7 @@
       {
         "id": 34,
         "type": "timeseries",
-        "title": "Haulers \u2014 distribution (atStorage / loaded / empty)",
+        "title": "Haulers — distribution (atStorage / loaded / empty)",
         "description": "Where the live haulers are RIGHT NOW. atStorage = within 3 tiles of storage (parked / dispatching / dropping off). loaded = carrying any energy (delivering). empty = zero carry (in flight toward pickup OR parked at storage). loaded+empty = alive. atStorage stays high while containers visibly hold energy = wait-for-fill is over-conservative or pool is over-sized; investigate via haulerDiag().",
         "gridPos": {
           "h": 8,
@@ -1886,7 +1886,7 @@
       {
         "id": 35,
         "type": "timeseries",
-        "title": "HaulerScheduler \u2014 cache age (per room) + recomputes/tick",
+        "title": "HaulerScheduler — cache age (per room) + recomputes/tick",
         "description": "Per-room cacheAge = ticks since last full HaulerScheduler.ensureCache rebuild. Should hover near 0 during active construction (C4 + B2 invalidate the cache on home/remote structure changes), and climb toward the 250-tick TTL backstop during steady-state late-game. recomputes = number of rooms that triggered a full rebuild this tick (separate single series); sparse spikes are healthy, a flat ridge means something is invalidating every tick.",
         "gridPos": {
           "h": 8,
@@ -1972,7 +1972,7 @@
       {
         "id": 16,
         "type": "timeseries",
-        "title": "Remote \u2014 reservation countdown",
+        "title": "Remote — reservation countdown",
         "description": "controller.reservation.ticksToEnd per remote. Below 1500 ReserverProcess spawns a replacement; below 0 means we lost the reservation (source caps drop to 1500e and decay rate doubles for containers).",
         "gridPos": {
           "h": 8,
@@ -2035,7 +2035,7 @@
       {
         "id": 17,
         "type": "timeseries",
-        "title": "Remote \u2014 most damaged infra HP %",
+        "title": "Remote — most damaged infra HP %",
         "description": "Lowest HP percentage across ALL our roads + containers in the remote (0-100). Thresholds match the repair policy: RemoteRoomProcess flips needsRepair when this drops below 75%; RemoteRepairProcess targets 90% on each structure. \"No data\" = remote not visible this tick (we don't have a creep there to enumerate structures).",
         "gridPos": {
           "h": 8,
@@ -2098,7 +2098,7 @@
       {
         "id": 18,
         "type": "timeseries",
-        "title": "Remote \u2014 creep pool per role",
+        "title": "Remote — creep pool per role",
         "description": "Live creep counts per role per remote. reserver should be 1 most of the time; miner = containers built; vision = 0 once reserver/miner provide visibility; repairer = 1 while needsRepair flag is set.",
         "gridPos": {
           "h": 8,
@@ -2158,7 +2158,7 @@
       {
         "id": 19,
         "type": "timeseries",
-        "title": "Remote \u2014 container energy queue (waiting for haulers)",
+        "title": "Remote — container energy queue (waiting for haulers)",
         "description": "Sum of energy sitting in remote source containers per remote. Steady oscillation between 0 and ~1600 is normal (miner deposits, hauler drains). Sustained climb to ~2000 (cap) means the hauler pool is undersized for this remote's travelTicks.",
         "gridPos": {
           "h": 8,
@@ -2203,7 +2203,7 @@
       {
         "id": 20,
         "type": "timeseries",
-        "title": "Remote \u2014 build progress (containers + roads done / planned)",
+        "title": "Remote — build progress (containers + roads done / planned)",
         "description": "Counts of sources whose container is built and whose roads are fully laid, per remote. Both should reach `sourceCount` shortly after enableRemote; until they do RemoteSourceProcess holds off spawning miners and HaulerScheduler excludes the container from the pool.",
         "gridPos": {
           "h": 8,
@@ -2280,8 +2280,8 @@
       {
         "id": 21,
         "type": "timeseries",
-        "title": "Remote \u2014 needsRepair flag",
-        "description": "Binary 0/1 per remote \u2014 1 means RemoteRoomProcess saw a road/container below 75% HP. RemoteRepairProcess spawns a 200e repairer (1W/1C/1M) while the flag is set; flag drops when everything's back above 75%.",
+        "title": "Remote — needsRepair flag",
+        "description": "Binary 0/1 per remote — 1 means RemoteRoomProcess saw a road/container below 75% HP. RemoteRepairProcess spawns a 200e repairer (1W/1C/1M) while the flag is set; flag drops when everything's back above 75%.",
         "gridPos": {
           "h": 6,
           "w": 24,
@@ -2403,8 +2403,8 @@
       {
         "id": 36,
         "type": "timeseries",
-        "title": "Remote \u2014 hostile creep count",
-        "description": "Number of hostile creeps in each visible remote (visibility-gated \u2014 \"no data\" when the remote isn't observed). Counts include SK creeps (Keepers + invader cores) when applicable; for ordinary reserved remotes any non-zero is a real raid signal. Defenders only react to home-room hostiles, so this is the primary watch for remote attacks.",
+        "title": "Remote — hostile creep count",
+        "description": "Number of hostile creeps in each visible remote (visibility-gated — \"no data\" when the remote isn't observed). Counts include SK creeps (Keepers + invader cores) when applicable; for ordinary reserved remotes any non-zero is a real raid signal. Defenders only react to home-room hostiles, so this is the primary watch for remote attacks.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2468,8 +2468,8 @@
       {
         "id": 37,
         "type": "timeseries",
-        "title": "Remote \u2014 hostile body parts (per remote)",
-        "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per visible remote. Stacked per remote so the bar height = total threat for that remote. Mirrors the home-room \"Hostile body parts per room\" panel \u2014 visibility-gated, omitted when the remote isn't observed.",
+        "title": "Remote — hostile body parts (per remote)",
+        "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per visible remote. Stacked per remote so the bar height = total threat for that remote. Mirrors the home-room \"Hostile body parts per room\" panel — visibility-gated, omitted when the remote isn't observed.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2541,8 +2541,8 @@
       {
         "id": 44,
         "type": "timeseries",
-        "title": "Route version \u2014 counter & mutation rate",
-        "description": "Memory.colony.routeVersion is a monotonic counter bumped by ScoutProcess every time route-affecting intel changes (sealedExits flips, dangerousOwned toggle). Read by cached paths (GoState.routeVersion) and HaulerScheduler haulerSignature \u2014 mismatch invalidates the cache. Series A: current value (stair-step line). Series B: rate of change per minute, via nonNegativeDerivative + scaleToSeconds \u2014 spikes line up with scout discoveries; near-zero = intel stable.",
+        "title": "Route version — counter & mutation rate",
+        "description": "Memory.colony.routeVersion is a monotonic counter bumped by ScoutProcess every time route-affecting intel changes (sealedExits flips, dangerousOwned toggle). Read by cached paths (GoState.routeVersion) and HaulerScheduler haulerSignature — mismatch invalidates the cache. Series A: current value (stair-step line). Series B: rate of change per minute, via nonNegativeDerivative + scaleToSeconds — spikes line up with scout discoveries; near-zero = intel stable.",
         "gridPos": {
           "h": 8,
           "w": 24,
@@ -2614,8 +2614,8 @@
       {
         "id": 38,
         "type": "timeseries",
-        "title": "Scout \u2014 alive / pending / queue depth",
-        "description": "Scout creep population: alive count + pending spawn requests, plus the BFS queue of rooms still to visit. Healthy: alive \u2265 1 when queueDepth > 0; pending settles to 0 once the scout body lands. Sustained queueDepth >> 0 with alive=0 \u2192 spawn-side problem.",
+        "title": "Scout — alive / pending / queue depth",
+        "description": "Scout creep population: alive count + pending spawn requests, plus the BFS queue of rooms still to visit. Healthy: alive ≥ 1 when queueDepth > 0; pending settles to 0 once the scout body lands. Sustained queueDepth >> 0 with alive=0 → spawn-side problem.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2671,8 +2671,8 @@
       {
         "id": 39,
         "type": "timeseries",
-        "title": "Scout \u2014 intel count, stale, oldest age",
-        "description": "intelCount: total rooms ever scouted. intelStaleCount: rooms past ScoutProcess.RESCAN (20000 ticks \u2248 20h on shard3) \u2014 should be small in steady state, growth means scout falls behind refill cadence. oldestIntelAge: worst-case staleness across the whole map. Reaching RoutePolicy.STALE_INTEL_TICKS (100k \u2248 100h) triggers soft-block downgrade in routeCost. unreachableCount: rooms scout tried + failed (travelTo ERR_NO_PATH) within the last UNREACHABLE_BACKOFF=50000 ticks. Skipped from enqueue until the window expires.",
+        "title": "Scout — intel count, stale, oldest age",
+        "description": "intelCount: total rooms ever scouted. intelStaleCount: rooms past ScoutProcess.RESCAN (20000 ticks ≈ 20h on shard3) — should be small in steady state, growth means scout falls behind refill cadence. oldestIntelAge: worst-case staleness across the whole map. Reaching RoutePolicy.STALE_INTEL_TICKS (100k ≈ 100h) triggers soft-block downgrade in routeCost. unreachableCount: rooms scout tried + failed (travelTo ERR_NO_PATH) within the last UNREACHABLE_BACKOFF=50000 ticks. Skipped from enqueue until the window expires.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2732,8 +2732,8 @@
       {
         "id": 40,
         "type": "timeseries",
-        "title": "Sealed intel \u2014 rooms sealed / dangerous / sides fully blocked",
-        "description": "roomsSealed: scouted rooms with at least one sealed exit tile (terrain wall or hostile rampart blocking interior). roomsDangerous: rooms with dangerousOwned flag (hostile owner + \u22651 active tower). sidesFullyBlocked: count of room-sides where EVERY exit tile is sealed \u2014 these reject at the route layer (routeCost = Infinity). Per-tile partially-sealed sides only block at PathFinder layer (PathFinder finds an open segment).",
+        "title": "Sealed intel — rooms sealed / dangerous / sides fully blocked",
+        "description": "roomsSealed: scouted rooms with at least one sealed exit tile (terrain wall or hostile rampart blocking interior). roomsDangerous: rooms with dangerousOwned flag (hostile owner + ≥1 active tower). sidesFullyBlocked: count of room-sides where EVERY exit tile is sealed — these reject at the route layer (routeCost = Infinity). Per-tile partially-sealed sides only block at PathFinder layer (PathFinder finds an open segment).",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2789,8 +2789,8 @@
       {
         "id": 41,
         "type": "timeseries",
-        "title": "Sealed tiles \u2014 total + per side (N/S/W/E)",
-        "description": "totalSealedTiles: sum of \"1\" bits across all rooms \u00d7 all sides \u2014 total barricade density on the carved map. bySide.{N,S,W,E}: how many sides on each compass direction are fully blocked. Asymmetry hints at where the abandoned bases sit.",
+        "title": "Sealed tiles — total + per side (N/S/W/E)",
+        "description": "totalSealedTiles: sum of \"1\" bits across all rooms × all sides — total barricade density on the carved map. bySide.{N,S,W,E}: how many sides on each compass direction are fully blocked. Asymmetry hints at where the abandoned bases sit.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2854,8 +2854,8 @@
       {
         "id": 42,
         "type": "timeseries",
-        "title": "Route policy \u2014 decisions per tick (allowed / soft / blocked)",
-        "description": "Per-tick decisions from RoutePolicy.routeCost (the routeCallback fed to Game.map.findRoute). allowed: cost 1.0 baseline. softBlocked: cost SOFT_BLOCK_COST=20 (stale-sealed side \u2014 try if no alternative). blocked: POSITIVE_INFINITY (hostile-owned tower, SK, fresh-sealed side). Stacked to show the rejection share; rate-of-change (irate over 5m) shows how active routing is right now.",
+        "title": "Route policy — decisions per tick (allowed / soft / blocked)",
+        "description": "Per-tick decisions from RoutePolicy.routeCost (the routeCallback fed to Game.map.findRoute). allowed: cost 1.0 baseline. softBlocked: cost SOFT_BLOCK_COST=20 (stale-sealed side — try if no alternative). blocked: POSITIVE_INFINITY (hostile-owned tower, SK, fresh-sealed side). Stacked to show the rejection share; rate-of-change (irate over 5m) shows how active routing is right now.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2915,8 +2915,8 @@
       {
         "id": 43,
         "type": "timeseries",
-        "title": "Route overlay \u2014 applySealedExits calls & tiles marked",
-        "description": "Per-tick from RoutePolicy.applySealedExits: overlay.calls = how many PathFinder roomCallbacks marked \u22651 sealed tile, tilesApplied = sum of those marks. Ratio tiles/calls is the average per-room sealed density when PathFinder is forced to consider a sealed corridor. Zero means no PathFinder.search ran through a known-sealed room this tick.",
+        "title": "Route overlay — applySealedExits calls & tiles marked",
+        "description": "Per-tick from RoutePolicy.applySealedExits: overlay.calls = how many PathFinder roomCallbacks marked ≥1 sealed tile, tilesApplied = sum of those marks. Ratio tiles/calls is the average per-room sealed density when PathFinder is forced to consider a sealed corridor. Zero means no PathFinder.search ran through a known-sealed room this tick.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -2981,8 +2981,8 @@
       {
         "id": 47,
         "type": "timeseries",
-        "title": "Logistics broker \u2014 task table",
-        "description": "Memory.logistics.tasks size. `tasks` = all entries (including pending-cleanup completed); `activeTasks` = in-flight (completedAt is null). In Phase 1 (link-only) tasks are usually instant \u2014 number sits at 0-3 at any moment. Phase 2-3 will see hauler tasks live for ~50 ticks; Phase 4 terminal tasks ~10 ticks. Growing without draining = matcher bug or dispatcher stuck.",
+        "title": "Logistics broker — task table",
+        "description": "Memory.logistics.tasks size. `tasks` = all entries (including pending-cleanup completed); `activeTasks` = in-flight (completedAt is null). In Phase 1 (link-only) tasks are usually instant — number sits at 0-3 at any moment. Phase 2-3 will see hauler tasks live for ~50 ticks; Phase 4 terminal tasks ~10 ticks. Growing without draining = matcher bug or dispatcher stuck.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3035,7 +3035,7 @@
       {
         "id": 48,
         "type": "timeseries",
-        "title": "Logistics broker \u2014 active by transport",
+        "title": "Logistics broker — active by transport",
         "description": "Active task count broken down by transport mechanism. link/queen/hauler/terminal/creep. Phase 1: only `link` populated. Each new phase adds another series.",
         "gridPos": {
           "h": 8,
@@ -3089,8 +3089,8 @@
       {
         "id": 49,
         "type": "timeseries",
-        "title": "Logistics broker \u2014 matches / prunes / link transfers per tick",
-        "description": "Per-tick broker activity: matchedPerTick (tasks created), prunedPerTick (tasks removed in cleanup), linkTransfers (successful LinkDispatcher transferEnergy), queenTransfers + queenWithdraws (QueenDispatcher intents). Steady-state: matches \u2248 prunes (flow balance); transfers/withdraws together \u2248 matches (each task = 1 withdraw + 1 transfer over 2 ticks).",
+        "title": "Logistics broker — matches / prunes / link transfers per tick",
+        "description": "Per-tick broker activity: matchedPerTick (tasks created), prunedPerTick (tasks removed in cleanup), linkTransfers (successful LinkDispatcher transferEnergy), queenTransfers + queenWithdraws (QueenDispatcher intents). Steady-state: matches ≈ prunes (flow balance); transfers/withdraws together ≈ matches (each task = 1 withdraw + 1 transfer over 2 ticks).",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3155,7 +3155,7 @@
       {
         "id": 50,
         "type": "timeseries",
-        "title": "Logistics broker \u2014 CPU per tick",
+        "title": "Logistics broker — CPU per tick",
         "description": "Total CPU consumed by cleanup + match + appendTasks + LinkDispatcher (the broker phase in Main.loop). Phase 1 typical: 0.2-0.5 CPU on a 3-link colony. Will grow as more transports + room counts come online (Phase 2-5). Track to catch regressions early.",
         "gridPos": {
           "h": 8,
@@ -3218,7 +3218,7 @@
       {
         "id": 211,
         "type": "timeseries",
-        "title": "Mineral \u2014 deposit & stockpile",
+        "title": "Mineral — deposit & stockpile",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3265,7 +3265,7 @@
       {
         "id": 212,
         "type": "timeseries",
-        "title": "Mineral \u2014 backlog / rate / miner",
+        "title": "Mineral — backlog / rate / miner",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3773,6 +3773,361 @@
           "tooltip": {
             "mode": "multi",
             "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 230,
+        "type": "row",
+        "title": "Market",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 300
+        },
+        "panels": []
+      },
+      {
+        "id": 231,
+        "type": "stat",
+        "title": "Market credits",
+        "description": "Game.market.credits — account-wide credit balance. Rises on settled sells from TerminalProcess.",
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 301
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.market.credits",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 232,
+        "type": "stat",
+        "title": "Trade revenue (Σ credits)",
+        "description": "Cumulative gross credits earned from TerminalProcess deals (Σ price × amount). Monotonic.",
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 301
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.market.revenue",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 233,
+        "type": "stat",
+        "title": "Deals (Σ)",
+        "description": "Cumulative count of successful market deals. Monotonic; derive deals/h with nonNegativeDerivative.",
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 301
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.market.deals",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 234,
+        "type": "stat",
+        "title": "Sold (Σ units)",
+        "description": "Cumulative units sold across energy + minerals.",
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 301
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "sumSeries(stats.gauges.market.energySold,stats.gauges.market.mineralsSold)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 235,
+        "type": "timeseries",
+        "title": "Units sold (cumulative)",
+        "description": "Running totals of sold energy and minerals (monotonic). Slope = throughput.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 305
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.market.energySold, 3)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.market.mineralsSold, 3)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 236,
+        "type": "timeseries",
+        "title": "Sell rate (units / sample)",
+        "description": "Per-sample delta of the cumulative unit counters (poll ~10s). Each bar = units sold between samples.",
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 305
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(nonNegativeDerivative(stats.gauges.market.energySold), 'energy')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(nonNegativeDerivative(stats.gauges.market.mineralsSold), 'minerals')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 237,
+        "type": "timeseries",
+        "title": "Revenue rate (credits / sample)",
+        "description": "Per-sample delta of cumulative revenue — credits earned between samples (~10s).",
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 305
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(nonNegativeDerivative(stats.gauges.market.revenue), 'credits')",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
           }
         }
       }
