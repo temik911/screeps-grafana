@@ -35,6 +35,7 @@ services:
     env_file: docker-compose.env
   statsd:
     image: ennexa/statsd
+    restart: always
     links:
      - graphite
   graphite:
