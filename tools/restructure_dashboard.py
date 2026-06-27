@@ -93,9 +93,9 @@ STATUS_STRIP = [
                'sumSeries(stats.gauges.rooms.*.hostiles, stats.gauges.remotes.*.hostiles)',
                [{'color': 'green', 'value': None}, {'color': 'orange', 'value': 1}, {'color': 'red', 'value': 3}],
                decimals=0),
-    stat_panel(105, 'Storage Δ/tick',
-               'Sum of net energy flow into storage across owned rooms (sum of throughput). Negative = drawing down.',
-               'sumSeries(stats.gauges.rooms.*.storageRate)',
+    stat_panel(105, 'Net energy / tick',
+               'Colony net energy flow (harvest − upgrade/build/repair), 1-min avg. Negative = sinks outpace income.',
+               "alias(summarize(stats.gauges.energyFlow.net, '1min', 'avg'), 'net e/tick')",
                [{'color': 'red', 'value': None}, {'color': 'orange', 'value': 0}, {'color': 'green', 'value': 1}],
                decimals=1),
     stat_panel(106, 'Spawn busy %',
@@ -118,21 +118,21 @@ for i, p in enumerate(STATUS_STRIP):
     p['gridPos']['y'] = 0
 
 # Row layout: (title, [panel_ids in display order], collapsed_default)
-# Drop old status-strip ids (1,2,3,4) — replaced by NEW status strip above.
-# Drop memory bytes (22) — now in status strip.
+# Curated metric set (2026-06): scout/sealed/route/movement/byRole + heavy bunkerPlan + dup rates
+# removed from StatsProcess; storage/terminal expanded to all resources; heap added.
 ROWS = [
-    ('Health & CPU', [5, 6, 7, 23], False),
-    ('Per-room economy', [8, 9, 10, 11, 25, 26, 29, 45, 46], False),
-    ('Throughput', [12, 13, 14], False),
-    ('Construction', [15, 28], False),
-    ('Movement & Traffic', [24, 30, 31, 32], False),
-    ('Logistics (HaulerScheduler)', [33, 34, 35], False),
-    ('Remote mining', [16, 17, 18, 19, 20, 21], False),
-    ('Hostiles & Defense', [27, 36, 37], False),
-    ('Scout & Routing', [44, 38, 39, 40, 41, 42, 43], False),
-    ('Logistics broker', [47, 48, 49, 50], False),
+    ('Health & CPU', [5, 6, 7, 60], False),
+    ('Per-room economy', [8, 9, 61, 62, 10, 11, 25, 26, 45, 46, 29], False),
+    ('Energy & build', [15, 214, 215], False),
+    ('Movement & Pathfind', [24, 30, 31, 32, 217, 218, 220], False),
+    ('Logistics', [33, 34, 47, 48, 50], False),
+    ('Remote mining', [16, 17, 19, 36], False),
+    ('Minerals', [211, 212], False),
+    ('Hostiles & Defense', [27], False),
+    ('Market', [23, 231, 232, 233, 234, 235, 236, 237], False),
 ]
-DROP_IDS = {1, 2, 3, 4, 22}
+# Panels intentionally removed (curated out) — listed so the orphan-warning stays quiet.
+DROP_IDS = {1, 2, 3, 4, 22, 12, 13, 14, 28, 35, 18, 20, 21, 37, 44, 38, 39, 40, 41, 42, 43, 49, 221}
 
 
 def layout_panels_in_section(panels_in_order, y_start):
