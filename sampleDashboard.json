@@ -2296,6 +2296,65 @@
         }
       },
       {
+        "id": 69,
+        "type": "timeseries",
+        "title": "Hauler-dispatcher \u2014 drive intents (0.2 CPU each)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 177
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.haulerDispatch.withdraws, 'withdraws')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.transfers, 'transfers')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.pickups, 'pickups')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.roadRepairs, 'roadRepairs')",
+            "refId": "D"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.roadBuilds, 'roadBuilds')",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
         "id": 33,
         "type": "timeseries",
         "title": "Haulers \u2014 target / alive / pending (per room)",
@@ -2304,7 +2363,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 177
+          "y": 185
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2360,7 +2419,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 177
+          "y": 185
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2412,7 +2471,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 185
+          "y": 193
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2466,7 +2525,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 193
+          "y": 201
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2520,7 +2579,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 201
+          "y": 209
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2570,7 +2629,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 209
+          "y": 217
         },
         "panels": []
       },
@@ -2583,7 +2642,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 210
+          "y": 218
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2646,7 +2705,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 210
+          "y": 218
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2709,7 +2768,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 218
+          "y": 226
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2754,7 +2813,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 226
+          "y": 234
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2819,7 +2878,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 234
+          "y": 242
         },
         "panels": []
       },
@@ -2831,7 +2890,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 235
+          "y": 243
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2874,7 +2933,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 235
+          "y": 243
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2926,7 +2985,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 243
+          "y": 251
         },
         "panels": []
       },
@@ -2939,7 +2998,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 244
+          "y": 252
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2999,7 +3058,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 252
+          "y": 260
         },
         "panels": []
       },
@@ -3012,7 +3071,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 253
+          "y": 261
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3058,7 +3117,7 @@
           "h": 4,
           "w": 6,
           "x": 0,
-          "y": 257
+          "y": 265
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3104,7 +3163,7 @@
           "h": 4,
           "w": 6,
           "x": 6,
-          "y": 257
+          "y": 265
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3150,7 +3209,7 @@
           "h": 4,
           "w": 6,
           "x": 12,
-          "y": 257
+          "y": 265
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3196,7 +3255,7 @@
           "h": 4,
           "w": 6,
           "x": 18,
-          "y": 257
+          "y": 265
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3242,7 +3301,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 261
+          "y": 269
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3296,7 +3355,7 @@
           "h": 8,
           "w": 6,
           "x": 12,
-          "y": 261
+          "y": 269
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3350,7 +3409,7 @@
           "h": 8,
           "w": 6,
           "x": 18,
-          "y": 261
+          "y": 269
         },
         "datasource": "localGraphite",
         "targets": [
