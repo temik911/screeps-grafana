@@ -2623,13 +2623,183 @@
       {
         "id": 205,
         "type": "row",
-        "title": "Remote mining",
+        "title": "Logistics broker",
         "collapsed": false,
         "gridPos": {
           "h": 1,
           "w": 24,
           "x": 0,
           "y": 217
+        },
+        "panels": []
+      },
+      {
+        "id": 70,
+        "type": "timeseries",
+        "title": "Broker \u2014 CPU by phase",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 218
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.broker.cleanupCpu, 'cleanupCpu')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.broker.collectCpu, 'collectCpu')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.broker.reservationsCpu, 'reservationsCpu')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(stats.gauges.broker.matchLoopCpu, 'matchLoopCpu')",
+            "refId": "D"
+          },
+          {
+            "target": "alias(stats.gauges.broker.appendCpu, 'appendCpu')",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 3,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 71,
+        "type": "timeseries",
+        "title": "Broker \u2014 collect CPU by collector",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 226
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.broker.collectorCpu.*, 4)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 3,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 72,
+        "type": "timeseries",
+        "title": "Broker \u2014 counts (supplies/demands/matched/unmatched)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 234
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.broker.supplies, 'supplies')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.broker.demands, 'demands')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.broker.matched, 'matched')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(stats.gauges.broker.unmatched, 'unmatched')",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 206,
+        "type": "row",
+        "title": "Remote mining",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 242
         },
         "panels": []
       },
@@ -2642,7 +2812,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 218
+          "y": 243
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2705,7 +2875,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 218
+          "y": 243
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2768,7 +2938,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 226
+          "y": 251
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2813,7 +2983,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 234
+          "y": 259
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2870,7 +3040,7 @@
         }
       },
       {
-        "id": 206,
+        "id": 207,
         "type": "row",
         "title": "Minerals",
         "collapsed": false,
@@ -2878,7 +3048,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 242
+          "y": 267
         },
         "panels": []
       },
@@ -2890,7 +3060,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 243
+          "y": 268
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2933,7 +3103,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 243
+          "y": 268
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2977,7 +3147,7 @@
         }
       },
       {
-        "id": 207,
+        "id": 208,
         "type": "row",
         "title": "Hostiles & Defense",
         "collapsed": false,
@@ -2985,7 +3155,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 251
+          "y": 276
         },
         "panels": []
       },
@@ -2998,7 +3168,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 252
+          "y": 277
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3050,7 +3220,7 @@
         }
       },
       {
-        "id": 208,
+        "id": 209,
         "type": "row",
         "title": "Market",
         "collapsed": false,
@@ -3058,7 +3228,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 260
+          "y": 285
         },
         "panels": []
       },
@@ -3071,7 +3241,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 261
+          "y": 286
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3117,7 +3287,7 @@
           "h": 4,
           "w": 6,
           "x": 0,
-          "y": 265
+          "y": 290
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3163,7 +3333,7 @@
           "h": 4,
           "w": 6,
           "x": 6,
-          "y": 265
+          "y": 290
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3209,7 +3379,7 @@
           "h": 4,
           "w": 6,
           "x": 12,
-          "y": 265
+          "y": 290
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3255,7 +3425,7 @@
           "h": 4,
           "w": 6,
           "x": 18,
-          "y": 265
+          "y": 290
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3301,7 +3471,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 269
+          "y": 294
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3355,7 +3525,7 @@
           "h": 8,
           "w": 6,
           "x": 12,
-          "y": 269
+          "y": 294
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3409,7 +3579,7 @@
           "h": 8,
           "w": 6,
           "x": 18,
-          "y": 269
+          "y": 294
         },
         "datasource": "localGraphite",
         "targets": [
