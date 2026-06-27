@@ -1652,6 +1652,128 @@
         "panels": []
       },
       {
+        "id": 64,
+        "type": "timeseries",
+        "title": "Traffic \u2014 reconcile CPU split (setup vs resolve)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 104
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.traffic.setupCpu, 'setup (sort+obstacles)')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.resolveCpu, 'resolve (push/swap loop)')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 3,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 65,
+        "type": "timeseries",
+        "title": "Traffic \u2014 reconcile counters",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 112
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.traffic.intents, 'intents')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.obstacles, 'obstacles')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.obstacleScanCreeps, 'obstacleScanCreeps')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.roomsScanned, 'roomsScanned')",
+            "refId": "D"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.evictionCalls, 'evictionCalls')",
+            "refId": "E"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.evictionDepthMax, 'evictionDepthMax')",
+            "refId": "F"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.canPushCalls, 'canPushCalls')",
+            "refId": "G"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.swaps, 'swaps')",
+            "refId": "H"
+          },
+          {
+            "target": "alias(stats.gauges.traffic.pushes, 'pushes')",
+            "refId": "I"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
         "id": 24,
         "type": "stat",
         "title": "TrafficManager intents (snapshot)",
@@ -1660,7 +1782,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 104
+          "y": 120
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1706,7 +1828,7 @@
           "h": 8,
           "w": 12,
           "x": 8,
-          "y": 104
+          "y": 120
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1754,7 +1876,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 112
+          "y": 128
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1823,7 +1945,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 112
+          "y": 128
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1866,7 +1988,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 120
+          "y": 136
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1909,7 +2031,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 120
+          "y": 136
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1956,7 +2078,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 128
+          "y": 144
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2000,7 +2122,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 136
+          "y": 152
         },
         "panels": []
       },
@@ -2013,7 +2135,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 137
+          "y": 153
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2069,7 +2191,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 137
+          "y": 153
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2121,7 +2243,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 145
+          "y": 161
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2175,7 +2297,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 153
+          "y": 169
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2229,7 +2351,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 161
+          "y": 177
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2279,7 +2401,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 169
+          "y": 185
         },
         "panels": []
       },
@@ -2292,7 +2414,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 170
+          "y": 186
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2355,7 +2477,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 170
+          "y": 186
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2418,7 +2540,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 178
+          "y": 194
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2463,7 +2585,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 186
+          "y": 202
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2528,7 +2650,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 194
+          "y": 210
         },
         "panels": []
       },
@@ -2540,7 +2662,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 195
+          "y": 211
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2583,7 +2705,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 195
+          "y": 211
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2635,7 +2757,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 203
+          "y": 219
         },
         "panels": []
       },
@@ -2648,7 +2770,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 204
+          "y": 220
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2708,7 +2830,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 212
+          "y": 228
         },
         "panels": []
       },
@@ -2721,7 +2843,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 213
+          "y": 229
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2767,7 +2889,7 @@
           "h": 4,
           "w": 6,
           "x": 0,
-          "y": 217
+          "y": 233
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2813,7 +2935,7 @@
           "h": 4,
           "w": 6,
           "x": 6,
-          "y": 217
+          "y": 233
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2859,7 +2981,7 @@
           "h": 4,
           "w": 6,
           "x": 12,
-          "y": 217
+          "y": 233
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2905,7 +3027,7 @@
           "h": 4,
           "w": 6,
           "x": 18,
-          "y": 217
+          "y": 233
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2951,7 +3073,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 221
+          "y": 237
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3005,7 +3127,7 @@
           "h": 8,
           "w": 6,
           "x": 12,
-          "y": 221
+          "y": 237
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3059,7 +3181,7 @@
           "h": 8,
           "w": 6,
           "x": 18,
-          "y": 221
+          "y": 237
         },
         "datasource": "localGraphite",
         "targets": [
