@@ -2174,6 +2174,128 @@
         "panels": []
       },
       {
+        "id": 67,
+        "type": "timeseries",
+        "title": "Hauler-dispatcher \u2014 CPU by phase",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 161
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.haulerDispatch.setupCpu, 'setup')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.cleanupCpu, 'cleanup')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.assignCpu, 'assign')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.driveCpu, 'drive (intents)')",
+            "refId": "D"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.deliverCpu, 'deliver')",
+            "refId": "E"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.yieldCpu, 'yield')",
+            "refId": "F"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 3,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 68,
+        "type": "timeseries",
+        "title": "Hauler-dispatcher \u2014 counts",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 169
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.haulerDispatch.haulers, 'haulers')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.openTasks, 'openTasks')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.assigned, 'assigned')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.driven, 'driven')",
+            "refId": "D"
+          },
+          {
+            "target": "alias(stats.gauges.haulerDispatch.delivered, 'delivered')",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
         "id": 33,
         "type": "timeseries",
         "title": "Haulers \u2014 target / alive / pending (per room)",
@@ -2182,7 +2304,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 161
+          "y": 177
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2238,7 +2360,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 161
+          "y": 177
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2290,7 +2412,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 169
+          "y": 185
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2344,7 +2466,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 177
+          "y": 193
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2398,7 +2520,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 185
+          "y": 201
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2448,7 +2570,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 193
+          "y": 209
         },
         "panels": []
       },
@@ -2461,7 +2583,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 194
+          "y": 210
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2524,7 +2646,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 194
+          "y": 210
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2587,7 +2709,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 202
+          "y": 218
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2632,7 +2754,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 210
+          "y": 226
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2697,7 +2819,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 218
+          "y": 234
         },
         "panels": []
       },
@@ -2709,7 +2831,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 219
+          "y": 235
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2752,7 +2874,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 219
+          "y": 235
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2804,7 +2926,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 227
+          "y": 243
         },
         "panels": []
       },
@@ -2817,7 +2939,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 228
+          "y": 244
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2877,7 +2999,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 236
+          "y": 252
         },
         "panels": []
       },
@@ -2890,7 +3012,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 237
+          "y": 253
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2936,7 +3058,7 @@
           "h": 4,
           "w": 6,
           "x": 0,
-          "y": 241
+          "y": 257
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2982,7 +3104,7 @@
           "h": 4,
           "w": 6,
           "x": 6,
-          "y": 241
+          "y": 257
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3028,7 +3150,7 @@
           "h": 4,
           "w": 6,
           "x": 12,
-          "y": 241
+          "y": 257
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3074,7 +3196,7 @@
           "h": 4,
           "w": 6,
           "x": 18,
-          "y": 241
+          "y": 257
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3120,7 +3242,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 245
+          "y": 261
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3174,7 +3296,7 @@
           "h": 8,
           "w": 6,
           "x": 12,
-          "y": 245
+          "y": 261
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3228,7 +3350,7 @@
           "h": 8,
           "w": 6,
           "x": 18,
-          "y": 245
+          "y": 261
         },
         "datasource": "localGraphite",
         "targets": [
