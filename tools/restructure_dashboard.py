@@ -125,7 +125,7 @@ ROWS = [
     ('Per-room economy', [8, 9, 61, 62, 10, 11, 25, 26, 45, 46, 29], False),
     ('Energy & build', [15, 214, 215], False),
     ('Movement & Pathfind', [64, 65, 66, 24, 30, 31, 32, 217, 218, 220], False),
-    ('Logistics', [67, 68, 33, 34, 47, 48, 50], False),
+    ('Logistics', [67, 68, 69, 33, 34, 47, 48, 50], False),
     ('Remote mining', [16, 17, 19, 36], False),
     ('Minerals', [211, 212], False),
     ('Hostiles & Defense', [27], False),
