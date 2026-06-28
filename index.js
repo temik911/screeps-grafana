@@ -5,17 +5,18 @@ import ScreepsStatsd from "./src/ScreepsStatsd.js";
 // SCREEPS_SHARD (token[i] -> shard[i]); a single token is reused for every shard.
 //
 // RATE LIMITING: the memory-segment endpoint allows 360 req/h and (empirically) the bucket is SHARED
-// across an account's tokens — extra tokens do NOT add budget. Polling at exactly 360/h (10s) leaves
-// zero headroom, so any jitter trips a 429 (whose body is plain text, not JSON). We therefore space
-// each shard's poll at BASE_INTERVAL_MS × shardCount, so the TOTAL request rate is 3600/BASE per hour
-// regardless of shard count. BASE=12s → 300/h total, a safe ~83% of the cap. Pollers are also
-// staggered so their requests don't fire in one simultaneous burst.
+// across an account's tokens — extra tokens do NOT add budget. We space each shard's poll at
+// BASE_INTERVAL_MS × shardCount, so the TOTAL request rate is 3600/BASE per hour regardless of shard
+// count (this is what stops 2 shards from doing 720/h and exhausting the cap). BASE=10s → 360/h total,
+// i.e. right at the cap (no headroom — bump SCREEPS_POLL_BASE_MS to 12000 for a safety margin). The 429
+// handler below makes the poller self-recover if it ever trips. Pollers are also staggered so their
+// requests don't fire in one simultaneous burst.
 const shards = (process.env.SCREEPS_SHARD || "shard3")
     .split(",").map((s) => s.trim()).filter(Boolean);
 const tokens = (process.env.SCREEPS_TOKEN || "")
     .split(",").map((t) => t.trim()).filter(Boolean);
 
-const BASE_INTERVAL_MS = Number(process.env.SCREEPS_POLL_BASE_MS) || 12_000;
+const BASE_INTERVAL_MS = Number(process.env.SCREEPS_POLL_BASE_MS) || 10_000;
 const intervalMs = BASE_INTERVAL_MS * shards.length;
 
 shards.forEach((shard, i) => {
