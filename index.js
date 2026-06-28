@@ -1,28 +1,33 @@
 import ScreepsStatsd from "./src/ScreepsStatsd.js";
 
 // SCREEPS_SHARD may be a comma list (e.g. "shard2,shard3") — one poller per shard, each tagging
-// metrics as stats.gauges.<shard>.*. The segment endpoint is rate-limited to 360 req/h PER TOKEN.
+// metrics as stats.gauges.<shard>.*. SCREEPS_TOKEN may be a single token or a comma list aligned with
+// SCREEPS_SHARD (token[i] -> shard[i]); a single token is reused for every shard.
 //
-// SCREEPS_TOKEN may also be a comma list, ALIGNED with SCREEPS_SHARD (token[i] is used for shard[i]).
-// With one token per shard, each shard has its own rate-limit bucket → polls at the full 10s rate.
-// With a single shared token for N shards, the interval scales to 10s × N so the shared 360/h budget
-// isn't exceeded (otherwise we'd halve effective freshness).
+// RATE LIMITING: the memory-segment endpoint allows 360 req/h and (empirically) the bucket is SHARED
+// across an account's tokens — extra tokens do NOT add budget. Polling at exactly 360/h (10s) leaves
+// zero headroom, so any jitter trips a 429 (whose body is plain text, not JSON). We therefore space
+// each shard's poll at BASE_INTERVAL_MS × shardCount, so the TOTAL request rate is 3600/BASE per hour
+// regardless of shard count. BASE=12s → 300/h total, a safe ~83% of the cap. Pollers are also
+// staggered so their requests don't fire in one simultaneous burst.
 const shards = (process.env.SCREEPS_SHARD || "shard3")
     .split(",").map((s) => s.trim()).filter(Boolean);
 const tokens = (process.env.SCREEPS_TOKEN || "")
     .split(",").map((t) => t.trim()).filter(Boolean);
 
-const perShardToken = tokens.length === shards.length && tokens.length > 1;
-const intervalMs = perShardToken ? 10_000 : 10_000 * shards.length;
+const BASE_INTERVAL_MS = Number(process.env.SCREEPS_POLL_BASE_MS) || 12_000;
+const intervalMs = BASE_INTERVAL_MS * shards.length;
 
 shards.forEach((shard, i) => {
-    const token = perShardToken ? tokens[i] : tokens[0];
-    new ScreepsStatsd(
+    const token = tokens.length === shards.length ? tokens[i] : (tokens[0] || "");
+    const poller = new ScreepsStatsd(
         process.env.SCREEPS_HOST,
         token,
         shard,
         process.env.SCREEPS_SEGMENT,
         process.env.GRAPHITE_PORT_8125_UDP_ADDR,
         intervalMs,
-    ).run();
+    );
+    // Stagger starts by BASE so N shards' requests don't burst together within each window.
+    setTimeout(() => poller.run(), i * BASE_INTERVAL_MS);
 });
