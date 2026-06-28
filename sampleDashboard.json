@@ -20,7 +20,27 @@
       "list": []
     },
     "templating": {
-      "list": []
+      "list": [
+        {
+          "name": "shard",
+          "label": "Shard",
+          "type": "query",
+          "datasource": {
+            "type": "graphite",
+            "uid": "dfnetfig270g0c"
+          },
+          "query": "stats.gauges.shard*",
+          "refresh": 1,
+          "sort": 1,
+          "includeAll": false,
+          "multi": false,
+          "current": {
+            "text": "shard3",
+            "value": "shard3"
+          },
+          "options": []
+        }
+      ]
     },
     "panels": [
       {
@@ -37,7 +57,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.cpu.used, 2)",
+            "target": "aliasByNode(stats.gauges.$shard.cpu.used, 3)",
             "refId": "A"
           }
         ],
@@ -97,7 +117,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.cpu.bucket, 2)",
+            "target": "aliasByNode(stats.gauges.$shard.cpu.bucket, 3)",
             "refId": "A"
           }
         ],
@@ -157,7 +177,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.gcl.level, 2)",
+            "target": "aliasByNode(stats.gauges.$shard.gcl.level, 3)",
             "refId": "A"
           }
         ],
@@ -209,7 +229,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "sumSeries(stats.gauges.rooms.*.hostiles, stats.gauges.remotes.*.hostiles)",
+            "target": "sumSeries(stats.gauges.$shard.rooms.*.hostiles, stats.gauges.$shard.remotes.*.hostiles)",
             "refId": "A"
           }
         ],
@@ -269,7 +289,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.net, '1min', 'avg'), 'net e/tick')",
+            "target": "alias(summarize(stats.gauges.$shard.energyFlow.net, '1min', 'avg'), 'net e/tick')",
             "refId": "A"
           }
         ],
@@ -329,7 +349,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "averageSeries(stats.gauges.rooms.*.spawnBusyPct)",
+            "target": "averageSeries(stats.gauges.$shard.rooms.*.spawnBusyPct)",
             "refId": "A"
           }
         ],
@@ -389,7 +409,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.creepsByRole.logistics, 2)",
+            "target": "aliasByNode(stats.gauges.$shard.creepsByRole.logistics, 3)",
             "refId": "A"
           }
         ],
@@ -441,7 +461,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.memory.bytes, 2)",
+            "target": "aliasByNode(stats.gauges.$shard.memory.bytes, 3)",
             "refId": "A"
           }
         ],
@@ -513,11 +533,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.cpu.used, 'used')",
+            "target": "alias(stats.gauges.$shard.cpu.used, 'used')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.cpu.limit, 'limit')",
+            "target": "alias(stats.gauges.$shard.cpu.limit, 'limit')",
             "refId": "B"
           }
         ],
@@ -590,7 +610,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "stats.gauges.cpu.bucket",
+            "target": "stats.gauges.$shard.cpu.bucket",
             "refId": "A"
           }
         ],
@@ -639,11 +659,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.processes.cpu.*, 4)",
+            "target": "aliasByNode(stats.gauges.$shard.processes.cpu.*, 5)",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.cpu.statsSegmentCost, \"writeStatsSegment (meta)\")",
+            "target": "alias(stats.gauges.$shard.cpu.statsSegmentCost, \"writeStatsSegment (meta)\")",
             "refId": "B"
           }
         ],
@@ -695,11 +715,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.cpu.heapUsed, 'used')",
+            "target": "alias(stats.gauges.$shard.cpu.heapUsed, 'used')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.cpu.heapLimit, 'limit')",
+            "target": "alias(stats.gauges.$shard.cpu.heapLimit, 'limit')",
             "refId": "B"
           }
         ],
@@ -755,11 +775,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.energy, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.energy, 4)",
             "refId": "A"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.energyCap, 3), '$', ' (cap)')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.energyCap, 4), '$', ' (cap)')",
             "refId": "B"
           }
         ],
@@ -825,7 +845,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.storage.energy, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.storage.energy, 4)",
             "refId": "A"
           }
         ],
@@ -868,7 +888,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.storage.*, 3, 5)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.storage.*, 4, 6)",
             "refId": "A"
           }
         ],
@@ -911,7 +931,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.terminal.*, 3, 5)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.terminal.*, 4, 6)",
             "refId": "A"
           }
         ],
@@ -954,11 +974,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.creeps, 3), '$', ' creeps')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.creeps, 4), '$', ' creeps')",
             "refId": "A"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostiles, 3), '$', ' hostiles')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostiles, 4), '$', ' hostiles')",
             "refId": "B"
           }
         ],
@@ -1021,11 +1041,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.spawnQueueDepth, 3), '$', ' queue')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.spawnQueueDepth, 4), '$', ' queue')",
             "refId": "A"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.sites, 3), '$', ' sites')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.sites, 4), '$', ' sites')",
             "refId": "B"
           }
         ],
@@ -1069,7 +1089,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.spawnBusyPct, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.spawnBusyPct, 4)",
             "refId": "A"
           }
         ],
@@ -1114,7 +1134,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.towerEnergyMin, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.towerEnergyMin, 4)",
             "refId": "A"
           }
         ],
@@ -1176,7 +1196,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.controllerProgressPct, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.controllerProgressPct, 4)",
             "refId": "A"
           }
         ],
@@ -1243,7 +1263,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(movingAverage(stats.gauges.rooms.*.controllerEtaHours, '6h'), 3)",
+            "target": "aliasByNode(movingAverage(stats.gauges.$shard.rooms.*.controllerEtaHours, '6h'), 4)",
             "refId": "A"
           }
         ],
@@ -1310,7 +1330,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.creepsByRole.*, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.creepsByRole.*, 4)",
             "refId": "A"
           }
         ],
@@ -1375,7 +1395,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.sitesProgress, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.sitesProgress, 4)",
             "refId": "A"
           }
         ],
@@ -1419,23 +1439,23 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.harvest, '1min', 'avg'), 'harvest (income)')",
+            "target": "alias(summarize(stats.gauges.$shard.energyFlow.harvest, '1min', 'avg'), 'harvest (income)')",
             "refId": "A"
           },
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.upgrade, '1min', 'avg'), 'upgrade')",
+            "target": "alias(summarize(stats.gauges.$shard.energyFlow.upgrade, '1min', 'avg'), 'upgrade')",
             "refId": "B"
           },
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.build, '1min', 'avg'), 'build')",
+            "target": "alias(summarize(stats.gauges.$shard.energyFlow.build, '1min', 'avg'), 'build')",
             "refId": "C"
           },
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.repair, '1min', 'avg'), 'repair')",
+            "target": "alias(summarize(stats.gauges.$shard.energyFlow.repair, '1min', 'avg'), 'repair')",
             "refId": "D"
           },
           {
-            "target": "alias(summarize(stats.gauges.energyFlow.net, '1min', 'avg'), 'net (in - sinks)')",
+            "target": "alias(summarize(stats.gauges.$shard.energyFlow.net, '1min', 'avg'), 'net (in - sinks)')",
             "refId": "E"
           }
         ],
@@ -1554,15 +1574,15 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.energyFlow.transfer, 'transfer (energy moved)')",
+            "target": "alias(stats.gauges.$shard.energyFlow.transfer, 'transfer (energy moved)')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.energyFlow.harvestMineral, 'mineral harvested')",
+            "target": "alias(stats.gauges.$shard.energyFlow.harvestMineral, 'mineral harvested')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.energyFlow.events, 'events scanned')",
+            "target": "alias(stats.gauges.$shard.energyFlow.events, 'events scanned')",
             "refId": "C"
           }
         ],
@@ -1664,11 +1684,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.traffic.setupCpu, 'setup (sort+obstacles)')",
+            "target": "alias(stats.gauges.$shard.traffic.setupCpu, 'setup (sort+obstacles)')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.traffic.resolveCpu, 'resolve (push/swap loop)')",
+            "target": "alias(stats.gauges.$shard.traffic.resolveCpu, 'resolve (push/swap loop)')",
             "refId": "B"
           }
         ],
@@ -1711,43 +1731,43 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.traffic.intents, 'intents')",
+            "target": "alias(stats.gauges.$shard.traffic.intents, 'intents')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.traffic.obstacles, 'obstacles')",
+            "target": "alias(stats.gauges.$shard.traffic.obstacles, 'obstacles')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.traffic.obstacleScanCreeps, 'obstacleScanCreeps')",
+            "target": "alias(stats.gauges.$shard.traffic.obstacleScanCreeps, 'obstacleScanCreeps')",
             "refId": "C"
           },
           {
-            "target": "alias(stats.gauges.traffic.roomsScanned, 'roomsScanned')",
+            "target": "alias(stats.gauges.$shard.traffic.roomsScanned, 'roomsScanned')",
             "refId": "D"
           },
           {
-            "target": "alias(stats.gauges.traffic.evictionCalls, 'evictionCalls')",
+            "target": "alias(stats.gauges.$shard.traffic.evictionCalls, 'evictionCalls')",
             "refId": "E"
           },
           {
-            "target": "alias(stats.gauges.traffic.evictionDepthMax, 'evictionDepthMax')",
+            "target": "alias(stats.gauges.$shard.traffic.evictionDepthMax, 'evictionDepthMax')",
             "refId": "F"
           },
           {
-            "target": "alias(stats.gauges.traffic.canPushCalls, 'canPushCalls')",
+            "target": "alias(stats.gauges.$shard.traffic.canPushCalls, 'canPushCalls')",
             "refId": "G"
           },
           {
-            "target": "alias(stats.gauges.traffic.swaps, 'swaps')",
+            "target": "alias(stats.gauges.$shard.traffic.swaps, 'swaps')",
             "refId": "H"
           },
           {
-            "target": "alias(stats.gauges.traffic.pushes, 'pushes')",
+            "target": "alias(stats.gauges.$shard.traffic.pushes, 'pushes')",
             "refId": "I"
           },
           {
-            "target": "alias(stats.gauges.traffic.movesIssued, 'movesIssued')",
+            "target": "alias(stats.gauges.$shard.traffic.movesIssued, 'movesIssued')",
             "refId": "J"
           }
         ],
@@ -1790,7 +1810,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.traffic.movesByRole.*, 4)",
+            "target": "aliasByNode(stats.gauges.$shard.traffic.movesByRole.*, 5)",
             "refId": "A"
           }
         ],
@@ -1834,7 +1854,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "stats.gauges.processes.intentCount",
+            "target": "stats.gauges.$shard.processes.intentCount",
             "refId": "A"
           }
         ],
@@ -1880,11 +1900,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.traffic.swaps, 'swaps')",
+            "target": "alias(stats.gauges.$shard.traffic.swaps, 'swaps')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.traffic.pushes, 'pushes')",
+            "target": "alias(stats.gauges.$shard.traffic.pushes, 'pushes')",
             "refId": "B"
           }
         ],
@@ -1928,15 +1948,15 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.pathfind.calls, 'calls')",
+            "target": "alias(stats.gauges.$shard.pathfind.calls, 'calls')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.pathfind.crossRoom, 'crossRoom')",
+            "target": "alias(stats.gauges.$shard.pathfind.crossRoom, 'crossRoom')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.pathfind.incomplete, 'incomplete')",
+            "target": "alias(stats.gauges.$shard.pathfind.incomplete, 'incomplete')",
             "refId": "C"
           }
         ],
@@ -1997,7 +2017,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.pathfind.opsTotal, 'opsTotal')",
+            "target": "alias(stats.gauges.$shard.pathfind.opsTotal, 'opsTotal')",
             "refId": "A"
           }
         ],
@@ -2040,7 +2060,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.pathfind.maxOps, 'max single search')",
+            "target": "alias(stats.gauges.$shard.pathfind.maxOps, 'max single search')",
             "refId": "A"
           }
         ],
@@ -2083,11 +2103,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.pathfind.exhausted, 'total exhausted')",
+            "target": "alias(stats.gauges.$shard.pathfind.exhausted, 'total exhausted')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.pathfind.incomplete, 'total incomplete')",
+            "target": "alias(stats.gauges.$shard.pathfind.incomplete, 'total incomplete')",
             "refId": "B"
           }
         ],
@@ -2130,7 +2150,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.pathfind.noExit, 'total no-exit')",
+            "target": "alias(stats.gauges.$shard.pathfind.noExit, 'total no-exit')",
             "refId": "A"
           }
         ],
@@ -2186,27 +2206,27 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.haulerDispatch.setupCpu, 'setup')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.setupCpu, 'setup')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.cleanupCpu, 'cleanup')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.cleanupCpu, 'cleanup')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.assignCpu, 'assign')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.assignCpu, 'assign')",
             "refId": "C"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.driveCpu, 'drive (intents)')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.driveCpu, 'drive (intents)')",
             "refId": "D"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.deliverCpu, 'deliver')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.deliverCpu, 'deliver')",
             "refId": "E"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.yieldCpu, 'yield')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.yieldCpu, 'yield')",
             "refId": "F"
           }
         ],
@@ -2249,23 +2269,23 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.haulerDispatch.haulers, 'haulers')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.haulers, 'haulers')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.openTasks, 'openTasks')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.openTasks, 'openTasks')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.assigned, 'assigned')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.assigned, 'assigned')",
             "refId": "C"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.driven, 'driven')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.driven, 'driven')",
             "refId": "D"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.delivered, 'delivered')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.delivered, 'delivered')",
             "refId": "E"
           }
         ],
@@ -2308,23 +2328,23 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.haulerDispatch.withdraws, 'withdraws')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.withdraws, 'withdraws')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.transfers, 'transfers')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.transfers, 'transfers')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.pickups, 'pickups')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.pickups, 'pickups')",
             "refId": "C"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.roadRepairs, 'roadRepairs')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.roadRepairs, 'roadRepairs')",
             "refId": "D"
           },
           {
-            "target": "alias(stats.gauges.haulerDispatch.roadBuilds, 'roadBuilds')",
+            "target": "alias(stats.gauges.$shard.haulerDispatch.roadBuilds, 'roadBuilds')",
             "refId": "E"
           }
         ],
@@ -2368,15 +2388,15 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.haulers.target, 3, 5)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.haulers.target, 4, 6)",
             "refId": "A"
           },
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.haulers.alive, 3, 5)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.haulers.alive, 4, 6)",
             "refId": "B"
           },
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.haulers.pending, 3, 5)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.haulers.pending, 4, 6)",
             "refId": "C"
           }
         ],
@@ -2424,11 +2444,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.haulers.busy, 3, 5)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.haulers.busy, 4, 6)",
             "refId": "A"
           },
           {
-            "target": "aliasByNode(stats.gauges.rooms.*.haulers.idle, 3, 5)",
+            "target": "aliasByNode(stats.gauges.$shard.rooms.*.haulers.idle, 4, 6)",
             "refId": "B"
           }
         ],
@@ -2476,11 +2496,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.logistics.tasks, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.logistics.tasks, 4)",
             "refId": "A"
           },
           {
-            "target": "aliasByNode(stats.gauges.logistics.activeTasks, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.logistics.activeTasks, 4)",
             "refId": "B"
           }
         ],
@@ -2530,7 +2550,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.logistics.byTransport.*, 4)",
+            "target": "aliasByNode(stats.gauges.$shard.logistics.byTransport.*, 5)",
             "refId": "A"
           }
         ],
@@ -2584,7 +2604,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.logistics.cpu, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.logistics.cpu, 4)",
             "refId": "A"
           }
         ],
@@ -2646,23 +2666,23 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.broker.cleanupCpu, 'cleanupCpu')",
+            "target": "alias(stats.gauges.$shard.broker.cleanupCpu, 'cleanupCpu')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.broker.collectCpu, 'collectCpu')",
+            "target": "alias(stats.gauges.$shard.broker.collectCpu, 'collectCpu')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.broker.reservationsCpu, 'reservationsCpu')",
+            "target": "alias(stats.gauges.$shard.broker.reservationsCpu, 'reservationsCpu')",
             "refId": "C"
           },
           {
-            "target": "alias(stats.gauges.broker.matchLoopCpu, 'matchLoopCpu')",
+            "target": "alias(stats.gauges.$shard.broker.matchLoopCpu, 'matchLoopCpu')",
             "refId": "D"
           },
           {
-            "target": "alias(stats.gauges.broker.appendCpu, 'appendCpu')",
+            "target": "alias(stats.gauges.$shard.broker.appendCpu, 'appendCpu')",
             "refId": "E"
           }
         ],
@@ -2705,7 +2725,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.broker.collectorCpu.*, 4)",
+            "target": "aliasByNode(stats.gauges.$shard.broker.collectorCpu.*, 5)",
             "refId": "A"
           }
         ],
@@ -2748,19 +2768,19 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(stats.gauges.broker.supplies, 'supplies')",
+            "target": "alias(stats.gauges.$shard.broker.supplies, 'supplies')",
             "refId": "A"
           },
           {
-            "target": "alias(stats.gauges.broker.demands, 'demands')",
+            "target": "alias(stats.gauges.$shard.broker.demands, 'demands')",
             "refId": "B"
           },
           {
-            "target": "alias(stats.gauges.broker.matched, 'matched')",
+            "target": "alias(stats.gauges.$shard.broker.matched, 'matched')",
             "refId": "C"
           },
           {
-            "target": "alias(stats.gauges.broker.unmatched, 'unmatched')",
+            "target": "alias(stats.gauges.$shard.broker.unmatched, 'unmatched')",
             "refId": "D"
           }
         ],
@@ -2817,7 +2837,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.remotes.*.reservedUntil, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.reservedUntil, 4)",
             "refId": "A"
           }
         ],
@@ -2880,7 +2900,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.remotes.*.minInfraHpPct, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.minInfraHpPct, 4)",
             "refId": "A"
           }
         ],
@@ -2943,7 +2963,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.remotes.*.containerFillPct, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.containerFillPct, 4)",
             "refId": "A"
           }
         ],
@@ -2988,7 +3008,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.remotes.*.hostiles, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.hostiles, 4)",
             "refId": "A"
           }
         ],
@@ -3065,7 +3085,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.amount, 3), '$', ' deposit')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.amount, 4), '$', ' deposit')",
             "refId": "A"
           }
         ],
@@ -3108,15 +3128,15 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.container, 3), '$', ' container')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.container, 4), '$', ' container')",
             "refId": "A"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.rate, 3), '$', ' rate/t')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.rate, 4), '$', ' rate/t')",
             "refId": "B"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.mineral.minerAlive, 3), '$', ' miner')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.minerAlive, 4), '$', ' miner')",
             "refId": "C"
           }
         ],
@@ -3173,19 +3193,19 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.attack, 3), '$', ' attack')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.attack, 4), '$', ' attack')",
             "refId": "A"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.ranged, 3), '$', ' ranged')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.ranged, 4), '$', ' ranged')",
             "refId": "B"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.heal, 3), '$', ' heal')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.heal, 4), '$', ' heal')",
             "refId": "C"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.rooms.*.hostileBodyParts.work, 3), '$', ' work')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.work, 4), '$', ' work')",
             "refId": "D"
           }
         ],
@@ -3246,7 +3266,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "stats.gauges.market.credits",
+            "target": "stats.gauges.$shard.market.credits",
             "refId": "A"
           }
         ],
@@ -3292,7 +3312,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "stats.gauges.market.credits",
+            "target": "stats.gauges.$shard.market.credits",
             "refId": "A"
           }
         ],
@@ -3338,7 +3358,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "stats.gauges.market.revenue",
+            "target": "stats.gauges.$shard.market.revenue",
             "refId": "A"
           }
         ],
@@ -3384,7 +3404,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "stats.gauges.market.deals",
+            "target": "stats.gauges.$shard.market.deals",
             "refId": "A"
           }
         ],
@@ -3430,7 +3450,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "sumSeries(stats.gauges.market.energySold,stats.gauges.market.mineralsSold)",
+            "target": "sumSeries(stats.gauges.$shard.market.energySold,stats.gauges.$shard.market.mineralsSold)",
             "refId": "A"
           }
         ],
@@ -3476,11 +3496,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.market.energySold, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.market.energySold, 4)",
             "refId": "A"
           },
           {
-            "target": "aliasByNode(stats.gauges.market.mineralsSold, 3)",
+            "target": "aliasByNode(stats.gauges.$shard.market.mineralsSold, 4)",
             "refId": "B"
           }
         ],
@@ -3530,11 +3550,11 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(nonNegativeDerivative(stats.gauges.market.energySold), 'energy')",
+            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.energySold), 'energy')",
             "refId": "A"
           },
           {
-            "target": "alias(nonNegativeDerivative(stats.gauges.market.mineralsSold), 'minerals')",
+            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.mineralsSold), 'minerals')",
             "refId": "B"
           }
         ],
@@ -3584,7 +3604,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "alias(nonNegativeDerivative(stats.gauges.market.revenue), 'credits')",
+            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.revenue), 'credits')",
             "refId": "A"
           }
         ],

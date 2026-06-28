@@ -1,19 +1,20 @@
 import fetch from 'node-fetch';
 import StatsD from 'node-statsd';
 
-const FETCH_INTERVAL_MS = 10_000;
+const DEFAULT_FETCH_INTERVAL_MS = 10_000;
 
 export default class ScreepsStatsd {
-  constructor(host, token, shard, segment, graphite) {
+  constructor(host, token, shard, segment, graphite, intervalMs = DEFAULT_FETCH_INTERVAL_MS) {
     this._host = host;
     this._token = token;
     this._shard = shard;
     this._segment = Number(segment);
+    this._intervalMs = intervalMs;
     this._client = new StatsD({host: graphite});
   }
 
   run() {
-    setInterval(() => this.getMemory(), FETCH_INTERVAL_MS);
+    setInterval(() => this.getMemory(), this._intervalMs);
   }
 
   async getMemory() {
@@ -30,14 +31,16 @@ export default class ScreepsStatsd {
       if (body.error || body.ok !== 1) throw new Error(body.error ?? `bad response: ${JSON.stringify(body)}`);
       if (!body.data) return;
       const data = JSON.parse(body.data);
-      this.report(data);
+      // Namespace every metric under its shard: stats.gauges.<shard>.* — so multiple shards don't
+      // collide on the same series. The dashboard templates on $shard to pick which shard to view.
+      this.report(data, this._shard + '.');
     } catch (e) {
-      console.error(e);
+      console.error(`[${this._shard}]`, e);
     }
   }
 
   report(data, prefix = "") {
-    if (prefix === '') console.log("Pushing to gauges -", new Date());
+    if (prefix === this._shard + '.') console.log(`Pushing ${this._shard} gauges -`, new Date());
     for (const [k, v] of Object.entries(data)) {
       if (v && typeof v === 'object') {
         this.report(v, prefix + k + '.');
