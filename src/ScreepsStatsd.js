@@ -27,8 +27,23 @@ export default class ScreepsStatsd {
           'content-type': 'application/json',
         },
       });
+      // Handle non-2xx BEFORE response.json() — error bodies are plain text (e.g. 429 "Rate limit
+      // exceeded, retry after …"), so JSON.parse would throw and spam a stack trace. Log one concise
+      // line and skip this cycle; the next interval retries.
+      if (response.status === 429) {
+        const retry = response.headers.get('retry-after');
+        console.warn(`[${this._shard}] rate limited (360/h shared) — retry-after ${retry}s; skipping`);
+        return;
+      }
+      if (!response.ok) {
+        console.warn(`[${this._shard}] memory-segment HTTP ${response.status}; skipping`);
+        return;
+      }
       const body = await response.json();
-      if (body.error || body.ok !== 1) throw new Error(body.error ?? `bad response: ${JSON.stringify(body)}`);
+      if (body.error || body.ok !== 1) {
+        console.warn(`[${this._shard}] bad response: ${body.error ?? JSON.stringify(body)}`);
+        return;
+      }
       if (!body.data) return;
       const data = JSON.parse(body.data);
       // Namespace every metric under its shard: stats.gauges.<shard>.* — so multiple shards don't
