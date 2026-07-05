@@ -1674,7 +1674,7 @@
       {
         "id": 239,
         "type": "timeseries",
-        "title": "Construction sites (total + remote)",
+        "title": "Construction sites (total + by room)",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1685,11 +1685,11 @@
         "targets": [
           {
             "refId": "A",
-            "target": "alias(stats.gauges.$shard.construction.sites, 'sites total')"
+            "target": "alias(stats.gauges.$shard.construction.sites, 'TOTAL')"
           },
           {
             "refId": "B",
-            "target": "alias(stats.gauges.$shard.construction.sitesRemote, 'sites remote')"
+            "target": "aliasByNode(stats.gauges.$shard.construction.byRoom.*.sites, 5)"
           }
         ],
         "fieldConfig": {
@@ -1750,7 +1750,7 @@
       {
         "id": 240,
         "type": "timeseries",
-        "title": "Construction progress %",
+        "title": "Construction \u2014 energy to finish, by room",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1761,21 +1761,19 @@
         "targets": [
           {
             "refId": "A",
-            "target": "alias(stats.gauges.$shard.construction.progressPct, 'progress %')"
+            "target": "aliasByNode(stats.gauges.$shard.construction.byRoom.*.remaining, 5)"
           }
         ],
         "fieldConfig": {
           "defaults": {
-            "unit": "percent",
+            "unit": "short",
             "custom": {
               "drawStyle": "line",
               "lineWidth": 2,
               "fillOpacity": 10,
               "spanNulls": true,
               "showPoints": "never"
-            },
-            "max": 100,
-            "min": 0
+            }
           },
           "overrides": [
             {
