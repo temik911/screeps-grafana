@@ -1661,13 +1661,176 @@
       {
         "id": 203,
         "type": "row",
-        "title": "Movement & Pathfind",
+        "title": "Construction",
         "collapsed": false,
         "gridPos": {
           "h": 1,
           "w": 24,
           "x": 0,
           "y": 103
+        },
+        "panels": []
+      },
+      {
+        "id": 239,
+        "type": "timeseries",
+        "title": "Construction sites (total + remote)",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 104
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "refId": "A",
+            "target": "alias(stats.gauges.$shard.construction.sites, 'sites total')"
+          },
+          {
+            "refId": "B",
+            "target": "alias(stats.gauges.$shard.construction.sitesRemote, 'sites remote')"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "limit"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "red"
+                  }
+                },
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "fill": "dash",
+                    "dash": [
+                      10,
+                      10
+                    ]
+                  }
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 240,
+        "type": "timeseries",
+        "title": "Construction progress %",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 104
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "refId": "A",
+            "target": "alias(stats.gauges.$shard.construction.progressPct, 'progress %')"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "max": 100,
+            "min": 0
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "limit"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "red"
+                  }
+                },
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "fill": "dash",
+                    "dash": [
+                      10,
+                      10
+                    ]
+                  }
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 204,
+        "type": "row",
+        "title": "Movement & Pathfind",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 112
         },
         "panels": []
       },
@@ -1679,7 +1842,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 104
+          "y": 113
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1726,7 +1889,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 112
+          "y": 121
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1805,7 +1968,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 120
+          "y": 129
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1849,7 +2012,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 128
+          "y": 137
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1895,7 +2058,7 @@
           "h": 8,
           "w": 12,
           "x": 8,
-          "y": 128
+          "y": 137
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1943,7 +2106,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 136
+          "y": 145
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2012,7 +2175,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 136
+          "y": 145
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2055,7 +2218,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 144
+          "y": 153
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2098,7 +2261,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 144
+          "y": 153
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2145,7 +2308,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 152
+          "y": 161
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2181,7 +2344,7 @@
         }
       },
       {
-        "id": 204,
+        "id": 205,
         "type": "row",
         "title": "Logistics",
         "collapsed": false,
@@ -2189,7 +2352,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 160
+          "y": 169
         },
         "panels": []
       },
@@ -2201,7 +2364,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 161
+          "y": 170
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2264,7 +2427,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 169
+          "y": 178
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2323,7 +2486,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 177
+          "y": 186
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2383,7 +2546,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 185
+          "y": 194
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2439,7 +2602,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 185
+          "y": 194
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2491,7 +2654,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 193
+          "y": 202
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2545,7 +2708,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 201
+          "y": 210
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2599,7 +2762,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 209
+          "y": 218
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2641,7 +2804,7 @@
         }
       },
       {
-        "id": 205,
+        "id": 206,
         "type": "row",
         "title": "Logistics broker",
         "collapsed": false,
@@ -2649,7 +2812,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 217
+          "y": 226
         },
         "panels": []
       },
@@ -2661,7 +2824,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 218
+          "y": 227
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2720,7 +2883,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 226
+          "y": 235
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2763,7 +2926,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 234
+          "y": 243
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2811,7 +2974,7 @@
         }
       },
       {
-        "id": 206,
+        "id": 207,
         "type": "row",
         "title": "Remote mining",
         "collapsed": false,
@@ -2819,7 +2982,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 242
+          "y": 251
         },
         "panels": []
       },
@@ -2832,7 +2995,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 243
+          "y": 252
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2895,7 +3058,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 243
+          "y": 252
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2958,7 +3121,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 251
+          "y": 260
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3003,7 +3166,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 259
+          "y": 268
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3060,7 +3223,7 @@
         }
       },
       {
-        "id": 207,
+        "id": 208,
         "type": "row",
         "title": "Minerals",
         "collapsed": false,
@@ -3068,7 +3231,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 267
+          "y": 276
         },
         "panels": []
       },
@@ -3080,7 +3243,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 268
+          "y": 277
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3123,7 +3286,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 268
+          "y": 277
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3167,7 +3330,7 @@
         }
       },
       {
-        "id": 208,
+        "id": 209,
         "type": "row",
         "title": "Hostiles & Defense",
         "collapsed": false,
@@ -3175,7 +3338,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 276
+          "y": 285
         },
         "panels": []
       },
@@ -3188,7 +3351,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 277
+          "y": 286
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3240,7 +3403,7 @@
         }
       },
       {
-        "id": 209,
+        "id": 210,
         "type": "row",
         "title": "Market",
         "collapsed": false,
@@ -3248,7 +3411,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 285
+          "y": 294
         },
         "panels": []
       },
@@ -3261,7 +3424,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 286
+          "y": 295
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3307,7 +3470,7 @@
           "h": 4,
           "w": 6,
           "x": 0,
-          "y": 290
+          "y": 299
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3353,7 +3516,7 @@
           "h": 4,
           "w": 6,
           "x": 6,
-          "y": 290
+          "y": 299
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3399,7 +3562,7 @@
           "h": 4,
           "w": 6,
           "x": 12,
-          "y": 290
+          "y": 299
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3445,7 +3608,7 @@
           "h": 4,
           "w": 6,
           "x": 18,
-          "y": 290
+          "y": 299
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3491,7 +3654,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 294
+          "y": 303
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3545,7 +3708,7 @@
           "h": 8,
           "w": 6,
           "x": 12,
-          "y": 294
+          "y": 303
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3599,7 +3762,7 @@
           "h": 8,
           "w": 6,
           "x": 18,
-          "y": 294
+          "y": 303
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3637,169 +3800,6 @@
           "tooltip": {
             "mode": "multi",
             "sort": "desc"
-          }
-        }
-      },
-      {
-        "type": "row",
-        "id": 238,
-        "title": "Construction",
-        "collapsed": false,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 302
-        },
-        "panels": []
-      },
-      {
-        "id": 239,
-        "type": "timeseries",
-        "title": "Construction sites (total + remote)",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 303
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "refId": "A",
-            "target": "alias(stats.gauges.$shard.construction.sites, 'sites total')"
-          },
-          {
-            "refId": "B",
-            "target": "alias(stats.gauges.$shard.construction.sitesRemote, 'sites remote')"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "short",
-            "custom": {
-              "drawStyle": "line",
-              "lineWidth": 2,
-              "fillOpacity": 10,
-              "spanNulls": true,
-              "showPoints": "never"
-            }
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "limit"
-              },
-              "properties": [
-                {
-                  "id": "color",
-                  "value": {
-                    "mode": "fixed",
-                    "fixedColor": "red"
-                  }
-                },
-                {
-                  "id": "custom.lineStyle",
-                  "value": {
-                    "fill": "dash",
-                    "dash": [
-                      10,
-                      10
-                    ]
-                  }
-                },
-                {
-                  "id": "custom.fillOpacity",
-                  "value": 0
-                }
-              ]
-            }
-          ]
-        },
-        "options": {
-          "legend": {
-            "showLegend": true,
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "multi",
-            "sort": "none"
-          }
-        }
-      },
-      {
-        "id": 240,
-        "type": "timeseries",
-        "title": "Construction progress %",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 12,
-          "y": 303
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "refId": "A",
-            "target": "alias(stats.gauges.$shard.construction.progressPct, 'progress %')"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "percent",
-            "custom": {
-              "drawStyle": "line",
-              "lineWidth": 2,
-              "fillOpacity": 10,
-              "spanNulls": true,
-              "showPoints": "never"
-            },
-            "max": 100,
-            "min": 0
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "limit"
-              },
-              "properties": [
-                {
-                  "id": "color",
-                  "value": {
-                    "mode": "fixed",
-                    "fixedColor": "red"
-                  }
-                },
-                {
-                  "id": "custom.lineStyle",
-                  "value": {
-                    "fill": "dash",
-                    "dash": [
-                      10,
-                      10
-                    ]
-                  }
-                },
-                {
-                  "id": "custom.fillOpacity",
-                  "value": 0
-                }
-              ]
-            }
-          ]
-        },
-        "options": {
-          "legend": {
-            "showLegend": true,
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "multi",
-            "sort": "none"
           }
         }
       }
