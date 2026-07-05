@@ -1031,7 +1031,7 @@
       {
         "id": 11,
         "type": "timeseries",
-        "title": "Room \u2014 spawn queue depth & build sites",
+        "title": "Room \u2014 spawn queue depth",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -1043,10 +1043,6 @@
           {
             "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.spawnQueueDepth, 4), '$', ' queue')",
             "refId": "A"
-          },
-          {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.sites, 4), '$', ' sites')",
-            "refId": "B"
           }
         ],
         "fieldConfig": {
