@@ -122,7 +122,7 @@ for i, p in enumerate(STATUS_STRIP):
 # removed from StatsProcess; storage/terminal expanded to all resources; heap added.
 ROWS = [
     ('Health & CPU', [5, 6, 7, 60], False),
-    ('Per-room economy', [8, 9, 61, 62, 10, 11, 25, 26, 45, 46, 29], False),
+    ('Per-room economy', [8, 9, 61, 62, 10, 11, 25, 26, 45, 241, 46, 29], False),
     ('Energy & build', [15, 214, 215], False),
     ('Construction', [239, 240], False),
     ('Movement & Pathfind', [64, 65, 66, 24, 30, 31, 32, 217, 218, 220], False),

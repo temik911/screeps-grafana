@@ -1246,6 +1246,70 @@
         }
       },
       {
+        "id": 241,
+        "type": "timeseries",
+        "title": "Controller \u2014 upgrade energy / tick",
+        "description": "Per-room controller progress as % of energy needed for next RCL. Computed in the bot (StatsProcess) for direct passthrough \u2014 RCL 8 rooms report 100% (no next level). Thresholds: green \u226480, yellow 80-95, orange >95 (almost leveled).",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 70
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "refId": "A",
+            "target": "aliasByNode(summarize(stats.gauges.$shard.rooms.*.controllerUpgradeEnergy, '1min', 'avg'), 4)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 15,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 80
+                },
+                {
+                  "color": "orange",
+                  "value": 95
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
         "id": 46,
         "type": "timeseries",
         "title": "Controller \u2014 ETA to next level (hours)",
@@ -1253,8 +1317,8 @@
         "gridPos": {
           "h": 8,
           "w": 12,
-          "x": 12,
-          "y": 70
+          "x": 0,
+          "y": 78
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1321,7 +1385,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 78
+          "y": 86
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1373,7 +1437,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 86
+          "y": 94
         },
         "panels": []
       },
@@ -1386,7 +1450,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 87
+          "y": 95
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1430,7 +1494,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 95
+          "y": 103
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1565,7 +1629,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 95
+          "y": 103
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1663,7 +1727,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 103
+          "y": 111
         },
         "panels": []
       },
@@ -1675,7 +1739,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 104
+          "y": 112
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1751,7 +1815,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 104
+          "y": 112
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1824,7 +1888,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 112
+          "y": 120
         },
         "panels": []
       },
@@ -1836,7 +1900,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 113
+          "y": 121
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1883,7 +1947,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 121
+          "y": 129
         },
         "datasource": "localGraphite",
         "targets": [
@@ -1962,7 +2026,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 129
+          "y": 137
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2006,7 +2070,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 137
+          "y": 145
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2052,7 +2116,7 @@
           "h": 8,
           "w": 12,
           "x": 8,
-          "y": 137
+          "y": 145
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2100,7 +2164,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 145
+          "y": 153
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2169,7 +2233,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 145
+          "y": 153
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2212,7 +2276,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 153
+          "y": 161
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2255,7 +2319,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 153
+          "y": 161
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2302,7 +2366,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 161
+          "y": 169
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2346,7 +2410,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 169
+          "y": 177
         },
         "panels": []
       },
@@ -2358,7 +2422,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 170
+          "y": 178
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2421,7 +2485,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 178
+          "y": 186
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2480,7 +2544,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 186
+          "y": 194
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2540,7 +2604,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 194
+          "y": 202
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2596,7 +2660,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 194
+          "y": 202
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2648,7 +2712,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 202
+          "y": 210
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2702,7 +2766,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 210
+          "y": 218
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2756,7 +2820,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 218
+          "y": 226
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2806,7 +2870,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 226
+          "y": 234
         },
         "panels": []
       },
@@ -2818,7 +2882,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 227
+          "y": 235
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2877,7 +2941,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 235
+          "y": 243
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2920,7 +2984,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 243
+          "y": 251
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2976,7 +3040,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 251
+          "y": 259
         },
         "panels": []
       },
@@ -2989,7 +3053,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 252
+          "y": 260
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3052,7 +3116,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 252
+          "y": 260
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3115,7 +3179,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 260
+          "y": 268
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3160,7 +3224,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 268
+          "y": 276
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3225,7 +3289,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 276
+          "y": 284
         },
         "panels": []
       },
@@ -3237,7 +3301,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 277
+          "y": 285
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3280,7 +3344,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 277
+          "y": 285
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3332,7 +3396,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 285
+          "y": 293
         },
         "panels": []
       },
@@ -3345,7 +3409,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 286
+          "y": 294
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3405,7 +3469,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 294
+          "y": 302
         },
         "panels": []
       },
@@ -3418,7 +3482,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 295
+          "y": 303
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3464,7 +3528,7 @@
           "h": 4,
           "w": 6,
           "x": 0,
-          "y": 299
+          "y": 307
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3510,7 +3574,7 @@
           "h": 4,
           "w": 6,
           "x": 6,
-          "y": 299
+          "y": 307
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3556,7 +3620,7 @@
           "h": 4,
           "w": 6,
           "x": 12,
-          "y": 299
+          "y": 307
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3602,7 +3666,7 @@
           "h": 4,
           "w": 6,
           "x": 18,
-          "y": 299
+          "y": 307
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3648,7 +3712,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 303
+          "y": 311
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3702,7 +3766,7 @@
           "h": 8,
           "w": 6,
           "x": 12,
-          "y": 303
+          "y": 311
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3756,7 +3820,7 @@
           "h": 8,
           "w": 6,
           "x": 18,
-          "y": 303
+          "y": 311
         },
         "datasource": "localGraphite",
         "targets": [
