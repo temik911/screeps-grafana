@@ -2402,6 +2402,116 @@
         }
       },
       {
+        "id": 242,
+        "type": "timeseries",
+        "title": "Movement \u2014 crossings / border-stuck / fatigue@border",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 177
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.$shard.movement.crossings, 'crossings')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.$shard.movement.borderStuck, 'border-stuck (thrash)')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.$shard.movement.fatigueAtBorder, 'fatigue@border (evict risk)')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "id": 243,
+        "type": "timeseries",
+        "title": "Route policy \u2014 decisions / sealed overlay",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 177
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(stats.gauges.$shard.routePolicy.allowed, 'allowed')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(stats.gauges.$shard.routePolicy.blocked, 'blocked (hard)')",
+            "refId": "B"
+          },
+          {
+            "target": "alias(stats.gauges.$shard.routePolicy.softBlocked, 'soft-blocked (stale intel)')",
+            "refId": "C"
+          },
+          {
+            "target": "alias(stats.gauges.$shard.routePolicy.overlayCalls, 'overlay calls')",
+            "refId": "D"
+          },
+          {
+            "target": "alias(stats.gauges.$shard.routePolicy.tilesApplied, 'sealed tiles applied')",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        }
+      },
+      {
         "id": 205,
         "type": "row",
         "title": "Logistics",
@@ -2410,7 +2520,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 177
+          "y": 185
         },
         "panels": []
       },
@@ -2422,7 +2532,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 178
+          "y": 186
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2485,7 +2595,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 186
+          "y": 194
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2544,7 +2654,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 194
+          "y": 202
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2604,7 +2714,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 202
+          "y": 210
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2660,7 +2770,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 202
+          "y": 210
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2712,7 +2822,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 210
+          "y": 218
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2766,7 +2876,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 218
+          "y": 226
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2820,7 +2930,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 226
+          "y": 234
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2870,7 +2980,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 234
+          "y": 242
         },
         "panels": []
       },
@@ -2882,7 +2992,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 235
+          "y": 243
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2941,7 +3051,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 243
+          "y": 251
         },
         "datasource": "localGraphite",
         "targets": [
@@ -2984,7 +3094,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 251
+          "y": 259
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3040,7 +3150,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 259
+          "y": 267
         },
         "panels": []
       },
@@ -3053,7 +3163,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 260
+          "y": 268
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3116,7 +3226,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 260
+          "y": 268
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3179,7 +3289,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 268
+          "y": 276
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3224,7 +3334,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 276
+          "y": 284
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3289,7 +3399,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 284
+          "y": 292
         },
         "panels": []
       },
@@ -3301,7 +3411,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 285
+          "y": 293
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3344,7 +3454,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 285
+          "y": 293
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3396,7 +3506,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 293
+          "y": 301
         },
         "panels": []
       },
@@ -3409,7 +3519,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 294
+          "y": 302
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3469,7 +3579,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 302
+          "y": 310
         },
         "panels": []
       },
@@ -3482,7 +3592,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 303
+          "y": 311
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3528,7 +3638,7 @@
           "h": 4,
           "w": 6,
           "x": 0,
-          "y": 307
+          "y": 315
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3574,7 +3684,7 @@
           "h": 4,
           "w": 6,
           "x": 6,
-          "y": 307
+          "y": 315
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3620,7 +3730,7 @@
           "h": 4,
           "w": 6,
           "x": 12,
-          "y": 307
+          "y": 315
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3666,7 +3776,7 @@
           "h": 4,
           "w": 6,
           "x": 18,
-          "y": 307
+          "y": 315
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3712,7 +3822,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 311
+          "y": 319
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3766,7 +3876,7 @@
           "h": 8,
           "w": 6,
           "x": 12,
-          "y": 311
+          "y": 319
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3820,7 +3930,7 @@
           "h": 8,
           "w": 6,
           "x": 18,
-          "y": 311
+          "y": 319
         },
         "datasource": "localGraphite",
         "targets": [
