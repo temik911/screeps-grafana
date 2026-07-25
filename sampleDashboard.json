@@ -4371,6 +4371,231 @@
             "sort": "desc"
           }
         }
+      },
+      {
+        "id": 252,
+        "type": "row",
+        "title": "Inter-room sharing",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 360
+        },
+        "panels": []
+      },
+      {
+        "id": 253,
+        "type": "timeseries",
+        "title": "Energy given to our other rooms (per hour)",
+        "description": "How much energy each room ships to the OTHERS over its terminal, per hour of real time. This is the direct answer to 'how much is the mature room carrying the colony' \u2014 an RCL8 room with a surplus shows a steady positive line while the rooms it feeds show nothing here. Derived from a cumulative counter (TerminalDispatcher writes it on each successful send), so a flat line means no sends at all, not a stalled metric.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 361
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.rooms.*.share.energySent), 3600), '.*rooms\\.([^.]+)\\..*', '\\1 sent')",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 254,
+        "type": "timeseries",
+        "title": "Energy received from our other rooms (per hour)",
+        "description": "The receiving end of the same flow. A room that keeps showing up here is not paying for itself \u2014 cross-check with its storage energy and its RCL progress: if energy comes in and the controller still isn't moving, the problem is spend, not income.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 361
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.rooms.*.share.energyRecv), 3600), '.*rooms\\.([^.]+)\\..*', '\\1 recv')",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 255,
+        "type": "timeseries",
+        "title": "Sharing \u2014 totals (cumulative)",
+        "description": "Running totals since the counters were introduced. `transfer cost` is the energy the ENGINE burns for distance on the sender's side (it scales with range, ~10% per 10 rooms of a linear distance) \u2014 that is the tax on sharing at all, and it is charged on mineral sends too, not just energy ones. Compare it against `energy given`: a cost approaching the amount delivered means the pair of rooms is too far apart for terminal energy transfer to be worth it.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 369
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.energySent, 4), '$', ' energy given')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.otherSent, 4), '$', ' minerals given')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.cost, 4), '$', ' transfer cost')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 256,
+        "type": "timeseries",
+        "title": "Sharing \u2014 sends & non-energy flow",
+        "description": "Colony-wide rates. A terminal can do one operation per cooldown, so `sends/h` is also a measure of how much terminal time inter-room logistics is consuming \u2014 time that is then NOT available for market deals from the same terminal.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 369
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.share.sends), 3600), '$', ' sends/h')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.share.otherSent), 3600), '$', ' minerals+compounds/h')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.share.cost), 3600), '$', ' transfer cost/h')",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
       }
     ]
   },
