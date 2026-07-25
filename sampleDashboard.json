@@ -3418,10 +3418,6 @@
           {
             "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.amount, 4), '$', ' deposit')",
             "refId": "A"
-          },
-          {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.floor, 4), '$', ' floor')",
-            "refId": "B"
           }
         ],
         "fieldConfig": {
@@ -3449,7 +3445,7 @@
             "sort": "none"
           }
         },
-        "description": "Ore left in the ground. Counts down to 0 and then sits out MINERAL_REGEN_TIME (50000 ticks) \u2014 unless the room holds it: `floor` is the level the extractor miner stops at so `mineralAmount` never reaches 0 and the power creep's REGEN_MINERAL keeps topping it up. A deposit flattening onto its floor line is the hold policy working."
+        "description": "Ore left in the ground. Counts down to 0 and then sits out MINERAL_REGEN_TIME (50000 ticks), coming back at the density's full deposit \u2014 with a chance to re-roll the density itself. That lottery is why we mine deposits out instead of holding them alive under REGEN_MINERAL."
       },
       {
         "id": 212,
@@ -4322,8 +4318,8 @@
       {
         "id": 251,
         "type": "timeseries",
-        "title": "Mineral \u2014 hold policy (REGEN_MINERAL)",
-        "description": "floor > 0 = the room is HOLDING its deposit alive instead of mining it out (MineralPolicy: worth it when the density's deposit is smaller than what the top-up yields over MINERAL_REGEN_TIME \u2014 LOW/MODERATE yes, HIGH/ULTRA no). The engine refuses REGEN_MINERAL on an empty or regenerating deposit, so a held deposit only pays while regen uptime stays ~100: floor > 0 with 0 uptime is a stalled mine. ticks to regen > 0 means the deposit is already dead and nothing can shorten it.",
+        "title": "Mineral \u2014 REGEN_MINERAL (top-up while the deposit lives)",
+        "description": "REGEN_MINERAL only tops up a deposit that still has ore \u2014 the engine refuses it on an empty or regenerating one, in usePower AND in the per-tick application. So it stretches the mining phase by ~15% and then goes dead for the whole 50000-tick window: ticks to regen > 0 means nothing is happening and nothing can be done about it. We deliberately do NOT hold deposits alive at a floor \u2014 with density re-rolls E[deposit] = 52592 > 50000, so cycling averages 1.043/tick against holding's 1.000. regen uptime < 100 while the deposit is alive = the schedule is skipping the mineral.",
         "gridPos": {
           "h": 8,
           "w": 24,
@@ -4333,20 +4329,16 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.floor, 4), '$', ' floor')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.regenUptimePct, 4), '$', ' regen uptime %')",
             "refId": "A"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.regenUptimePct, 4), '$', ' regen uptime %')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.regenTier, 4), '$', ' stage')",
             "refId": "B"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.regenTier, 4), '$', ' stage')",
-            "refId": "C"
-          },
-          {
             "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.mineral.ticksToRegen, 4), '$', ' ticks to regen')",
-            "refId": "D"
+            "refId": "C"
           }
         ],
         "fieldConfig": {
