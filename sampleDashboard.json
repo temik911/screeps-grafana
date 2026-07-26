@@ -4388,8 +4388,8 @@
       {
         "id": 253,
         "type": "timeseries",
-        "title": "Energy given to our other rooms (per hour)",
-        "description": "How much energy each room ships to the OTHERS over its terminal, per hour of real time. This is the direct answer to 'how much is the mature room carrying the colony' \u2014 an RCL8 room with a surplus shows a steady positive line while the rooms it feeds show nothing here. Derived from a cumulative counter (TerminalDispatcher writes it on each successful send), so a flat line means no sends at all, not a stalled metric.",
+        "title": "Energy given away \u2014 total",
+        "description": "Running total of energy each room has shipped to the OTHERS over its terminal, in units \u2014 not a rate. This is the direct answer to 'how much is the mature room carrying the colony': the line only ever goes up, and the legend's last value is the exact amount given away since the counters were introduced. A flat line means no sends at all.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -4399,7 +4399,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.rooms.*.share.energySent), 3600), '.*rooms\\.([^.]+)\\..*', '\\1 sent')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.energySent, 4), '$', ' \u043e\u0442\u0434\u0430\u043d\u043e')",
             "refId": "A"
           }
         ],
@@ -4437,8 +4437,8 @@
       {
         "id": 254,
         "type": "timeseries",
-        "title": "Energy received from our other rooms (per hour)",
-        "description": "The receiving end of the same flow. A room that keeps showing up here is not paying for itself \u2014 cross-check with its storage energy and its RCL progress: if energy comes in and the controller still isn't moving, the problem is spend, not income.",
+        "title": "Energy received \u2014 total",
+        "description": "The receiving end of the same flow, in units. A room that keeps climbing here is not paying for itself \u2014 cross-check against its controller progress: if energy arrives and the controller still isn't moving, the problem is spend, not income.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -4448,7 +4448,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.rooms.*.share.energyRecv), 3600), '.*rooms\\.([^.]+)\\..*', '\\1 recv')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.energyRecv, 4), '$', ' \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u043e')",
             "refId": "A"
           }
         ],
@@ -4486,8 +4486,8 @@
       {
         "id": 255,
         "type": "timeseries",
-        "title": "Sharing \u2014 totals (cumulative)",
-        "description": "Running totals since the counters were introduced. `transfer cost` is the energy the ENGINE burns for distance on the sender's side (it scales with range, ~10% per 10 rooms of a linear distance) \u2014 that is the tax on sharing at all, and it is charged on mineral sends too, not just energy ones. Compare it against `energy given`: a cost approaching the amount delivered means the pair of rooms is too far apart for terminal energy transfer to be worth it.",
+        "title": "Minerals & compounds \u2014 given / received (total)",
+        "description": "Everything that isn't energy \u2014 minerals, compounds, ops \u2014 in units, cumulative. Separate from energy on purpose: energy is what a struggling room actually starves for, while minerals are inventory balancing, and mixing them hides both.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -4497,16 +4497,12 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.energySent, 4), '$', ' energy given')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.otherSent, 4), '$', ' \u043e\u0442\u0434\u0430\u043d\u043e')",
             "refId": "A"
           },
           {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.otherSent, 4), '$', ' minerals given')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.otherRecv, 4), '$', ' \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u043e')",
             "refId": "B"
-          },
-          {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.cost, 4), '$', ' transfer cost')",
-            "refId": "C"
           }
         ],
         "fieldConfig": {
@@ -4543,8 +4539,8 @@
       {
         "id": 256,
         "type": "timeseries",
-        "title": "Sharing \u2014 sends & non-energy flow",
-        "description": "Colony-wide rates. A terminal can do one operation per cooldown, so `sends/h` is also a measure of how much terminal time inter-room logistics is consuming \u2014 time that is then NOT available for market deals from the same terminal.",
+        "title": "Transfer cost & send count (total)",
+        "description": "`cost` is the energy the ENGINE burns for distance on the sender's side, charged on mineral sends too \u2014 the tax on sharing at all. Compare it against the amount given away: a cost approaching the delivered total means that pair of rooms is too far apart for terminal energy transfer to be worth it. `sends` counts terminal operations, and a terminal does one per cooldown \u2014 so it also measures how much terminal time inter-room logistics takes away from market deals.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -4554,16 +4550,12 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.share.sends), 3600), '$', ' sends/h')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.cost, 4), '$', ' \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c \u043f\u0435\u0440\u0435\u0441\u044b\u043b\u043a\u0438')",
             "refId": "A"
           },
           {
-            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.share.otherSent), 3600), '$', ' minerals+compounds/h')",
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.share.sends, 4), '$', ' \u043e\u0442\u043f\u0440\u0430\u0432\u043e\u043a')",
             "refId": "B"
-          },
-          {
-            "target": "aliasSub(scaleToSeconds(nonNegativeDerivative(stats.gauges.$shard.share.cost), 3600), '$', ' transfer cost/h')",
-            "refId": "C"
           }
         ],
         "fieldConfig": {
