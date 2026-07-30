@@ -9,7 +9,7 @@
 #   TG_CHAT_ID=...      target chat
 # Everything else is optional and overridable from that file (PANEL_TITLE, THEME, WIDTH, …).
 #
-# DRY_RUN=1 renders and reports the size without sending anything.
+# DRY_RUN=1 renders and reports the size without sending anything. FORCE=1 ignores the hour gate.
 set -euo pipefail
 
 CONF=${CONF:-/etc/screeps-grafana-digest.env}
@@ -19,6 +19,20 @@ if [ ! -r "$CONF" ]; then
 fi
 # shellcheck disable=SC1090
 . "$CONF"
+
+# Which Moscow hours to send at. The gate lives HERE rather than in the crontab because this box runs
+# on Europe/Amsterdam and its cron (vixie 3.0pl1) has no CRON_TZ: a crontab line spelled in local time
+# would slide by an hour against Moscow at every DST switch. So cron fires hourly and we decide.
+SEND_AT_MSK_HOURS=${SEND_AT_MSK_HOURS:-}
+if [ -n "$SEND_AT_MSK_HOURS" ] && [ -z "${FORCE:-}" ]; then
+    hours=",${SEND_AT_MSK_HOURS// /},"
+    now=$(TZ=Europe/Moscow date '+%-H')
+    # Silent exit, not a log line: a skipped hour is the normal case, 16 times a day.
+    case "$hours" in
+        *",$now,"*) ;;
+        *) exit 0 ;;
+    esac
+fi
 
 : "${GRAFANA_TOKEN:?GRAFANA_TOKEN not set in $CONF}"
 if [ -z "${DRY_RUN:-}" ]; then
