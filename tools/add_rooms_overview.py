@@ -36,7 +36,9 @@ import urllib.request
 BASE = "https://example.com/screeps-grafana/api"
 UID = "screeps-rooms"
 TITLE = "Комнаты — обзор"
-H = 9  # panel height; everything below shifts by this
+# Panel height in grid units (~30px each); everything below shifts by this. 16 fits ~14 rows without
+# an inner scrollbar — the colony is 13 rooms and expanding, so bump this when rows start hiding.
+H = 16
 G = "stats.gauges.$shard"
 
 # refId → (graphite metric, column title). Order matters twice: the queries are emitted in this order,

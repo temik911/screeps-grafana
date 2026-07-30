@@ -72,6 +72,12 @@ state to fall back on. When a transformation chain is in doubt, POST a throwaway
 panel per candidate chain, render each, compare, then delete it (`DELETE /api/dashboards/uid/<uid>`);
 that is how the working chain for the Rooms overview table was found.
 
+A whole dashboard renders from `/render/d/<uid>/` (same params) — useful for checking layout after
+panels shift. Add **`&kiosk=true`**: without it the render includes the nav rail and whatever
+announcement modal Grafana currently shows, which covers the top panels. Panel height is easy to get
+wrong this way — a table that shows every row at `height=560` in a `d-solo` render can still be
+clipped inside the dashboard, where its `gridPos.h` is what decides.
+
 ## `tools/restructure_dashboard.py` — the dashboard is GENERATED, not hand-laid
 
 `sampleDashboard.json`'s layout is produced by this script; **do not hand-place panels and expect
