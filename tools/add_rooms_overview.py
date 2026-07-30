@@ -100,6 +100,12 @@ def target(ref, metric):
     return {"refId": ref, "target": f"aliasByNode(currentAbove({G}.rooms.*.{metric}, 0), 4)"}
 
 
+def steps(bands):
+    """[(from, colour), …] → a Grafana threshold config. The first band's `from` must be None (base)."""
+    return {"mode": "absolute",
+            "steps": [{"value": value, "color": colour} for value, colour in bands]}
+
+
 transformations = [
     {"id": "reduce", "options": {"reducers": ["lastNotNull"], "mode": "seriesToRows"},
      "filter": {"id": "byRefId", "options": ref}}
@@ -135,20 +141,73 @@ panel = {
     "fieldConfig": {
         "defaults": {"custom": {"align": "auto", "cellOptions": {"type": "auto"}}, "decimals": 0},
         "overrides": [
+            {"matcher": {"id": "byName", "options": "Комната"},
+             "properties": [{"id": "custom.width", "value": 130}]},
+            {"matcher": {"id": "byName", "options": "RCL"},
+             "properties": [
+                 # Discrete levels, so a solid block per band rather than an interpolated gradient.
+                 {"id": "custom.cellOptions", "value": {"type": "color-background", "mode": "basic"}},
+                 {"id": "color", "value": {"mode": "thresholds"}},
+                 # Pinned narrow: a filled cell left to auto-width becomes a colour block wider than
+                 # every other column and drags the eye away from the actual numbers.
+                 {"id": "custom.width", "value": 70},
+                 {"id": "custom.align", "value": "center"},
+                 {"id": "thresholds", "value": steps([
+                     (None, "semi-dark-red"),   # 1-3: no storage yet, still on harvesters
+                     (4, "orange"),             # 4-5: storage/links arriving
+                     (6, "yellow"),             # 6: terminal, extractor
+                     (7, "light-green"),        # 7: labs, factory
+                     (8, "dark-green"),         # 8: maxed
+                 ])},
+             ]},
             {"matcher": {"id": "byName", "options": "Контроллер %"},
              "properties": [
                  {"id": "unit", "value": "percent"},
                  {"id": "min", "value": 0}, {"id": "max", "value": 100},
                  {"id": "decimals", "value": 1},
-                 # A gradient bar paints a nearly-full controller red, which reads as a problem when it
-                 # is the opposite — keep one flat colour and let the length carry the meaning.
                  {"id": "custom.cellOptions", "value": {"type": "gauge", "mode": "basic"}},
-                 {"id": "color", "value": {"mode": "fixed", "fixedColor": "green"}},
+                 # Capped, or on a wide monitor the bar eats the slack of the whole row.
+                 {"id": "custom.width", "value": 260},
+                 # Progress is neither good nor bad, so the bar length carries the meaning and the
+                 # colour only marks "about to level" — an interpolated gradient here would paint a
+                 # nearly-full controller red, i.e. exactly backwards.
+                 {"id": "color", "value": {"mode": "thresholds"}},
+                 {"id": "thresholds", "value": steps([(None, "blue"), (90, "green")])},
              ]},
             {"matcher": {"id": "byName", "options": "До апа, ч"},
-             "properties": [{"id": "unit", "value": "h"}, {"id": "decimals", "value": 1}]},
+             "properties": [
+                 {"id": "unit", "value": "h"}, {"id": "decimals", "value": 1},
+                 # All five columns are pinned: with any of them left on auto, the leftover width of a
+                 # wide screen is inserted BETWEEN columns and the row reads as disconnected islands.
+                 {"id": "custom.width", "value": 150},
+                 # Coloured text, not a filled cell: three painted columns out of five turns the table
+                 # into a heatmap and stops being scannable.
+                 {"id": "custom.cellOptions", "value": {"type": "color-text"}},
+                 {"id": "color", "value": {"mode": "thresholds"}},
+                 {"id": "thresholds", "value": steps([
+                     (None, "green"),           # < 1 day
+                     # semi-dark, because plain "yellow" as TEXT is nearly white on the dark theme —
+                     # the band stops reading as a warning at all (checked in both themes).
+                     (24, "semi-dark-yellow"),
+                     (72, "orange"),            # 3+ days
+                     (168, "semi-dark-red"),    # a week or more: the room is barely upgrading
+                 ])},
+             ]},
             {"matcher": {"id": "byName", "options": "Сторадж, энергия"},
-             "properties": [{"id": "unit", "value": "short"}]},
+             "properties": [
+                 {"id": "unit", "value": "short"},
+                 {"id": "custom.width", "value": 170},
+                 {"id": "custom.cellOptions", "value": {"type": "color-text"}},
+                 {"id": "color", "value": {"mode": "thresholds"}},
+                 # Rough colony-wide bands, not per-RCL: 10k is the bar assistRoom uses to call a room
+                 # self-sufficient, and a mature room sitting under ~50k is running its buffer down.
+                 {"id": "thresholds", "value": steps([
+                     (None, "semi-dark-red"),
+                     (10000, "orange"),
+                     (50000, "semi-dark-yellow"),
+                     (150000, "green"),
+                 ])},
+             ]},
         ],
     },
     "options": {
