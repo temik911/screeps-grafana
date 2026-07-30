@@ -54,6 +54,24 @@ the panel(s) you intend, and POST back (don't blindly overwrite live with a poss
 file, and don't blast in dozens of panels at once). Keep `sampleDashboard.json` in sync with what
 you POST so the repo stays deployable.
 
+## Verify a panel by RENDERING it (an image renderer is running)
+
+`/api/ds/query` only proves the QUERY returns data — **transformations, field overrides, units and
+cell options all run in the browser**, so a panel can query perfectly and still render "No data" (this
+is exactly how the Rooms overview table shipped broken). The stack now runs a
+`grafana-image-renderer` sidecar, so render the panel and look at the PNG:
+
+```bash
+TOKEN=$(security find-generic-password -s screeps-grafana-token -a grafana -w)
+curl -s -H "Authorization: Bearer $TOKEN" -o /tmp/panel.png \
+  "https://example.com/screeps-grafana/render/d-solo/<dash-uid>/?panelId=<id>&var-shard=shard1&from=now-6h&to=now&width=1400&height=560&theme=light"
+```
+
+Template variables must be passed explicitly (`var-shard=`, `var-room=`) — the renderer has no UI
+state to fall back on. When a transformation chain is in doubt, POST a throwaway dashboard with one
+panel per candidate chain, render each, compare, then delete it (`DELETE /api/dashboards/uid/<uid>`);
+that is how the working chain for the Rooms overview table was found.
+
 ## `tools/restructure_dashboard.py` — the dashboard is GENERATED, not hand-laid
 
 `sampleDashboard.json`'s layout is produced by this script; **do not hand-place panels and expect
@@ -98,7 +116,23 @@ the box for pipeline/poller changes.
   `docker-compose.yml`, not `.prod.yml`). Containers `screeps-grafana-{node,statsd,graphite,grafana}-1`.
 - `node` ships to `statsd` over **UDP**, so a dead statsd loses metrics silently (node log:
   `EAI_AGAIN statsd`). If you recreate statsd, `docker compose restart node` (node caches its IP).
-  Don't recreate grafana/graphite without cause (the subpath env lives in the running container).
+- Containers: `screeps-grafana-{node,statsd,graphite,grafana,renderer}-1`. `renderer` is the
+  image-renderer sidecar (Chromium; the Grafana image has none) — grafana reaches it at
+  `http://renderer:8081/render` and it fetches panels back through `GF_RENDERING_CALLBACK_URL`, which
+  must carry the `/screeps-grafana/` subpath because `SERVE_FROM_SUB_PATH` makes that the real
+  internal path. Both sides share `RENDERER_TOKEN` from `docker-compose.env`: **grafana refuses to
+  boot** with the built-in default token, so a fresh clone must set it (`openssl rand -hex 24`).
+- **Recreating grafana used to break the site in two ways; both are now fixed in `docker-compose.yml`,
+  so don't reintroduce them.** (1) The `GF_SERVER_*` subpath env lived only on the running container —
+  a recreate dropped it and Grafana served links from the domain root. (2) The reverse proxy
+  (`proxy-nginx`, a *different* compose project) proxies to the literal host `grafana`, which it
+  can only resolve on its own network `proxy_default`; the container had been attached to it
+  by hand, so a recreate detached it and the site answered **502**. The compose file now declares that
+  network as external and joins grafana to it with the `grafana` alias.
+- After grafana's container IP changes, nginx still holds the old one — `docker exec proxy-nginx
+  nginx -s reload`. If reload reports `host not found in upstream "grafana"`, grafana is not on
+  `proxy_default` (check `docker inspect ... .NetworkSettings.Networks`), and reloading
+  cannot fix it until it is.
 - A poller/shard/token change is: VPS `git pull` + edit `docker-compose.env`
   (`SCREEPS_SHARD` + `SCREEPS_TOKEN` parallel lists) + `docker compose restart node`, THEN POST the
   dashboard (paths change with shards → panels go blank until re-POSTed).
