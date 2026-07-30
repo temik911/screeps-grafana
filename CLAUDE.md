@@ -95,6 +95,41 @@ announcement modal Grafana currently shows, which covers the top panels. Panel h
 wrong this way — a table that shows every row at `height=560` in a `d-solo` render can still be
 clipped inside the dashboard, where its `gridPos.h` is what decides.
 
+## Reading exact values back: use Graphite's own /render, not /api/ds/query
+
+Retention for `stats.*` (`storage-schemas.conf` in the graphite container) is
+**`10s:1d, 1m:28d, 10m:1y, 1h:2y`** — the last day is at the poller's own resolution, older data is
+rolled up by *average*.
+
+`POST /api/ds/query` is fine for "does this query return anything", but it has answered **short ranges
+from a much coarser archive**, ignoring the requested window: a `now-20min` query came back with a
+single point covering hours. Rolled-up points are averages, so the values are quietly wrong rather than
+missing — the tell that exposed it here was an RCL 8 room reporting `rcl` **7.4**, a bucket average
+spanning the level-up, and an ETA that could not be reconciled with the rate next to it.
+
+For exact numbers go through the datasource proxy to Graphite's native API, which honours `from`:
+
+```bash
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "https://example.com/screeps-grafana/api/datasources/proxy/uid/dfnetfig270g0c/render?target=<expr>&from=-20min&format=json"
+```
+
+Always print the number of points and the step you actually got before trusting a comparison, and do
+not pass `maxDataPoints` — that is what triggered the worst of it (the whole 2-year archive at a 1-hour
+step for a 40-minute request).
+
+## Don't smooth a metric the bot already smooths
+
+`controllerEtaHours` is computed from an upgrade rate the bot averages over 6000 ticks (~6.8 h). The
+overview ETA chart used to wrap it in `movingAverage(…, '6h')` — added when the metric came off a
+600-tick window and was too jumpy to read — which after the bot-side change smoothed an already-smooth
+series and added hours of lag. Before adding a Graphite-side rolling function, check whether the metric
+is already averaged in `StatsProcess` (`docs/TELEMETRY.md` in the bot repo says which are).
+
+Three panels display that metric: `screeps-overview` #46 (timeseries, log axis — the values span hours
+to weeks), and on `screeps-rooms` the overview table column «До апа, ч» plus the per-room stat panel
+#103. All three read the gauge raw.
+
 ## Telegram digest — the Rooms table as a photo every 3 hours
 
 `tools/tg_rooms_digest.sh` renders the "Комнаты — обзор" panel and posts it with `sendPhoto`. It runs
