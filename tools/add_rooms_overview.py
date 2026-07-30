@@ -212,7 +212,11 @@ panel = {
     },
     "options": {
         "showHeader": True,
-        "sortBy": [{"displayName": "RCL", "desc": True}],
+        # Composite default sort — the table panel honours every key in this list, not just the first
+        # (verified by render): level first, then how close that room is to the next one, so the rooms
+        # about to level sit at the top of their band. Both keys reference the RENAMED column titles.
+        "sortBy": [{"displayName": "RCL", "desc": True},
+                   {"displayName": "Контроллер %", "desc": True}],
         "footer": {"show": False},
     },
 }
