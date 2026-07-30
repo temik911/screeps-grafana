@@ -25,6 +25,23 @@ StatsProcess.writeStatsSegment    src/ScreepsStatsd.js               dashboard p
   variable (dropdown). Multi-shard: `SCREEPS_SHARD=shard2,shard3` + parallel `SCREEPS_TOKEN` list
   (per-shard tokens — the segment endpoint is rate-limited 360/h **per token**).
 
+## Two dashboards, only one of which lives in the repo
+
+| uid | title | source of truth | tooling |
+|---|---|---|---|
+| `screeps-overview` | Screeps — Overview | `sampleDashboard.json` in this repo | `tools/restructure_dashboard.py` rebuilds the layout |
+| `screeps-rooms` | Screeps — Rooms | **live Grafana only — there is no JSON for it here** | `tools/add_rooms_overview.py` (re)creates its top table |
+
+So for `screeps-rooms` the "keep the repo file in sync" rule cannot apply: GET the live dashboard,
+change what you mean to change, POST it back. Any script that edits it must be idempotent for the same
+reason — `add_rooms_overview.py` removes its own previous panel and un-shifts the rest before
+re-inserting, so re-running it never stacks copies.
+
+Its layout: the overview table at the top (all rooms, one row each), then a `$room` row of detail
+panels. The `$shard` and `$room` template variables are `query` variables wrapped in
+`currentAbove(..., 0)` — see the comment in `add_rooms_overview.py#target` for why (Graphite's
+wildcard returns every room we ever emitted, so a plain `rooms.*` lists long-dead prep-claims).
+
 ## Deploying the dashboard (do this yourself — don't ask)
 
 The dashboard is **`sampleDashboard.json`** (already wrapped as the API payload:
@@ -78,6 +95,52 @@ announcement modal Grafana currently shows, which covers the top panels. Panel h
 wrong this way — a table that shows every row at `height=560` in a `d-solo` render can still be
 clipped inside the dashboard, where its `gridPos.h` is what decides.
 
+## Telegram digest — the Rooms table as a photo every 3 hours
+
+`tools/tg_rooms_digest.sh` renders the "Комнаты — обзор" panel and posts it with `sendPhoto`. It runs
+from **root's crontab on the VPS** (`cron` was not installed on that box — it was added for this).
+
+```
+0 * * * *  /opt/screeps-grafana/tools/tg_rooms_digest.sh >>/var/log/screeps-digest.log 2>&1
+```
+
+**The schedule is NOT in the crontab.** Cron wakes the script hourly; the script compares the current
+Moscow hour against `SEND_AT_MSK_HOURS` (currently `0,3,6,9,12,15,18,21`) and exits silently otherwise.
+Reason: the box runs `Europe/Amsterdam` and its cron (vixie 3.0pl1) has **no `CRON_TZ`** support — the
+binary has no such string and `man 5 crontab` does not mention it — so a crontab line written in local
+time would slide an hour against Moscow at every DST switch. **To change the times, edit
+`SEND_AT_MSK_HOURS` in the env file; leave the crontab alone.**
+
+Config — `/etc/screeps-grafana-digest.env`, root-only `chmod 600`, deliberately outside git:
+
+| key | meaning |
+|---|---|
+| `GRAFANA_TOKEN` | service account `sa-1-cron_viewer`, **Viewer** role — render + dashboard read only |
+| `TG_BOT_TOKEN` | `@your_screeps_bot`, a bot dedicated to this (NOT the concierge bot) |
+| `TG_CHAT_ID` | the owner's private chat |
+| `SEND_AT_MSK_HOURS` | comma list of Moscow hours to send at |
+| optional | `THEME` (dark — reads better in Telegram), `WIDTH`, `HEIGHT`, `FROM`, `CAPTION`, `SHARD`, `PANEL_TITLE`, `DASH_UID`, `BASE` |
+
+Operational notes, each one a bug that was avoided or fixed:
+
+- The panel is resolved **by title**, never by a pinned id: `add_rooms_overview.py` assigns a fresh
+  panel id every run, so a hardcoded id starts rendering something else after the next dashboard edit.
+- Grafana is addressed as `http://127.0.0.1:1337/screeps-grafana` (published port, not the public URL),
+  so the digest survives a broken proxy or an expired certificate. The subpath is still required.
+- A renderer that is down or timing out answers **HTTP 200 with an HTML error page**, so the script
+  checks the PNG magic bytes rather than trusting the status code.
+- Test in cron's stripped environment, not just your shell:
+  `env -i PATH=/usr/bin:/bin HOME=/root DRY_RUN=1 FORCE=1 tools/tg_rooms_digest.sh`.
+- Manual run: `FORCE=1 …` (bypasses the hour gate), `DRY_RUN=1 FORCE=1 …` (renders, sends nothing).
+- Log: `/var/log/screeps-digest.log`, one line per send; skipped hours write nothing.
+
+**Why cron and not Grafana itself** (checked on the live instance, don't re-litigate): Telegram *is* a
+native contact point (`bottoken` + `chatid` — a bot token is needed either way), but Grafana OSS has no
+scheduler — `/api/reports/settings` returns **404**, reporting is Enterprise. The only native way to
+get a periodic image would be an always-firing alert rule plus a notification `repeat_interval`, which
+means a permanently red fake alert and alert-shaped messages. `GF_UNIFIED_ALERTING_SCREENSHOTS_CAPTURE`
+would also have to be turned on (grafana restart + nginx reload).
+
 ## `tools/restructure_dashboard.py` — the dashboard is GENERATED, not hand-laid
 
 `sampleDashboard.json`'s layout is produced by this script; **do not hand-place panels and expect
@@ -109,6 +172,32 @@ input + same ROWS → same output.
 > Pitfall (learned the hard way): appending a panel + `type:"row"` straight into the JSON and
 > POSTing makes it show up **once**, but the next `restructure_dashboard.py` run silently drops it
 > (orphan) and rebuilds the row from scratch. Always route new panels through `ROWS`.
+
+## Secrets — where each one lives
+
+Nothing secret belongs in this repo. Read from the Keychain into a variable and pipe it onward; when a
+value has to reach the VPS, send it on **stdin**, never as an argv element (argv is visible in `ps` and
+lands in transcripts).
+
+| what | where | used for |
+|---|---|---|
+| Grafana token `claude` (Editor) | macOS Keychain `-s screeps-grafana-token -a grafana` | editing dashboards from a laptop |
+| Grafana token `cron_viewer` (Viewer) | Keychain `-s screeps-grafana-viewer -a grafana` **and** `/etc/screeps-grafana-digest.env` on the VPS | the Telegram digest's render call |
+| Telegram bot token | Keychain `-s screeps-tg-bot -a token` **and** the same env file | `sendPhoto` |
+| `RENDERER_TOKEN` | `/opt/screeps-grafana/docker-compose.env` (gitignored) | grafana ↔ renderer |
+| Screeps auth token | same `docker-compose.env` (`SCREEPS_TOKEN`) | the poller |
+
+```bash
+# add or replace a Keychain item WITHOUT the value touching history: -w last, prompts hidden
+security add-generic-password -s screeps-tg-bot -a token -U -w
+```
+
+Two limits worth knowing before planning work: the `claude` token **cannot create service accounts**
+(`serviceaccounts:create` denied), so a new scoped token has to be minted in the UI; and default
+`admin:admin` is disabled (401), so there is no admin fallback.
+
+A Telegram bot cannot message a chat that never wrote to it first — the owner must `/start` the bot,
+then `getUpdates` yields the `chat_id` (there is no webhook set; `getWebhookInfo` returns an empty url).
 
 ## VPS ops (rarely needed — dashboard changes don't require this)
 
@@ -142,3 +231,9 @@ the box for pipeline/poller changes.
 - A poller/shard/token change is: VPS `git pull` + edit `docker-compose.env`
   (`SCREEPS_SHARD` + `SCREEPS_TOKEN` parallel lists) + `docker compose restart node`, THEN POST the
   dashboard (paths change with shards → panels go blank until re-POSTed).
+- Not everything on the box is ours: `countdown-*` (site + nginx + certbot), `concierge-*` (a separate
+  Telegram bot with its own `TELEGRAM_TOKEN`), `amnezia-*` and `dante-proxy` are unrelated services
+  sharing the host. The only cross-project coupling is nginx, above. `cron` is now installed and
+  enabled — root's crontab holds exactly one entry, the digest.
+- The box lives in `Europe/Amsterdam` (not UTC, not Moscow). Anything scheduled in Moscow time has to
+  convert or self-gate; don't change the system timezone, other services depend on it.
