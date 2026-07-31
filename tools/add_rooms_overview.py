@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Put an overview table at the top of the "Screeps — Rooms" dashboard: one row per room with RCL,
-controller %, ETA to the next level and storage energy. Idempotent — re-running replaces the panel.
+controller %, ETA to the next level, storage energy and the energy still needed to finish the room's
+construction sites. Idempotent — re-running replaces the panel.
 
 Reads the live dashboard from the Grafana API, inserts the panel at y=0, shifts everything else down,
 and POSTs it back.
@@ -48,6 +49,7 @@ COLUMNS = [
     ("B", "controllerProgressPct", "Контроллер %"),
     ("C", "controllerEtaHours", "До апа, ч"),
     ("D", "storage.energy", "Сторадж, энергия"),
+    ("E", "sitesRemaining", "Достроить, энергия"),
 ]
 
 RENDER_CHECK = (
@@ -97,6 +99,12 @@ def target(ref, metric):
     # and every remote we ever prep-claimed emitted rooms.<name>.* for the few hundred ticks it was
     # briefly ours. Without the filter this table shows 29 rows for 13 live rooms, 16 of them blank
     # (verified live). The same trick guards the $room variable on this dashboard.
+    #
+    # The threshold is 0 and not -1 on purpose: this graphite-web compares NON-strictly, so a series
+    # sitting at exactly 0 survives while a dead one (all nulls in the window) is dropped — checked
+    # against rooms.*.hostiles, which is 0 in all 13 live rooms and still returned all 13. That is
+    # what lets "Достроить, энергия" print a real 0 for a room with nothing under construction
+    # instead of an empty cell. Re-check this if the Graphite image is ever upgraded.
     return {"refId": ref, "target": f"aliasByNode(currentAbove({G}.rooms.*.{metric}, 0), 4)"}
 
 
@@ -127,12 +135,16 @@ panel = {
     "type": "table",
     "title": TITLE,
     "description": (
-        "Одна строка на комнату: уровень, заполнение контроллера, оценка времени до следующего уровня и "
-        "энергия в сторадже. Список комнат растёт сам — запросы идут по wildcard rooms.*, так что новая "
+        "Одна строка на комнату: уровень, заполнение контроллера, оценка времени до следующего уровня, "
+        "энергия в сторадже и сколько энергии осталось влить в стройку. Список комнат растёт сам — "
+        "запросы идут по wildcard rooms.*, так что новая "
         "комната появляется здесь на первой же записи телеметрии. Пустая клетка — это отсутствие метрики, "
         "а не ноль: у RCL8-комнаты нет «до апа» (апать некуда), у молодой комнаты ещё нет стораджа. "
         "«До апа» считается по фактической скорости апгрейда за последние снимки statsHistory, поэтому у "
-        "комнаты, которая сейчас не апгрейдит, значение будет огромным."
+        "комнаты, которая сейчас не апгрейдит, значение будет огромным. "
+        "«Достроить» — сумма недостающего прогресса по стройкам В САМОЙ комнате (Σ progressTotal − "
+        "progress), то есть сколько энергии строителям осталось внести; 0 — стройки нет. Стройки в "
+        "ремоутах (дороги, контейнеры) сюда НЕ входят — они лежат в construction.byRoom."
     ),
     "gridPos": {"h": H, "w": 24, "x": 0, "y": 0},
     "datasource": "localGraphite",
@@ -177,7 +189,7 @@ panel = {
             {"matcher": {"id": "byName", "options": "До апа, ч"},
              "properties": [
                  {"id": "unit", "value": "h"}, {"id": "decimals", "value": 1},
-                 # All five columns are pinned: with any of them left on auto, the leftover width of a
+                 # All six columns are pinned: with any of them left on auto, the leftover width of a
                  # wide screen is inserted BETWEEN columns and the row reads as disconnected islands.
                  {"id": "custom.width", "value": 150},
                  # Coloured text, not a filled cell: three painted columns out of five turns the table
@@ -206,6 +218,25 @@ panel = {
                      (10000, "orange"),
                      (50000, "semi-dark-yellow"),
                      (150000, "green"),
+                 ])},
+             ]},
+            {"matcher": {"id": "byName", "options": "Достроить, энергия"},
+             "properties": [
+                 {"id": "unit", "value": "short"},
+                 {"id": "custom.width", "value": 170},
+                 {"id": "custom.cellOptions", "value": {"type": "color-text"}},
+                 {"id": "color", "value": {"mode": "thresholds"}},
+                 # The base band covers exactly 0 — "nothing to build" is neither good nor bad, so it
+                 # stays the plain text colour instead of shouting green at every idle room. Above it
+                 # the bands are sized against what a site backlog actually costs: a handful of roads
+                 # and extensions is a few thousand, one storage/terminal-class building is 30-100k,
+                 # and past ~300k the room is carrying a whole RCL's unlocks at once.
+                 {"id": "thresholds", "value": steps([
+                     (None, "text"),
+                     (1, "green"),
+                     (30000, "semi-dark-yellow"),
+                     (100000, "orange"),
+                     (300000, "semi-dark-red"),
                  ])},
              ]},
         ],
