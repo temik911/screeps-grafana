@@ -46,10 +46,15 @@ BASE=${BASE:-http://127.0.0.1:1337/screeps-grafana}
 DASH_UID=${DASH_UID:-screeps-rooms}
 PANEL_TITLE=${PANEL_TITLE:-Комнаты — обзор}
 SHARD=${SHARD:-shard1}
-WIDTH=${WIDTH:-1000}
+# 1280 because the table is eight pinned columns wide (~1210px); at the old 1000 the last one was
+# clipped. Telegram scales the photo down to fit anyway, and taps open it at full size.
+WIDTH=${WIDTH:-1280}
 HEIGHT=${HEIGHT:-620}
 THEME=${THEME:-dark}
-FROM=${FROM:-now-6h}
+# Matches SEND_AT_MSK_HOURS' 3-hour cadence, and it is not just cosmetic: the «Отправил/Принял»
+# columns show the counters' growth over THIS window, so 3h is what makes them read "since the
+# previous picture". Widen the window and those two columns start covering more than one digest.
+FROM=${FROM:-now-3h}
 CAPTION=${CAPTION:-Комнаты — обзор}
 
 auth=(-H "Authorization: Bearer $GRAFANA_TOKEN")
