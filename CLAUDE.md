@@ -118,6 +118,34 @@ Always print the number of points and the step you actually got before trusting 
 not pass `maxDataPoints` — that is what triggered the worst of it (the whole 2-year archive at a 1-hour
 step for a 40-minute request).
 
+### The backend is graphite-API, not graphite-web — half the function reference is missing
+
+The container runs `graphite_api` on Python 2.7, whose function set is a subset of the one
+graphite.readthedocs.io documents. An absent function is not a graceful error: the proxy returns an
+HTML **Python traceback** ending in `KeyError: u'<funcname>'`, which is why a client that expects JSON
+just fails to parse. Probed on the live instance:
+
+| available | absent |
+|---|---|
+| `integral`, `nonNegativeDerivative`, `summarize`, `timeShift`, `diffSeries`, `movingAverage`, `currentAbove`, `aliasByNode` | `movingSum`, `applyByNode` |
+
+Two consequences worth remembering, both hit while building the Rooms table:
+
+- **Per-series arithmetic across a wildcard has no clean form.** `diffSeries` collapses the whole
+  wildcard into ONE series, and the usual escape hatch (`applyByNode`) is missing — so
+  "value now minus value 3h ago, per room" cannot be expressed. Do it Grafana-side, or reshape the
+  question.
+- **Growth over the query window** = `integral(nonNegativeDerivative(counter))`: the derivative turns a
+  cumulative counter into per-sample increments (and swallows a counter reset as a gap rather than a
+  negative spike), the integral re-accumulates them from the window's start, so the LAST point is the
+  growth over exactly that window — per series, wildcard-safe. Verified to the unit against a
+  hand-computed last−first. The window is whatever the panel asks for, so a panel built on this reads
+  differently at 3h and at 24h; that is a feature for a dashboard and a trap for a fixed-period report.
+
+`currentAbove(x, 0)` compares **non-strictly** here: a series sitting at exactly 0 survives, only an
+all-null (dead) one is dropped. Checked against `rooms.*.hostiles` — 0 in all 13 live rooms, all 13
+returned. The Rooms table leans on this to print real zeros instead of blank cells.
+
 ## Don't smooth a metric the bot already smooths
 
 `controllerEtaHours` is computed from an upgrade rate the bot averages over 6000 ticks (~6.8 h). The
@@ -155,6 +183,13 @@ Config — `/etc/screeps-grafana-digest.env`, root-only `chmod 600`, deliberatel
 | `TG_CHAT_ID` | the owner's private chat |
 | `SEND_AT_MSK_HOURS` | comma list of Moscow hours to send at |
 | optional | `THEME` (dark — reads better in Telegram), `WIDTH`, `HEIGHT`, `FROM`, `CAPTION`, `SHARD`, `PANEL_TITLE`, `DASH_UID`, `BASE` |
+
+`FROM` defaults to **`now-3h`, and that is load-bearing, not cosmetic**: the table's «Отправил/Принял»
+columns show how much the cumulative share counters GREW over the rendered window, so the 3h window is
+what makes them mean "since the previous picture". If `SEND_AT_MSK_HOURS` is ever changed to a
+different cadence, `FROM` has to move with it or those two columns will span more than one digest.
+`WIDTH` defaults to 1280 because the table is eight pinned columns (~1210px) — at the old 1000 the
+last column was clipped out of the photo.
 
 Operational notes, each one a bug that was avoided or fixed:
 
