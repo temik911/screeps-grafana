@@ -26,9 +26,9 @@ looked at through the image renderer, Grafana 13.0.1):
   Grafana disambiguates them as `Last * 1..N` — in DESCENDING query order (…,C,B,A). A refId-filtered
   `organize` placed before the join does nothing: reduce builds a new frame and drops the refId, so
   the filter matches no frames. This is also why a "delta" column is built by wrapping the QUERY
-  (integral∘nonNegativeDerivative) rather than by giving that one reduce a different reducer: a second
-  reducer would name its column `Delta`/`Range` and renumber the `Last *` run, silently shifting every
-  rename below it.
+  (integral∘derivative) rather than by giving that one reduce a different reducer: a second reducer
+  would name its column `Delta`/`Range` and renumber the `Last *` run, silently shifting every rename
+  below it.
 
 That last point makes the rename positional, which is the fragile part of this panel. It is also
 loudly visible if it ever breaks: the units and the gauge are pinned to the final column names, so a
@@ -49,17 +49,17 @@ G = "stats.gauges.$shard"
 # refId → (graphite metric, column title, kind). Order matters twice: the queries are emitted in this
 # order, and the joined columns come back in the REVERSE of it.
 #
-# kind "level" = show the value as it stands now. kind "delta" = the metric is a MONOTONIC COUNTER and
-# the column shows how much it grew over the panel's time range (see `target`). Both end up reduced
-# with the same lastNotNull, which is what keeps the fragile positional rename below working.
+# kind "level" = show the value as it stands now. kind "signed-delta" = the metric is a cumulative
+# counter and the column shows how much it moved over the panel's time range, sign included (see
+# `target`). Every kind still ends up reduced with the same lastNotNull, which is what keeps the
+# fragile positional rename below working.
 COLUMNS = [
     ("A", "rcl", "RCL", "level"),
     ("B", "controllerProgressPct", "Контроллер %", "level"),
     ("C", "controllerEtaHours", "До апа, ч", "level"),
     ("D", "storage.energy", "Сторадж, энергия", "level"),
     ("E", "sitesRemaining", "Достроить, энергия", "level"),
-    ("F", "share.energySent", "Отправил, энергия", "delta"),
-    ("G", "share.energyRecv", "Принял, энергия", "delta"),
+    ("F", "share.energyNet", "Обмен, энергия", "signed-delta"),
 ]
 
 RENDER_CHECK = (
@@ -105,18 +105,29 @@ def target(ref, metric, kind="level"):
     # aliasByNode(..., 4) makes the series name the ROOM name, which is what `reduce` then turns into
     # the `Field` column: stats(0).gauges(1).shard(2).rooms(3).<room>(4)
     #
-    # kind "delta": the share counters are cumulative (a terminal send happens at most once per
+    # kind "signed-delta": share counters are cumulative (a terminal send happens at most once per
     # cooldown, so the bot emits totals — a per-tick gauge would be missed by the ~10s poller).
-    # integral(nonNegativeDerivative(x)) re-accumulates the increments INSIDE the query window, so the
-    # last point equals the growth over exactly that window, per series — checked against a hand-
-    # computed last−first: 142103 sent by W57S49 over 3h, matching to the unit, and matching the sum
-    # of what the four receiving rooms took. nonNegativeDerivative also absorbs a counter reset
-    # (wiped Memory) as a gap instead of a huge negative spike.
+    # integral(derivative(x)) re-accumulates the increments INSIDE the query window, so the last point
+    # equals the movement over exactly that window, per series. Validated on the monotonic
+    # `energySent` against both a hand-computed last−first and the nonNegativeDerivative chain: all
+    # three agree to the unit (138379 over 3h), and that figure equals the sum of what the receiving
+    # rooms took.
     #
-    # This is the shape it is because this backend is graphite-API, not graphite-web: `movingSum` and
-    # `applyByNode` are both absent (KeyError), so neither a fixed-3h rolling window nor a per-series
-    # `diffSeries(x, timeShift(x))` is available. Hence the window is the PANEL's, which is why the
-    # digest renders with from=now-3h (its own cadence) — see tools/tg_rooms_digest.sh.
+    # It must be plain `derivative`: `energyNet` is the one share series that goes DOWN (every time
+    # the room donates), and nonNegativeDerivative would silently drop exactly those decrements —
+    # i.e. show donors as 0. The price is that a counter reset (wiped Memory) reads as one large
+    # negative step in the window that contains it, instead of being swallowed as a gap.
+    #
+    # This is the shape it is because this backend is graphite-API, not graphite-web: `movingSum`,
+    # `applyByNode` and `groupByNodes` are all absent (KeyError), so there is no fixed-3h rolling
+    # window and no way to subtract two `rooms.*` series room by room — which is why the SIGNED net
+    # is computed bot-side and arrives here as its own gauge. Hence the window is the PANEL's, which
+    # is why the digest renders with from=now-3h (its own cadence) — see tools/tg_rooms_digest.sh.
+    #
+    # `removeEmptySeries` rather than `currentAbove` for the signed column: currentAbove would need a
+    # threshold below every legitimate value, and any threshold ≥ a real donation silently hides the
+    # donors — the very rooms the column exists to show. removeEmptySeries drops a series only when
+    # it is all-null in the window, which is exactly the dead-room test (13 of 29 paths survive).
     #
     # currentAbove(..., 0) is not cosmetic: Graphite's wildcard returns every path within retention,
     # and every remote we ever prep-claimed emitted rooms.<name>.* for the few hundred ticks it was
@@ -129,8 +140,9 @@ def target(ref, metric, kind="level"):
     # what lets "Достроить, энергия" print a real 0 for a room with nothing under construction
     # instead of an empty cell. Re-check this if the Graphite image is ever upgraded.
     expr = f"{G}.rooms.*.{metric}"
-    if kind == "delta":
-        expr = f"integral(nonNegativeDerivative({expr}))"
+    if kind == "signed-delta":
+        return {"refId": ref,
+                "target": f"aliasByNode(removeEmptySeries(integral(derivative({expr}))), 4)"}
     return {"refId": ref, "target": f"aliasByNode(currentAbove({expr}, 0), 4)"}
 
 
@@ -171,11 +183,13 @@ panel = {
         "«Достроить» — сумма недостающего прогресса по стройкам В САМОЙ комнате (Σ progressTotal − "
         "progress), то есть сколько энергии строителям осталось внести; 0 — стройки нет. Стройки в "
         "ремоутах (дороги, контейнеры) сюда НЕ входят — они лежат в construction.byRoom. "
-        "«Отправил/Принял» — энергия, переданная терминалом МЕЖДУ НАШИМИ комнатами ЗА ОКНО ПАНЕЛИ (а "
-        "не всего): в картинке для Телеграма окно — 3 часа, ровно период между картинками, а на самом "
-        "дашборде это выбранный сверху диапазон. Рыночные сделки сюда не входят, налог за пересылку "
-        "тоже (он списывается с отправителя отдельно, метрика share.cost). Сумма «принял» по всем "
-        "комнатам обязана сходиться с суммой «отправил» — расхождение значит потерю метрики."
+        "«Обмен» — энергия, переданная терминалом МЕЖДУ НАШИМИ комнатами ЗА ОКНО ПАНЕЛИ (а не всего): "
+        "МИНУС и оранжевый — комната отдала, ПЛЮС и синий — приняла, 0 — обмена не было. Цвет здесь "
+        "означает направление, а не «хорошо/плохо»: отдавать — работа комнаты на RCL8, принимать — "
+        "нормальное состояние молодой. В картинке для Телеграма окно — 3 часа, ровно период между "
+        "картинками, а на самом дашборде это выбранный сверху диапазон. Рыночные сделки сюда не "
+        "входят, налог за пересылку тоже (он списывается с отправителя отдельно, метрика share.cost). "
+        "Сумма колонки по всем комнатам обязана давать 0 — иначе потеряна метрика."
     ),
     "gridPos": {"h": H, "w": 24, "x": 0, "y": 0},
     "datasource": "localGraphite",
@@ -185,7 +199,7 @@ panel = {
         "defaults": {"custom": {"align": "auto", "cellOptions": {"type": "auto"}}, "decimals": 0},
         "overrides": [
             {"matcher": {"id": "byName", "options": "Комната"},
-             "properties": [{"id": "custom.width", "value": 120}]},
+             "properties": [{"id": "custom.width", "value": 130}]},
             {"matcher": {"id": "byName", "options": "RCL"},
              "properties": [
                  # Discrete levels, so a solid block per band rather than an interpolated gradient.
@@ -210,7 +224,7 @@ panel = {
                  {"id": "decimals", "value": 1},
                  {"id": "custom.cellOptions", "value": {"type": "gauge", "mode": "basic"}},
                  # Capped, or on a wide monitor the bar eats the slack of the whole row.
-                 {"id": "custom.width", "value": 230},
+                 {"id": "custom.width", "value": 260},
                  # Progress is neither good nor bad, so the bar length carries the meaning and the
                  # colour only marks "about to level" — an interpolated gradient here would paint a
                  # nearly-full controller red, i.e. exactly backwards.
@@ -222,7 +236,7 @@ panel = {
                  {"id": "unit", "value": "h"}, {"id": "decimals", "value": 1},
                  # All six columns are pinned: with any of them left on auto, the leftover width of a
                  # wide screen is inserted BETWEEN columns and the row reads as disconnected islands.
-                 {"id": "custom.width", "value": 140},
+                 {"id": "custom.width", "value": 150},
                  # Coloured text, not a filled cell: three painted columns out of five turns the table
                  # into a heatmap and stops being scannable.
                  {"id": "custom.cellOptions", "value": {"type": "color-text"}},
@@ -239,7 +253,7 @@ panel = {
             {"matcher": {"id": "byName", "options": "Сторадж, энергия"},
              "properties": [
                  {"id": "unit", "value": "short"},
-                 {"id": "custom.width", "value": 160},
+                 {"id": "custom.width", "value": 170},
                  {"id": "custom.cellOptions", "value": {"type": "color-text"}},
                  {"id": "color", "value": {"mode": "thresholds"}},
                  # Rough colony-wide bands, not per-RCL: 10k is the bar assistRoom uses to call a room
@@ -254,7 +268,7 @@ panel = {
             {"matcher": {"id": "byName", "options": "Достроить, энергия"},
              "properties": [
                  {"id": "unit", "value": "short"},
-                 {"id": "custom.width", "value": 160},
+                 {"id": "custom.width", "value": 170},
                  {"id": "custom.cellOptions", "value": {"type": "color-text"}},
                  {"id": "color", "value": {"mode": "thresholds"}},
                  # The base band covers exactly 0 — "nothing to build" is neither good nor bad, so it
@@ -270,19 +284,24 @@ panel = {
                      (300000, "semi-dark-red"),
                  ])},
              ]},
-            # The two share columns get ONE shared colour and no bands on purpose. Five of the eight
-            # columns are already coloured, and giving these a traffic light would also be a lie:
-            # giving energy away is what a maxed room is for, and taking it is what a young room is
-            # for, so neither direction is "bad". Colour here means only "something moved" — the zero
-            # rows stay plain text so the eye lands on the rooms that actually traded.
-            *[{"matcher": {"id": "byName", "options": label},
-               "properties": [
-                   {"id": "unit", "value": "short"},
-                   {"id": "custom.width", "value": 165},
-                   {"id": "custom.cellOptions", "value": {"type": "color-text"}},
-                   {"id": "color", "value": {"mode": "thresholds"}},
-                   {"id": "thresholds", "value": steps([(None, "text"), (1, "blue")])},
-               ]} for label in ("Отправил, энергия", "Принял, энергия")],
+            {"matcher": {"id": "byName", "options": "Обмен, энергия"},
+             "properties": [
+                 {"id": "unit", "value": "short"},
+                 {"id": "custom.width", "value": 175},
+                 {"id": "custom.cellOptions", "value": {"type": "color-text"}},
+                 {"id": "color", "value": {"mode": "thresholds"}},
+                 # Colour encodes DIRECTION, not quality — the minus sign already carries the
+                 # direction, and the colour makes the two groups separable at a glance without
+                 # reading the numbers. Deliberately not green/red: giving energy away is what a
+                 # maxed room is FOR, and taking it is what a young room is for, so neither side is
+                 # "bad". Warm = energy leaving, cool = energy arriving, plain text = no exchange,
+                 # which keeps the idle majority of rows quiet.
+                 {"id": "thresholds", "value": steps([
+                     (None, "orange"),   # < 0 — donor, energy left the room
+                     (0, "text"),        # exactly 0 — no exchange in this window
+                     (1, "blue"),        # > 0 — recipient
+                 ])},
+             ]},
         ],
     },
     "options": {

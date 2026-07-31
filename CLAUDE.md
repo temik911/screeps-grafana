@@ -184,12 +184,12 @@ Config — `/etc/screeps-grafana-digest.env`, root-only `chmod 600`, deliberatel
 | `SEND_AT_MSK_HOURS` | comma list of Moscow hours to send at |
 | optional | `THEME` (dark — reads better in Telegram), `WIDTH`, `HEIGHT`, `FROM`, `CAPTION`, `SHARD`, `PANEL_TITLE`, `DASH_UID`, `BASE` |
 
-`FROM` defaults to **`now-3h`, and that is load-bearing, not cosmetic**: the table's «Отправил/Принял»
-columns show how much the cumulative share counters GREW over the rendered window, so the 3h window is
-what makes them mean "since the previous picture". If `SEND_AT_MSK_HOURS` is ever changed to a
-different cadence, `FROM` has to move with it or those two columns will span more than one digest.
-`WIDTH` defaults to 1280 because the table is eight pinned columns (~1210px) — at the old 1000 the
-last column was clipped out of the photo.
+`FROM` defaults to **`now-3h`, and that is load-bearing, not cosmetic**: the table's «Обмен» column
+shows how far the cumulative share counter MOVED over the rendered window, so the 3h window is what
+makes it mean "since the previous picture". If `SEND_AT_MSK_HOURS` is ever changed to a different
+cadence, `FROM` has to move with it or that column will span more than one digest. `WIDTH` defaults to
+1200 because the table is seven pinned columns (~1125px) — at the old 1000 the last column was clipped
+out of the photo.
 
 Operational notes, each one a bug that was avoided or fixed:
 
