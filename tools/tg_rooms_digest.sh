@@ -48,8 +48,10 @@ PANEL_TITLE=${PANEL_TITLE:-Комнаты — обзор}
 SHARD=${SHARD:-shard1}
 # 1200 because the table is seven pinned columns wide (~1125px); at the old 1000 the last one was
 # clipped. Telegram scales the photo down to fit anyway, and taps open it at full size.
-WIDTH=${WIDTH:-1200}
-HEIGHT=${HEIGHT:-620}
+WIDTH=${WIDTH:-1320}   # 7 pinned columns: 1200 squeezed the last one
+# Must track the panel height in tools/add_rooms_overview.py (H grid units x ~30px + chrome).
+# At 16 rooms the old 620 cut the table off mid-list; 760 fits ~18 rows.
+HEIGHT=${HEIGHT:-760}
 THEME=${THEME:-dark}
 # Matches SEND_AT_MSK_HOURS' 3-hour cadence, and it is not just cosmetic: the «Отправил/Принял»
 # columns show the counters' growth over THIS window, so 3h is what makes them read "since the

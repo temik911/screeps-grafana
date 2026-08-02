@@ -41,13 +41,20 @@ import urllib.request
 BASE = "https://example.com/screeps-grafana/api"
 UID = "screeps-rooms"
 TITLE = "Комнаты — обзор"
-# Panel height in grid units (~30px each); everything below shifts by this. 16 fits ~14 rows without
-# an inner scrollbar — the colony is 13 rooms and expanding, so bump this when rows start hiding.
-H = 16
+# Panel height in grid units (~30px each); everything below shifts by this. 16 fitted ~14 rows and the
+# colony passed that: at 16 rooms the table cut off in the Telegram picture. 20 units ≈ 18 rows — bump
+# this AND `HEIGHT` in tools/tg_rooms_digest.sh together, or the render crops again.
+H = 20
 G = "stats.gauges.$shard"
 
 # refId → (graphite metric, column title, kind). Order matters twice: the queries are emitted in this
 # order, and the joined columns come back in the REVERSE of it.
+#
+# CAUTION when adding a column: the rename below is POSITIONAL, so it is only correct while every
+# query returns data. A metric the bot has just started emitting does not exist in Graphite yet, its
+# query comes back empty, the join produces one column fewer and EVERY title shifts by one — the table
+# then shows RCL under "Контроллер %" and so on. Deploy the bot first, wait for the series to appear,
+# and only then run this script (or re-run it once the data is there).
 #
 # kind "level" = show the value as it stands now. kind "signed-delta" = the metric is a cumulative
 # counter and the column shows how much it moved over the panel's time range, sign included (see
@@ -60,6 +67,7 @@ COLUMNS = [
     ("D", "storage.energy", "Сторадж, энергия", "level"),
     ("E", "sitesRemaining", "Достроить, энергия", "level"),
     ("F", "share.energyNet", "Обмен, энергия", "signed-delta"),
+    ("G", "planVersion", "План", "level"),
 ]
 
 RENDER_CHECK = (
@@ -174,7 +182,9 @@ panel = {
     "title": TITLE,
     "description": (
         "Одна строка на комнату: уровень, заполнение контроллера, оценка времени до следующего уровня, "
-        "энергия в сторадже и сколько энергии осталось влить в стройку. Список комнат растёт сам — "
+        "энергия в сторадже, сколько энергии осталось влить в стройку и по какому плану комната строится. "
+        "Колонка «План»: «старый» — раскладка BasePlanner, «v2» — генератор бункера v2; переход идёт "
+        "по одной комнате, флаг живёт в room.memory.bunkerV2. Список комнат растёт сам — "
         "запросы идут по wildcard rooms.*, так что новая "
         "комната появляется здесь на первой же записи телеметрии. Пустая клетка — это отсутствие метрики, "
         "а не ноль: у RCL8-комнаты нет «до апа» (апать некуда), у молодой комнаты ещё нет стораджа. "
@@ -283,6 +293,22 @@ panel = {
                      (100000, "orange"),
                      (300000, "semi-dark-red"),
                  ])},
+             ]},
+            {"matcher": {"id": "byName", "options": "План"},
+             "properties": [
+                 # 1 = the old BasePlanner layout, 2 = the bunker v2 generator. The migration runs room
+                 # by room, so this column is the answer to "which of the two is this room building?".
+                 # A mapping rather than the bare number: "v2" reads at a glance, "2" does not.
+                 {"id": "mappings", "value": [{"type": "value", "options": {
+                     "1": {"text": "старый", "index": 0},
+                     "2": {"text": "v2", "index": 1}}}]},
+                 {"id": "custom.width", "value": 90},
+                 {"id": "custom.align", "value": "center"},
+                 {"id": "custom.cellOptions", "value": {"type": "color-text"}},
+                 {"id": "color", "value": {"mode": "thresholds"}},
+                 # v2 is the state we are migrating TOWARDS, so it is the one that stands out; a room
+                 # still on the old plan is the normal majority and stays quiet.
+                 {"id": "thresholds", "value": steps([(None, "text"), (2, "green")])},
              ]},
             {"matcher": {"id": "byName", "options": "Обмен, энергия"},
              "properties": [
