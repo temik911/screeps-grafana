@@ -46,9 +46,10 @@ BASE=${BASE:-http://127.0.0.1:1337/screeps-grafana}
 DASH_UID=${DASH_UID:-screeps-rooms}
 PANEL_TITLE=${PANEL_TITLE:-Комнаты — обзор}
 SHARD=${SHARD:-shard1}
-# 1200 because the table is seven pinned columns wide (~1125px); at the old 1000 the last one was
-# clipped. Telegram scales the photo down to fit anyway, and taps open it at full size.
-WIDTH=${WIDTH:-1320}   # 7 pinned columns: 1200 squeezed the last one
+# Wide enough for every pinned column: at eight of them 1200 clipped «План» off the right edge, the
+# same way 1000 clipped the last one back when there were seven. Telegram scales the photo down to
+# fit anyway, and taps open it at full size — so err wide, never narrow.
+WIDTH=${WIDTH:-1320}
 # Must track the panel height in tools/add_rooms_overview.py (H grid units x ~30px + chrome).
 # At 16 rooms the old 620 cut the table off mid-list; 760 fits ~18 rows.
 HEIGHT=${HEIGHT:-760}

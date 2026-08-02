@@ -42,6 +42,14 @@ panels. The `$shard` and `$room` template variables are `query` variables wrappe
 `currentAbove(..., 0)` — see the comment in `add_rooms_overview.py#target` for why (Graphite's
 wildcard returns every room we ever emitted, so a plain `rooms.*` lists long-dead prep-claims).
 
+**Adding a column to that table is a two-step deploy, and doing it in one step produces a wrong
+table rather than an empty one.** The column titles are assigned by POSITION after the join, so they
+are only correct while every query returns data. A metric the bot has only just started emitting does
+not exist in Graphite yet: its query comes back empty, the join yields one column fewer, and every
+title shifts by one — RCL renders under «Контроллер %», the exchange counter under the new column, and
+nothing about it looks like an error. Deploy the bot, wait for the series to show up in Graphite, and
+only then run the script.
+
 ## Deploying the dashboard (do this yourself — don't ask)
 
 The dashboard is **`sampleDashboard.json`** (already wrapped as the API payload:
@@ -187,9 +195,13 @@ Config — `/etc/screeps-grafana-digest.env`, root-only `chmod 600`, deliberatel
 `FROM` defaults to **`now-3h`, and that is load-bearing, not cosmetic**: the table's «Обмен» column
 shows how far the cumulative share counter MOVED over the rendered window, so the 3h window is what
 makes it mean "since the previous picture". If `SEND_AT_MSK_HOURS` is ever changed to a different
-cadence, `FROM` has to move with it or that column will span more than one digest. `WIDTH` defaults to
-1200 because the table is seven pinned columns (~1125px) — at the old 1000 the last column was clipped
-out of the photo.
+cadence, `FROM` has to move with it or that column will span more than one digest.
+
+**`WIDTH`/`HEIGHT` are sized to the panel and have to be re-checked whenever it grows.** Both failure
+modes are silent — the render succeeds, the photo is just missing part of the table. Width follows the
+pinned columns (1000 clipped the seventh, 1200 clipped the eighth «План»; now 1320); height follows the
+`H` grid units in `add_rooms_overview.py` (620 cut the list off at 16 rooms; now 760 for `H = 20`,
+~18 rows). **Adding a column or an owned room means re-rendering the panel and looking at the PNG.**
 
 Operational notes, each one a bug that was avoided or fixed:
 
