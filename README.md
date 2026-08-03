@@ -3,6 +3,12 @@
 Pretty graphs for Screeps stats. 
 ![sampleDashboard](sampleDashboard.png)
 
+> **Setting this up yourself? Read [SETUP.md](SETUP.md).** It covers the whole path — running the
+> stack locally, and what your bot has to write for anything to appear — and it is current with this
+> fork, which polls a **memory segment** rather than `Memory.stats`. The instructions below are
+> upstream's and are kept for reference; note that `docker-compose.yml` here is wired for one
+> specific server and will not start on yours (use `docker-compose.local.yml`).
+
 There are two ways to get started:
 
 ## Path 1: Easy but not robust
