@@ -42,7 +42,8 @@ fi
 # Grafana is addressed through its published host port rather than any public URL: the digest then
 # keeps working when the reverse proxy or the certificate is having a bad day. Behind a subpath proxy
 # (docker-compose.proxy.yml) set BASE to include that prefix — SERVE_FROM_SUB_PATH makes it the real
-# internal path too.
+# internal path too, and a BASE without it earns a 301 that curl will not follow by default. Both
+# calls below pass -L so a forgotten prefix costs a redirect instead of a silent daily failure.
 BASE=${BASE:-http://127.0.0.1:1337}
 DASH_UID=${DASH_UID:-screeps-rooms}
 PANEL_TITLE=${PANEL_TITLE:-Комнаты — обзор}
@@ -66,7 +67,7 @@ auth=(-H "Authorization: Bearer $GRAFANA_TOKEN")
 # Resolve the panel by TITLE, never by a pinned id: tools/add_rooms_overview.py assigns a fresh id
 # every time it re-creates the panel, so a hardcoded id silently starts rendering a different panel
 # (or nothing) after the next dashboard edit.
-panel_id=$(curl -sS -m 30 "${auth[@]}" "$BASE/api/dashboards/uid/$DASH_UID" | PANEL_TITLE="$PANEL_TITLE" python3 -c '
+panel_id=$(curl -sSL -m 30 "${auth[@]}" "$BASE/api/dashboards/uid/$DASH_UID" | PANEL_TITLE="$PANEL_TITLE" python3 -c '
 import json, os, sys
 title = os.environ["PANEL_TITLE"]
 panels = json.load(sys.stdin)["dashboard"]["panels"]
@@ -79,7 +80,7 @@ print(match[0])
 png=$(mktemp /tmp/screeps-rooms-XXXXXX.png)
 trap 'rm -f "$png"' EXIT
 
-code=$(curl -sS -m 180 -o "$png" -w '%{http_code}' "${auth[@]}" \
+code=$(curl -sSL -m 180 -o "$png" -w '%{http_code}' "${auth[@]}" \
     "$BASE/render/d-solo/$DASH_UID/?panelId=$panel_id&var-shard=$SHARD&from=$FROM&to=now&width=$WIDTH&height=$HEIGHT&theme=$THEME&tz=Europe%2FMoscow")
 if [ "$code" != "200" ]; then
     echo "$(date '+%F %T') render failed: HTTP $code" >&2
