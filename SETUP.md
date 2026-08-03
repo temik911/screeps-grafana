@@ -4,7 +4,7 @@ A complete walkthrough for running this stack yourself and getting your own bot'
 Nothing here assumes you have seen the project before.
 
 If you only want the short version: `cp docker-compose.env.example docker-compose.env`, put your
-Screeps auth token in it, `docker compose -f docker-compose.local.yml --env-file docker-compose.env up -d`,
+Screeps auth token in it, `docker compose --env-file docker-compose.env up -d`,
 open <http://localhost:1337>, and make your bot write JSON to `RawMemory.segments[15]`.
 
 ---
@@ -73,17 +73,23 @@ and one you probably want to check:
 Then:
 
 ```bash
-docker compose -f docker-compose.local.yml --env-file docker-compose.env up -d
-docker compose -f docker-compose.local.yml logs -f node
+docker compose --env-file docker-compose.env up -d
+docker compose --env-file docker-compose.env logs -f node
 ```
 
 The poller prints one line per successful fetch. Grafana is on <http://localhost:1337>, initial
 login `admin` / `admin`.
 
-> **Use `docker-compose.local.yml`, not `docker-compose.yml`.** The latter is wired for the author's
-> VPS — it joins an external network from another compose project and serves Grafana from a subpath
-> on a domain you don't own. It will fail to start on your machine, and if you patch around that,
-> every link Grafana emits will point at the wrong host.
+> **Behind a reverse proxy?** `docker-compose.yml` alone serves Grafana from the root of
+> `localhost:1337`, which is what you want on a laptop or a box you reach directly. To put it under a
+> public domain and a path prefix, add the override — it is the only file where a host name appears:
+>
+> ```bash
+> docker compose -f docker-compose.yml -f docker-compose.proxy.yml --env-file docker-compose.env up -d
+> ```
+>
+> and set `PROXY_NETWORK`, `GRAFANA_ROOT_URL` and `GRAFANA_CALLBACK_URL` in `docker-compose.env`
+> (examples in `docker-compose.env.example`).
 
 ### Connect Grafana to Graphite
 
@@ -163,7 +169,7 @@ curl -s -H "X-Token: $TOKEN" \
   "https://screeps.com/api/user/memory-segment?segment=15&shard=shard3" | head -c 300
 
 # 2. is the poller reading it?
-docker compose -f docker-compose.local.yml logs --tail 20 node
+docker compose logs --tail 20 node
 
 # 3. did it reach graphite?
 curl -s "http://localhost:1337/api/datasources/proxy/1/metrics/find?query=stats.gauges.*"
@@ -178,7 +184,7 @@ Each of these cost someone real time.
 **Empty graphs, no errors anywhere.** statsd receives over **UDP**: if that container is down or was
 recreated with a new IP, the poller's sends disappear without a single log line on either side. After
 recreating statsd, restart the poller too — it caches the resolved address.
-`docker compose -f docker-compose.local.yml restart node`.
+`docker compose restart node`.
 
 **HTTP 429 from the API.** The segment endpoint allows 360 requests/hour and the budget is **shared
 across all of your account's tokens** — adding tokens does not add budget. The default 10 s interval
@@ -204,14 +210,16 @@ series with a fresh value.
 
 Written down so you know what to ignore or replace:
 
-- **`docker-compose.yml`, `docker-compose.prod.yml`** — my VPS: external nginx network, a subpath, the
-  domain `example.com`. Use `docker-compose.local.yml`.
-- **`CLAUDE.md`** — my working notes for an AI assistant. Accurate but full of my hostnames, panel ids
-  and incident history. Interesting as a field report, useless as instructions for you.
-- **`tools/add_rooms_overview.py`** — builds a per-room table panel. Hardcodes my metric names and
-  reads a Grafana token from **macOS Keychain**; you would need to change both.
-- **`tools/tg_rooms_digest.sh`** — posts a panel screenshot to Telegram on a schedule. Reads its
-  config from `/etc/screeps-grafana-digest.env` on my server.
+- **`docker-compose.proxy.yml`** — only needed if a reverse proxy from another compose project fronts
+  Grafana. Ignore it otherwise.
+- **`CLAUDE.md`** — working notes for an AI assistant: how to deploy a dashboard through the API, how
+  to verify a panel by rendering it, which Graphite functions this backend lacks. Host-agnostic
+  (`$GRAFANA` is your base URL), and genuinely useful if you plan to script against Grafana.
+- **`tools/add_rooms_overview.py`** — builds a per-room table panel. Reads `GRAFANA` and
+  `GRAFANA_TOKEN` from the environment (falling back to the macOS Keychain), but the column list is
+  my bot's metric names — edit `COLUMNS` for yours.
+- **`tools/tg_rooms_digest.sh`** — posts a panel screenshot to Telegram on a schedule (cron + an env
+  file with a bot token and chat id). Works anywhere; nothing in it is specific to one host.
 - **`roles/`, `playbook.yml`, `inventory`** — upstream's Ansible, unused and stale.
 - **`stats.js`** — upstream's `Memory.stats` example, superseded by the segment approach in §4.
 

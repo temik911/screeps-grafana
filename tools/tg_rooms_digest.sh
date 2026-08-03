@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Render the "Комнаты — обзор" panel and push it to Telegram as a photo. Driven by cron on the VPS:
 #
-#   0 9 * * *  /opt/screeps-grafana/tools/tg_rooms_digest.sh >>/var/log/screeps-digest.log 2>&1
+#   0 9 * * *  /path/to/screeps-grafana/tools/tg_rooms_digest.sh >>/var/log/screeps-digest.log 2>&1
 #
 # Secrets live in /etc/screeps-grafana-digest.env (root-only, NOT in git):
 #   GRAFANA_TOKEN=...   service-account token, only needs render/dashboard read
@@ -39,10 +39,11 @@ if [ -z "${DRY_RUN:-}" ]; then
     : "${TG_BOT_TOKEN:?TG_BOT_TOKEN not set in $CONF}" "${TG_CHAT_ID:?TG_CHAT_ID not set in $CONF}"
 fi
 
-# Grafana is addressed through its published host port rather than the public URL: the digest then
-# keeps working when the reverse proxy or the certificate is having a bad day. The /screeps-grafana
-# prefix is still required — SERVE_FROM_SUB_PATH makes it the real internal path.
-BASE=${BASE:-http://127.0.0.1:1337/screeps-grafana}
+# Grafana is addressed through its published host port rather than any public URL: the digest then
+# keeps working when the reverse proxy or the certificate is having a bad day. Behind a subpath proxy
+# (docker-compose.proxy.yml) set BASE to include that prefix — SERVE_FROM_SUB_PATH makes it the real
+# internal path too.
+BASE=${BASE:-http://127.0.0.1:1337}
 DASH_UID=${DASH_UID:-screeps-rooms}
 PANEL_TITLE=${PANEL_TITLE:-Комнаты — обзор}
 SHARD=${SHARD:-shard1}

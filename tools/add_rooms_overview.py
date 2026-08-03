@@ -35,10 +35,15 @@ loudly visible if it ever breaks: the units and the gauge are pinned to the fina
 reordering shows up as a percent gauge over storage numbers rather than as quietly swapped data.
 Re-render the panel after touching this (see RENDER_CHECK below)."""
 import json
+import os
 import subprocess
 import urllib.request
 
-BASE = "https://example.com/screeps-grafana/api"
+# Grafana base URL + API token. Both come from the environment so this script is not tied to one
+# host: GRAFANA=http://localhost:1337 for a local stack. GRAFANA_TOKEN wins if set; otherwise we fall
+# back to the macOS Keychain, which is where the author keeps it.
+GRAFANA = os.environ.get("GRAFANA", "http://localhost:1337").rstrip("/")
+BASE = f"{GRAFANA}/api"
 UID = "screeps-rooms"
 TITLE = "Комнаты — обзор"
 # Panel height in grid units (~30px each); everything below shifts by this. 16 fitted ~14 rows and the
@@ -71,11 +76,11 @@ COLUMNS = [
 ]
 
 RENDER_CHECK = (
-    "https://example.com/screeps-grafana/render/d-solo/screeps-rooms/"
+    f"{GRAFANA}/render/d-solo/screeps-rooms/"
     "?panelId={id}&var-shard=shard1&from=now-6h&to=now&width=1400&height=560&theme=light"
 )
 
-token = subprocess.check_output(
+token = os.environ.get("GRAFANA_TOKEN") or subprocess.check_output(
     ["security", "find-generic-password", "-s", "screeps-grafana-token", "-a", "grafana", "-w"]
 ).decode().strip()
 

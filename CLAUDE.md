@@ -4,6 +4,10 @@ Guidance for Claude Code when working in this repo (a fork of screeps-grafana). 
 telemetry backend for the **creeps-claude** Screeps bot (sibling repo): a poller reads the bot's
 metrics segment from the Screeps API and ships them to Graphite → Grafana.
 
+**Conventions in this file.** `$GRAFANA` is your Grafana base URL (`http://localhost:1337` locally, or
+whatever your reverse proxy serves — see `docker-compose.proxy.yml`), and `$TOKEN` a Grafana API token.
+Nothing here is tied to a particular host.
+
 ## Pipeline (how a metric gets on screen)
 
 ```
@@ -54,7 +58,7 @@ only then run the script.
 
 The dashboard is **`sampleDashboard.json`** (already wrapped as the API payload:
 `{dashboard, folderUid:"", overwrite:true}`, uid `screeps-overview`). The live Grafana
-(`https://example.com/screeps-grafana/`, v13) is updated **via its HTTP API with a service-account
+(v13) is updated **via its HTTP API with a service-account
 token**, NOT by redeploying the docker stack.
 
 The token is in the **macOS Keychain**. Read it straight into a variable and pipe into curl —
@@ -65,13 +69,13 @@ TOKEN=$(security find-generic-password -s screeps-grafana-token -a grafana -w)
 
 # Push the local dashboard to live (overwrite:true → replaces by uid, version conflicts ignored):
 curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  --data @sampleDashboard.json https://example.com/screeps-grafana/api/dashboards/db
+  --data @sampleDashboard.json "$GRAFANA"/api/dashboards/db
 # → {"status":"success", ... "version":N}
 
 # Pull the LIVE dashboard (to diff against before editing — live is the source of truth, the repo
 # file can drift):
 curl -s -H "Authorization: Bearer $TOKEN" \
-  https://example.com/screeps-grafana/api/dashboards/uid/screeps-overview
+  "$GRAFANA"/api/dashboards/uid/screeps-overview
 ```
 
 **Curation principle:** treat the LIVE dashboard as authoritative — when in doubt, GET it, add only
@@ -89,7 +93,7 @@ is exactly how the Rooms overview table shipped broken). The stack now runs a
 ```bash
 TOKEN=$(security find-generic-password -s screeps-grafana-token -a grafana -w)
 curl -s -H "Authorization: Bearer $TOKEN" -o /tmp/panel.png \
-  "https://example.com/screeps-grafana/render/d-solo/<dash-uid>/?panelId=<id>&var-shard=shard1&from=now-6h&to=now&width=1400&height=560&theme=light"
+  "$GRAFANA/render/d-solo/<dash-uid>/?panelId=<id>&var-shard=shard1&from=now-6h&to=now&width=1400&height=560&theme=light"
 ```
 
 Template variables must be passed explicitly (`var-shard=`, `var-room=`) — the renderer has no UI
@@ -119,7 +123,7 @@ For exact numbers go through the datasource proxy to Graphite's native API, whic
 
 ```bash
 curl -s -H "Authorization: Bearer $TOKEN" \
-  "https://example.com/screeps-grafana/api/datasources/proxy/uid/dfnetfig270g0c/render?target=<expr>&from=-20min&format=json"
+  "$GRAFANA/api/datasources/proxy/uid/dfnetfig270g0c/render?target=<expr>&from=-20min&format=json"
 ```
 
 Always print the number of points and the step you actually got before trusting a comparison, and do
@@ -172,7 +176,7 @@ to weeks), and on `screeps-rooms` the overview table column «До апа, ч» 
 from **root's crontab on the VPS** (`cron` was not installed on that box — it was added for this).
 
 ```
-0 * * * *  /opt/screeps-grafana/tools/tg_rooms_digest.sh >>/var/log/screeps-digest.log 2>&1
+0 * * * *  /path/to/screeps-grafana/tools/tg_rooms_digest.sh >>/var/log/screeps-digest.log 2>&1
 ```
 
 **The schedule is NOT in the crontab.** Cron wakes the script hourly; the script compares the current
@@ -182,12 +186,13 @@ binary has no such string and `man 5 crontab` does not mention it — so a cront
 time would slide an hour against Moscow at every DST switch. **To change the times, edit
 `SEND_AT_MSK_HOURS` in the env file; leave the crontab alone.**
 
-Config — `/etc/screeps-grafana-digest.env`, root-only `chmod 600`, deliberately outside git:
+Config — an env file outside git, root-only `chmod 600` (the script reads `$CONF`, default
+`/etc/screeps-grafana-digest.env`):
 
 | key | meaning |
 |---|---|
-| `GRAFANA_TOKEN` | service account `sa-1-cron_viewer`, **Viewer** role — render + dashboard read only |
-| `TG_BOT_TOKEN` | `@your_screeps_bot`, a bot dedicated to this (NOT the concierge bot) |
+| `GRAFANA_TOKEN` | a service account with the **Viewer** role — render + dashboard read only |
+| `TG_BOT_TOKEN` | a bot dedicated to this — not one you use for anything else |
 | `TG_CHAT_ID` | the owner's private chat |
 | `SEND_AT_MSK_HOURS` | comma list of Moscow hours to send at |
 | optional | `THEME` (dark — reads better in Telegram), `WIDTH`, `HEIGHT`, `FROM`, `CAPTION`, `SHARD`, `PANEL_TITLE`, `DASH_UID`, `BASE` |
@@ -207,8 +212,8 @@ Operational notes, each one a bug that was avoided or fixed:
 
 - The panel is resolved **by title**, never by a pinned id: `add_rooms_overview.py` assigns a fresh
   panel id every run, so a hardcoded id starts rendering something else after the next dashboard edit.
-- Grafana is addressed as `http://127.0.0.1:1337/screeps-grafana` (published port, not the public URL),
-  so the digest survives a broken proxy or an expired certificate. The subpath is still required.
+- Grafana is addressed as `http://127.0.0.1:1337` (published port, not the public URL),
+  so the digest survives a broken proxy or an expired certificate.
 - A renderer that is down or timing out answers **HTTP 200 with an HTML error page**, so the script
   checks the PNG magic bytes rather than trusting the status code.
 - Test in cron's stripped environment, not just your shell:
@@ -255,67 +260,12 @@ input + same ROWS → same output.
 > POSTing makes it show up **once**, but the next `restructure_dashboard.py` run silently drops it
 > (orphan) and rebuilds the row from scratch. Always route new panels through `ROWS`.
 
-## Secrets — where each one lives
+## Secrets
 
-Nothing secret belongs in this repo. Read from the Keychain into a variable and pipe it onward; when a
-value has to reach the VPS, send it on **stdin**, never as an argv element (argv is visible in `ps` and
-lands in transcripts).
+Nothing secret belongs in this repo, and nothing secret is in its history. `docker-compose.env`
+(Screeps auth token, `RENDERER_TOKEN`) is gitignored; anything else a tool needs is read from the
+environment or an OS keychain at call time.
 
-| what | where | used for |
-|---|---|---|
-| Grafana token `claude` (Editor) | macOS Keychain `-s screeps-grafana-token -a grafana` | editing dashboards from a laptop |
-| Grafana token `cron_viewer` (Viewer) | Keychain `-s screeps-grafana-viewer -a grafana` **and** `/etc/screeps-grafana-digest.env` on the VPS | the Telegram digest's render call |
-| Telegram bot token | Keychain `-s screeps-tg-bot -a token` **and** the same env file | `sendPhoto` |
-| `RENDERER_TOKEN` | `/opt/screeps-grafana/docker-compose.env` (gitignored) | grafana ↔ renderer |
-| Screeps auth token | same `docker-compose.env` (`SCREEPS_TOKEN`) | the poller |
-
-```bash
-# add or replace a Keychain item WITHOUT the value touching history: -w last, prompts hidden
-security add-generic-password -s screeps-tg-bot -a token -U -w
-```
-
-Two limits worth knowing before planning work: the `claude` token **cannot create service accounts**
-(`serviceaccounts:create` denied), so a new scoped token has to be minted in the UI; and default
-`admin:admin` is disabled (401), so there is no admin fallback.
-
-A Telegram bot cannot message a chat that never wrote to it first — the owner must `/start` the bot,
-then `getUpdates` yields the `chat_id` (there is no webhook set; `getWebhookInfo` returns an empty url).
-
-## VPS ops (rarely needed — dashboard changes don't require this)
-
-The stack already runs on the VPS; changing the dashboard needs only the API POST above. Only touch
-the box for pipeline/poller changes.
-
-- SSH `root@example.com`; stack in `/opt/screeps-grafana` (git clone of `youruser/screeps-grafana`,
-  branch `master`, HTTPS origin — `git pull` works without a key).
-- Brought up manually (NOT Ansible — the `roles/`/`inventory` are stale):
-  `cd /opt/screeps-grafana && docker compose --env-file docker-compose.env up -d` (uses
-  `docker-compose.yml`, not `.prod.yml`). Containers `screeps-grafana-{node,statsd,graphite,grafana}-1`.
-- `node` ships to `statsd` over **UDP**, so a dead statsd loses metrics silently (node log:
-  `EAI_AGAIN statsd`). If you recreate statsd, `docker compose restart node` (node caches its IP).
-- Containers: `screeps-grafana-{node,statsd,graphite,grafana,renderer}-1`. `renderer` is the
-  image-renderer sidecar (Chromium; the Grafana image has none) — grafana reaches it at
-  `http://renderer:8081/render` and it fetches panels back through `GF_RENDERING_CALLBACK_URL`, which
-  must carry the `/screeps-grafana/` subpath because `SERVE_FROM_SUB_PATH` makes that the real
-  internal path. Both sides share `RENDERER_TOKEN` from `docker-compose.env`: **grafana refuses to
-  boot** with the built-in default token, so a fresh clone must set it (`openssl rand -hex 24`).
-- **Recreating grafana used to break the site in two ways; both are now fixed in `docker-compose.yml`,
-  so don't reintroduce them.** (1) The `GF_SERVER_*` subpath env lived only on the running container —
-  a recreate dropped it and Grafana served links from the domain root. (2) The reverse proxy
-  (`proxy-nginx`, a *different* compose project) proxies to the literal host `grafana`, which it
-  can only resolve on its own network `proxy_default`; the container had been attached to it
-  by hand, so a recreate detached it and the site answered **502**. The compose file now declares that
-  network as external and joins grafana to it with the `grafana` alias.
-- After grafana's container IP changes, nginx still holds the old one — `docker exec proxy-nginx
-  nginx -s reload`. If reload reports `host not found in upstream "grafana"`, grafana is not on
-  `proxy_default` (check `docker inspect ... .NetworkSettings.Networks`), and reloading
-  cannot fix it until it is.
-- A poller/shard/token change is: VPS `git pull` + edit `docker-compose.env`
-  (`SCREEPS_SHARD` + `SCREEPS_TOKEN` parallel lists) + `docker compose restart node`, THEN POST the
-  dashboard (paths change with shards → panels go blank until re-POSTed).
-- Not everything on the box is ours: `countdown-*` (site + nginx + certbot), `concierge-*` (a separate
-  Telegram bot with its own `TELEGRAM_TOKEN`), `amnezia-*` and `dante-proxy` are unrelated services
-  sharing the host. The only cross-project coupling is nginx, above. `cron` is now installed and
-  enabled — root's crontab holds exactly one entry, the digest.
-- The box lives in `Europe/Amsterdam` (not UTC, not Moscow). Anything scheduled in Moscow time has to
-  convert or self-gate; don't change the system timezone, other services depend on it.
+Two Grafana limits worth knowing before planning work: an Editor-role token **cannot create service
+accounts**, so a new scoped token has to be minted in the UI, and default `admin:admin` is disabled
+once you change it, so there is no admin fallback.
