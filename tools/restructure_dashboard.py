@@ -78,6 +78,13 @@ def row_panel(pid, title, y, collapsed=False):
 
 # Status strip: 8 panels × w=3 = 24, h=4. Order = priority of glance.
 STATUS_STRIP = [
+    stat_panel(109, 'Bot version',
+               'Build number of the bundle the game is currently running (util/Version.kt, bumped by '
+               'the release agent on every ship). This is the deploy receipt: the number changes here '
+               'a few minutes after a deploy, which is what confirms the new code is live — the '
+               "Action reporting success only means the bundle was uploaded, not that it is running.",
+               'aliasByNode(stats.gauges.$shard.version, 3)',
+               [{'color': 'blue', 'value': None}], decimals=0, color_mode='none'),
     stat_panel(101, 'CPU / tick', 'Average CPU consumed per tick. limit=20 on shard3.',
                'aliasByNode(stats.gauges.$shard.cpu.used, 3)',
                [{'color': 'green', 'value': None}, {'color': 'yellow', 'value': 14}, {'color': 'red', 'value': 18}]),
@@ -113,9 +120,17 @@ STATUS_STRIP = [
                [{'color': 'green', 'value': None}, {'color': 'yellow', 'value': 1500000}, {'color': 'red', 'value': 1900000}],
                unit='bytes', decimals=0),
 ]
-for i, p in enumerate(STATUS_STRIP):
-    p['gridPos']['x'] = i * 3
+# Widths sum to exactly 24. Not uniform any more: the strip gained a ninth panel (version), and
+# 24/9 is not an integer, so the three least-detailed readouts give up a column each.
+STATUS_WIDTHS = [2, 3, 3, 3, 3, 3, 3, 2, 2]
+assert len(STATUS_WIDTHS) == len(STATUS_STRIP), 'widths must cover every status panel'
+assert sum(STATUS_WIDTHS) == 24, 'status strip must fill the row exactly'
+_x = 0
+for p, _w in zip(STATUS_STRIP, STATUS_WIDTHS):
+    p['gridPos']['x'] = _x
     p['gridPos']['y'] = 0
+    p['gridPos']['w'] = _w
+    _x += _w
 
 # Row layout: (title, [panel_ids in display order], collapsed_default)
 # Curated metric set (2026-06): scout/sealed/route/movement/byRole + heavy bunkerPlan + dup rates

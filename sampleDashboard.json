@@ -44,6 +44,58 @@
     },
     "panels": [
       {
+        "id": 109,
+        "type": "stat",
+        "title": "Bot version",
+        "description": "Build number of the bundle the game is currently running (util/Version.kt, bumped by the release agent on every ship). This is the deploy receipt: the number changes here a few minutes after a deploy, which is what confirms the new code is live \u2014 the Action reporting success only means the bundle was uploaded, not that it is running.",
+        "gridPos": {
+          "h": 4,
+          "w": 2,
+          "x": 0,
+          "y": 0
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.$shard.version, 3)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "blue",
+                  "value": null
+                }
+              ]
+            },
+            "color": {
+              "mode": "thresholds"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "graphMode": "area",
+          "colorMode": "none",
+          "textMode": "auto",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
         "id": 101,
         "type": "stat",
         "title": "CPU / tick",
@@ -51,7 +103,7 @@
         "gridPos": {
           "h": 4,
           "w": 3,
-          "x": 0,
+          "x": 2,
           "y": 0
         },
         "datasource": "localGraphite",
@@ -111,7 +163,7 @@
         "gridPos": {
           "h": 4,
           "w": 3,
-          "x": 3,
+          "x": 5,
           "y": 0
         },
         "datasource": "localGraphite",
@@ -171,7 +223,7 @@
         "gridPos": {
           "h": 4,
           "w": 3,
-          "x": 6,
+          "x": 8,
           "y": 0
         },
         "datasource": "localGraphite",
@@ -223,7 +275,7 @@
         "gridPos": {
           "h": 4,
           "w": 3,
-          "x": 9,
+          "x": 11,
           "y": 0
         },
         "datasource": "localGraphite",
@@ -283,7 +335,7 @@
         "gridPos": {
           "h": 4,
           "w": 3,
-          "x": 12,
+          "x": 14,
           "y": 0
         },
         "datasource": "localGraphite",
@@ -343,7 +395,7 @@
         "gridPos": {
           "h": 4,
           "w": 3,
-          "x": 15,
+          "x": 17,
           "y": 0
         },
         "datasource": "localGraphite",
@@ -402,8 +454,8 @@
         "description": "Live logistics creeps colony-wide. Compare to per-room target in the Logistics row.",
         "gridPos": {
           "h": 4,
-          "w": 3,
-          "x": 18,
+          "w": 2,
+          "x": 20,
           "y": 0
         },
         "datasource": "localGraphite",
@@ -454,8 +506,8 @@
         "description": "JSON.stringify(Memory).length, refreshed every 100 ticks. Soft limit ~2MB on shard3.",
         "gridPos": {
           "h": 4,
-          "w": 3,
-          "x": 21,
+          "w": 2,
+          "x": 22,
           "y": 0
         },
         "datasource": "localGraphite",
