@@ -72,7 +72,6 @@ COLUMNS = [
     ("D", "storage.energy", "Сторадж, энергия", "level"),
     ("E", "sitesRemaining", "Достроить, энергия", "level"),
     ("F", "share.energyNet", "Обмен, энергия", "signed-delta"),
-    ("G", "planVersion", "План", "level"),
 ]
 
 RENDER_CHECK = (
@@ -187,9 +186,8 @@ panel = {
     "title": TITLE,
     "description": (
         "Одна строка на комнату: уровень, заполнение контроллера, оценка времени до следующего уровня, "
-        "энергия в сторадже, сколько энергии осталось влить в стройку и по какому плану комната строится. "
-        "Колонка «План»: «старый» — раскладка BasePlanner, «v2» — генератор бункера v2; переход идёт "
-        "по одной комнате, флаг живёт в room.memory.bunkerV2. Список комнат растёт сам — "
+        "энергия в сторадже, сколько энергии осталось влить в стройку и обмен энергией с соседями. "
+        "Список комнат растёт сам — "
         "запросы идут по wildcard rooms.*, так что новая "
         "комната появляется здесь на первой же записи телеметрии. Пустая клетка — это отсутствие метрики, "
         "а не ноль: у RCL8-комнаты нет «до апа» (апать некуда), у молодой комнаты ещё нет стораджа. "
@@ -298,23 +296,6 @@ panel = {
                      (100000, "orange"),
                      (300000, "semi-dark-red"),
                  ])},
-             ]},
-            {"matcher": {"id": "byName", "options": "План"},
-             "properties": [
-                 # 1 = the old BasePlanner layout, 2 = the bunker v2 generator. Every room finished
-                 # migrating on 07.08.2026, so this column now answers "did anything slip back?" — a
-                 # newly claimed room builds by the old planner until `bunkerV2On` is run on it.
-                 # A mapping rather than the bare number: "v2" reads at a glance, "2" does not.
-                 {"id": "mappings", "value": [{"type": "value", "options": {
-                     "1": {"text": "старый", "index": 0},
-                     "2": {"text": "v2", "index": 1}}}]},
-                 {"id": "custom.width", "value": 90},
-                 {"id": "custom.align", "value": "center"},
-                 {"id": "custom.cellOptions", "value": {"type": "color-text"}},
-                 {"id": "color", "value": {"mode": "thresholds"}},
-                 # v2 is the expected state for every room, so it is the one coloured; a room showing
-                 # "старый" is the exception worth looking at.
-                 {"id": "thresholds", "value": steps([(None, "text"), (2, "green")])},
              ]},
             {"matcher": {"id": "byName", "options": "Обмен, энергия"},
              "properties": [
