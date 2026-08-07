@@ -3276,8 +3276,8 @@
       {
         "id": 17,
         "type": "timeseries",
-        "title": "Remote \u2014 most damaged infra HP %",
-        "description": "Lowest HP percentage across ALL our roads + containers in the remote (0-100). Thresholds match the repair policy: RemoteRoomProcess flips needsRepair when this drops below 75%; RemoteRepairProcess targets 90% on each structure. \"No data\" = remote not visible this tick (we don't have a creep there to enumerate structures).",
+        "title": "Remote \u2014 road HP % (lowest)",
+        "description": "Lowest road hits/hitsMax across a remote. Roads wear from traffic and decay; the operator has deliberately NOT staffed a repairer (RemoteRepairProcess.TARGET = 0), so this is a speed signal, not an alarm \u2014 see REMOTE_PROFITABILITY.md \u00a76.5. Container health is a separate panel because its economics are the opposite. A gap means no vision.",
         "gridPos": {
           "h": 8,
           "w": 12,
@@ -3287,7 +3287,7 @@
         "datasource": "localGraphite",
         "targets": [
           {
-            "target": "aliasByNode(stats.gauges.$shard.remotes.*.minInfraHpPct, 4)",
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.minRoadHpPct, 4)",
             "refId": "A"
           }
         ],
@@ -3301,7 +3301,7 @@
               "drawStyle": "line",
               "lineWidth": 2,
               "fillOpacity": 10,
-              "spanNulls": true,
+              "spanNulls": false,
               "showPoints": "never"
             },
             "thresholds": {
@@ -3337,15 +3337,78 @@
         }
       },
       {
-        "id": 19,
+        "id": 304,
         "type": "timeseries",
-        "title": "Remote \u2014 source container fill %",
-        "description": "Sum of energy sitting in remote source containers per remote. Steady oscillation between 0 and ~1600 is normal (miner deposits, hauler drains). Sustained climb to ~2000 (cap) means the hauler pool is undersized for this remote's travelTicks.",
+        "title": "Remote \u2014 container HP % (lowest)",
+        "description": "Lowest container hits/hitsMax across a remote. Unlike roads this IS an alarm: a container reaching zero costs the remote its collection point, the miner starts dropping on the ground and the room stops earning. Decay alone is slow (a container in an unowned room loses 50 hits/tick, ~5000 ticks from full), so a fast fall means damage, not wear \u2014 W58S49 went 90% \u2192 7% in two hours under a hostile creep. A gap means no vision.",
         "gridPos": {
           "h": 8,
           "w": 12,
           "x": 0,
           "y": 276
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.minContainerHpPct, 4)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 0,
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": false,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 30
+                },
+                {
+                  "color": "green",
+                  "value": 70
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "asc"
+          }
+        }
+      },
+      {
+        "id": 19,
+        "type": "timeseries",
+        "title": "Remote \u2014 source container fill %",
+        "description": "Sum of energy sitting in remote source containers per remote. Steady oscillation between 0 and ~1600 is normal (miner deposits, hauler drains). Sustained climb to the cap means the hauler pool is undersized for this remote's travelTicks. A GAP means no vision or no built container \u2014 not an empty container: the metric is omitted rather than defaulted, because a fabricated 0 used to read as 'all drained' exactly while a room was in trouble (W56S48, 07.08.2026: 335 of 718 samples were a fake 0 against a real 77-95%). spanNulls is off so the gap stays visible.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 284
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3363,7 +3426,7 @@
               "drawStyle": "line",
               "lineWidth": 2,
               "fillOpacity": 20,
-              "spanNulls": true,
+              "spanNulls": false,
               "showPoints": "never"
             }
           },
@@ -3390,7 +3453,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 284
+          "y": 292
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3455,7 +3518,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 292
+          "y": 300
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3516,7 +3579,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 292
+          "y": 300
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3560,7 +3623,7 @@
           "h": 9,
           "w": 24,
           "x": 0,
-          "y": 300
+          "y": 308
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3622,7 +3685,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 309
+          "y": 317
         },
         "panels": []
       },
@@ -3634,7 +3697,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 310
+          "y": 318
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3678,7 +3741,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 310
+          "y": 318
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3730,7 +3793,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 318
+          "y": 326
         },
         "panels": []
       },
@@ -3743,7 +3806,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 319
+          "y": 327
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3804,7 +3867,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 319
+          "y": 327
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3857,7 +3920,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 327
+          "y": 335
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3914,7 +3977,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 327
+          "y": 335
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3967,7 +4030,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 335
+          "y": 343
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4016,7 +4079,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 335
+          "y": 343
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4073,7 +4136,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 343
+          "y": 351
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4130,7 +4193,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 351
+          "y": 359
         },
         "panels": []
       },
@@ -4143,7 +4206,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 352
+          "y": 360
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4192,7 +4255,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 352
+          "y": 360
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4241,7 +4304,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 360
+          "y": 368
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4294,7 +4357,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 360
+          "y": 368
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4347,7 +4410,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 368
+          "y": 376
         },
         "panels": []
       },
@@ -4360,7 +4423,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 369
+          "y": 377
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4420,7 +4483,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 377
+          "y": 385
         },
         "panels": []
       },
@@ -4433,7 +4496,7 @@
           "h": 4,
           "w": 8,
           "x": 0,
-          "y": 378
+          "y": 386
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4479,7 +4542,7 @@
           "h": 4,
           "w": 6,
           "x": 0,
-          "y": 382
+          "y": 390
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4525,7 +4588,7 @@
           "h": 4,
           "w": 6,
           "x": 6,
-          "y": 382
+          "y": 390
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4571,7 +4634,7 @@
           "h": 4,
           "w": 6,
           "x": 12,
-          "y": 382
+          "y": 390
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4617,7 +4680,7 @@
           "h": 4,
           "w": 6,
           "x": 18,
-          "y": 382
+          "y": 390
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4663,7 +4726,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 386
+          "y": 394
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4717,7 +4780,7 @@
           "h": 8,
           "w": 6,
           "x": 12,
-          "y": 386
+          "y": 394
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4771,7 +4834,7 @@
           "h": 8,
           "w": 6,
           "x": 18,
-          "y": 386
+          "y": 394
         },
         "datasource": "localGraphite",
         "targets": [
