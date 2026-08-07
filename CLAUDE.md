@@ -139,7 +139,7 @@ just fails to parse. Probed on the live instance:
 
 | available | absent |
 |---|---|
-| `integral`, `nonNegativeDerivative`, `summarize`, `timeShift`, `diffSeries`, `movingAverage`, `currentAbove`, `aliasByNode` | `movingSum`, `applyByNode` |
+| `integral`, `nonNegativeDerivative`, `summarize`, `timeShift`, `diffSeries`, `movingAverage`, `currentAbove`, `aliasByNode`, `sortByMinima` | `movingSum`, `applyByNode`, `sortBy` |
 
 Two consequences worth remembering, both hit while building the Rooms table:
 
@@ -259,6 +259,37 @@ input + same ROWS → same output.
 > Pitfall (learned the hard way): appending a panel + `type:"row"` straight into the JSON and
 > POSTing makes it show up **once**, but the next `restructure_dashboard.py` run silently drops it
 > (orphan) and rebuilds the row from scratch. Always route new panels through `ROWS`.
+
+**That pitfall had already fired — thirteen times — before anyone noticed (07.08.2026).** Adding the
+remote-profitability panels meant running `restructure_dashboard.py`, and it warned that ids
+`242, 243, 245-251, 253-256` were in no row and would be dropped: the six Power-creep panels, the four
+inter-room-sharing ones, both Movement panels and `REGEN_MINERAL`. Two entire rows — *Power creeps*
+and *Inter-room sharing* — existed in the live dashboard and in the JSON, but had never been declared
+in `ROWS`. Nothing was broken yet only because nobody had run the script since; the next run for any
+unrelated reason would have taken them out, and the POST after it would have made that permanent.
+
+They are adopted now (`ROWS` has both rows, each panel at the position it already occupied) and a run
+is clean: **94 panels in, 94 out, zero orphans**. Two habits follow:
+
+- **Read the orphan warning even when it is about someone else's panels.** It prints on a run you
+  started for your own reasons, and it is the only signal you get.
+- **Pick a fresh id by scanning every id in the file, not by eyeballing a range.** 241-243 look free
+  in the `<100` content block and are not — they belong to the controller, movement and route-policy
+  panels. Taking them silently replaced three working panels; caught by `git diff`, reverted, moved to
+  301-303. `git checkout sampleDashboard.json` is the undo, so commit before experimenting.
+
+### `tools/add_remote_profit.py`
+
+Adds the three remote-economics panels (ids 301-303, row *Remote mining*): profitability over time,
+current standing as a bar gauge, and measured harvest beside them. Idempotent by id, like
+`add_rooms_overview.py`. The bot must ship `remotes.*.profit` and `remotes.*.harvested` **first** —
+a panel over a series Graphite has never seen renders empty (harmless here, unlike the rooms table
+where a missing series shifts every column title).
+
+Note on the bar gauge: it is **not** sorted worst-first, and the title no longer pretends otherwise.
+Grafana sorts bar gauges by series name client-side, and this backend has no `sortBy` to do it
+server-side (`sortByMinima` exists but returns the series in name order anyway). Colour carries the
+signal instead — red is a remote costing more than it earns.
 
 ## Secrets
 
