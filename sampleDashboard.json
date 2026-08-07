@@ -3395,6 +3395,173 @@
         }
       },
       {
+        "id": 301,
+        "type": "timeseries",
+        "title": "Remote \u2014 profitability (energy/tick)",
+        "description": "Net energy per tick per remote: income (10/tick per reserved source, 5 unreserved) minus miner/hauler/reserver bodies, container upkeep, road wear, defence \u2014 and minus what is decaying on the ground. Model: docs/in-progress/REMOTE_PROFITABILITY.md. Distance alone almost never makes a remote negative; a line dropping below zero means energy is being mined and left to rot, not that the room is too far.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 292
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.profit, 4)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 1,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 5
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 303,
+        "type": "timeseries",
+        "title": "Remote \u2014 measured harvest (energy/tick)",
+        "description": "Energy actually harvested in each remote last tick, straight from the engine's event log (EVENT_HARVEST, minerals excluded). This is the measured counterpart to the modelled income in the profitability panel: a gap between them means miners are not keeping the sources drained \u2014 dead miner, invader pause, or a body too small for a reserved source (5 WORK needed). Gaps in the line are ticks without vision, not zero harvest.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 292
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.harvested, 4)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 1,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 302,
+        "type": "bargauge",
+        "title": "Remote \u2014 profitability now (red = losing energy)",
+        "description": "Current net energy/tick per remote. Colour is the signal, not order: red means the remote costs more than it earns right now (Grafana sorts bar gauges by series name, and this Graphite backend has no sortBy, so ordering it by value is not available).  Cross-check with the container fill and the measured-harvest panels: a negative remote is nearly always a full container with a pile rotting beside it, not an expensive one.",
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 300
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.$shard.remotes.*.profit, 4)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 5
+                },
+                {
+                  "color": "green",
+                  "value": 10
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "displayMode": "gradient",
+          "orientation": "horizontal",
+          "showUnfilled": true,
+          "valueMode": "color",
+          "sortBy": "Value",
+          "sortOrder": "asc",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
         "id": 208,
         "type": "row",
         "title": "Minerals",
@@ -3403,7 +3570,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 292
+          "y": 309
         },
         "panels": []
       },
@@ -3415,7 +3582,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 293
+          "y": 310
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3459,7 +3626,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 293
+          "y": 310
         },
         "datasource": "localGraphite",
         "targets": [
@@ -3505,487 +3672,13 @@
       {
         "id": 209,
         "type": "row",
-        "title": "Hostiles & Defense",
-        "collapsed": false,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 301
-        },
-        "panels": []
-      },
-      {
-        "id": 27,
-        "type": "timeseries",
-        "title": "Hostile body parts per room",
-        "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per room. Rough threat assessment: small numbers = invader / scout; large = a player raid.",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 302
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.attack, 4), '$', ' attack')",
-            "refId": "A"
-          },
-          {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.ranged, 4), '$', ' ranged')",
-            "refId": "B"
-          },
-          {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.heal, 4), '$', ' heal')",
-            "refId": "C"
-          },
-          {
-            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.work, 4), '$', ' work')",
-            "refId": "D"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none",
-            "decimals": 0,
-            "min": 0,
-            "custom": {
-              "drawStyle": "line",
-              "lineWidth": 2,
-              "fillOpacity": 20,
-              "stacking": {
-                "mode": "normal",
-                "group": "A"
-              },
-              "spanNulls": false,
-              "showPoints": "never"
-            }
-          }
-        },
-        "options": {
-          "legend": {
-            "showLegend": true,
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "multi",
-            "sort": "desc"
-          }
-        }
-      },
-      {
-        "id": 210,
-        "type": "row",
-        "title": "Market",
-        "collapsed": false,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 310
-        },
-        "panels": []
-      },
-      {
-        "id": 23,
-        "type": "stat",
-        "title": "Market credits",
-        "description": "Game.market.credits \u2014 bottom line. Drops on order placement, rises on settled trades.",
-        "gridPos": {
-          "h": 4,
-          "w": 8,
-          "x": 0,
-          "y": 311
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "stats.gauges.$shard.market.credits",
-            "refId": "A"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "decimals": 0,
-            "unit": "none",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            }
-          }
-        },
-        "options": {
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "colorMode": "value",
-          "graphMode": "area",
-          "textMode": "auto"
-        }
-      },
-      {
-        "id": 231,
-        "type": "stat",
-        "title": "Market credits",
-        "description": "Game.market.credits \u2014 account-wide credit balance. Rises on settled sells from TerminalProcess.",
-        "gridPos": {
-          "h": 4,
-          "w": 6,
-          "x": 0,
-          "y": 315
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "stats.gauges.$shard.market.credits",
-            "refId": "A"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "decimals": 0,
-            "unit": "none",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            }
-          }
-        },
-        "options": {
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "colorMode": "value",
-          "graphMode": "area",
-          "textMode": "auto"
-        }
-      },
-      {
-        "id": 232,
-        "type": "stat",
-        "title": "Trade revenue (\u03a3 credits)",
-        "description": "Cumulative gross credits earned from TerminalProcess deals (\u03a3 price \u00d7 amount). Monotonic.",
-        "gridPos": {
-          "h": 4,
-          "w": 6,
-          "x": 6,
-          "y": 315
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "stats.gauges.$shard.market.revenue",
-            "refId": "A"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "decimals": 0,
-            "unit": "none",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            }
-          }
-        },
-        "options": {
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "colorMode": "value",
-          "graphMode": "area",
-          "textMode": "auto"
-        }
-      },
-      {
-        "id": 233,
-        "type": "stat",
-        "title": "Deals (\u03a3)",
-        "description": "Cumulative count of successful market deals. Monotonic; derive deals/h with nonNegativeDerivative.",
-        "gridPos": {
-          "h": 4,
-          "w": 6,
-          "x": 12,
-          "y": 315
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "stats.gauges.$shard.market.deals",
-            "refId": "A"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "decimals": 0,
-            "unit": "none",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            }
-          }
-        },
-        "options": {
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "colorMode": "value",
-          "graphMode": "area",
-          "textMode": "auto"
-        }
-      },
-      {
-        "id": 234,
-        "type": "stat",
-        "title": "Sold (\u03a3 units)",
-        "description": "Cumulative units sold across energy + minerals.",
-        "gridPos": {
-          "h": 4,
-          "w": 6,
-          "x": 18,
-          "y": 315
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "sumSeries(stats.gauges.$shard.market.energySold,stats.gauges.$shard.market.mineralsSold)",
-            "refId": "A"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "decimals": 0,
-            "unit": "none",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            }
-          }
-        },
-        "options": {
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "colorMode": "value",
-          "graphMode": "area",
-          "textMode": "auto"
-        }
-      },
-      {
-        "id": 235,
-        "type": "timeseries",
-        "title": "Units sold (cumulative)",
-        "description": "Running totals of sold energy and minerals (monotonic). Slope = throughput.",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 319
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "aliasByNode(stats.gauges.$shard.market.energySold, 4)",
-            "refId": "A"
-          },
-          {
-            "target": "aliasByNode(stats.gauges.$shard.market.mineralsSold, 4)",
-            "refId": "B"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none",
-            "decimals": 0,
-            "min": 0,
-            "custom": {
-              "drawStyle": "line",
-              "lineWidth": 2,
-              "fillOpacity": 20,
-              "spanNulls": true,
-              "showPoints": "never"
-            }
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "showLegend": true,
-            "displayMode": "table",
-            "placement": "right",
-            "calcs": [
-              "lastNotNull",
-              "max",
-              "mean"
-            ]
-          },
-          "tooltip": {
-            "mode": "multi",
-            "sort": "desc"
-          }
-        }
-      },
-      {
-        "id": 236,
-        "type": "timeseries",
-        "title": "Sell rate (units / sample)",
-        "description": "Per-sample delta of the cumulative unit counters (poll ~10s). Each bar = units sold between samples.",
-        "gridPos": {
-          "h": 8,
-          "w": 6,
-          "x": 12,
-          "y": 319
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.energySold), 'energy')",
-            "refId": "A"
-          },
-          {
-            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.mineralsSold), 'minerals')",
-            "refId": "B"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none",
-            "decimals": 0,
-            "min": 0,
-            "custom": {
-              "drawStyle": "line",
-              "lineWidth": 2,
-              "fillOpacity": 20,
-              "spanNulls": true,
-              "showPoints": "never"
-            }
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "showLegend": true,
-            "displayMode": "table",
-            "placement": "right",
-            "calcs": [
-              "lastNotNull",
-              "max",
-              "mean"
-            ]
-          },
-          "tooltip": {
-            "mode": "multi",
-            "sort": "desc"
-          }
-        }
-      },
-      {
-        "id": 237,
-        "type": "timeseries",
-        "title": "Revenue rate (credits / sample)",
-        "description": "Per-sample delta of cumulative revenue \u2014 credits earned between samples (~10s).",
-        "gridPos": {
-          "h": 8,
-          "w": 6,
-          "x": 18,
-          "y": 319
-        },
-        "datasource": "localGraphite",
-        "targets": [
-          {
-            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.revenue), 'credits')",
-            "refId": "A"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none",
-            "decimals": 0,
-            "min": 0,
-            "custom": {
-              "drawStyle": "line",
-              "lineWidth": 2,
-              "fillOpacity": 20,
-              "spanNulls": true,
-              "showPoints": "never"
-            }
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "showLegend": true,
-            "displayMode": "table",
-            "placement": "right",
-            "calcs": [
-              "lastNotNull",
-              "max",
-              "mean"
-            ]
-          },
-          "tooltip": {
-            "mode": "multi",
-            "sort": "desc"
-          }
-        }
-      },
-      {
-        "id": 244,
-        "type": "row",
         "title": "Power creeps",
         "collapsed": false,
         "gridPos": {
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 327
+          "y": 318
         },
         "panels": []
       },
@@ -3998,7 +3691,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 328
+          "y": 319
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4059,7 +3752,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 328
+          "y": 319
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4112,7 +3805,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 336
+          "y": 327
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4169,7 +3862,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 336
+          "y": 327
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4222,7 +3915,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 344
+          "y": 335
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4271,7 +3964,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 344
+          "y": 335
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4328,7 +4021,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 352
+          "y": 343
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4377,7 +4070,7 @@
         }
       },
       {
-        "id": 252,
+        "id": 210,
         "type": "row",
         "title": "Inter-room sharing",
         "collapsed": false,
@@ -4385,7 +4078,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 360
+          "y": 351
         },
         "panels": []
       },
@@ -4398,7 +4091,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 361
+          "y": 352
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4447,7 +4140,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 361
+          "y": 352
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4496,7 +4189,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 369
+          "y": 360
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4549,7 +4242,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 369
+          "y": 360
         },
         "datasource": "localGraphite",
         "targets": [
@@ -4585,6 +4278,480 @@
             "calcs": [
               "lastNotNull",
               "max"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 211,
+        "type": "row",
+        "title": "Hostiles & Defense",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 368
+        },
+        "panels": []
+      },
+      {
+        "id": 27,
+        "type": "timeseries",
+        "title": "Hostile body parts per room",
+        "description": "ATTACK + RANGED_ATTACK + HEAL + WORK part counts across hostile creeps per room. Rough threat assessment: small numbers = invader / scout; large = a player raid.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 369
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.attack, 4), '$', ' attack')",
+            "refId": "A"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.ranged, 4), '$', ' ranged')",
+            "refId": "B"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.heal, 4), '$', ' heal')",
+            "refId": "C"
+          },
+          {
+            "target": "aliasSub(aliasByNode(stats.gauges.$shard.rooms.*.hostileBodyParts.work, 4), '$', ' work')",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              },
+              "spanNulls": false,
+              "showPoints": "never"
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 212,
+        "type": "row",
+        "title": "Market",
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 377
+        },
+        "panels": []
+      },
+      {
+        "id": 23,
+        "type": "stat",
+        "title": "Market credits",
+        "description": "Game.market.credits \u2014 bottom line. Drops on order placement, rises on settled trades.",
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 0,
+          "y": 378
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.$shard.market.credits",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 231,
+        "type": "stat",
+        "title": "Market credits",
+        "description": "Game.market.credits \u2014 account-wide credit balance. Rises on settled sells from TerminalProcess.",
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 382
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.$shard.market.credits",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 232,
+        "type": "stat",
+        "title": "Trade revenue (\u03a3 credits)",
+        "description": "Cumulative gross credits earned from TerminalProcess deals (\u03a3 price \u00d7 amount). Monotonic.",
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 382
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.$shard.market.revenue",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 233,
+        "type": "stat",
+        "title": "Deals (\u03a3)",
+        "description": "Cumulative count of successful market deals. Monotonic; derive deals/h with nonNegativeDerivative.",
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 382
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "stats.gauges.$shard.market.deals",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 234,
+        "type": "stat",
+        "title": "Sold (\u03a3 units)",
+        "description": "Cumulative units sold across energy + minerals.",
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 382
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "sumSeries(stats.gauges.$shard.market.energySold,stats.gauges.$shard.market.mineralsSold)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 235,
+        "type": "timeseries",
+        "title": "Units sold (cumulative)",
+        "description": "Running totals of sold energy and minerals (monotonic). Slope = throughput.",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 386
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "aliasByNode(stats.gauges.$shard.market.energySold, 4)",
+            "refId": "A"
+          },
+          {
+            "target": "aliasByNode(stats.gauges.$shard.market.mineralsSold, 4)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 236,
+        "type": "timeseries",
+        "title": "Sell rate (units / sample)",
+        "description": "Per-sample delta of the cumulative unit counters (poll ~10s). Each bar = units sold between samples.",
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 386
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.energySold), 'energy')",
+            "refId": "A"
+          },
+          {
+            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.mineralsSold), 'minerals')",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 237,
+        "type": "timeseries",
+        "title": "Revenue rate (credits / sample)",
+        "description": "Per-sample delta of cumulative revenue \u2014 credits earned between samples (~10s).",
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 386
+        },
+        "datasource": "localGraphite",
+        "targets": [
+          {
+            "target": "alias(nonNegativeDerivative(stats.gauges.$shard.market.revenue), 'credits')",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 0,
+            "min": 0,
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "spanNulls": true,
+              "showPoints": "never"
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "showLegend": true,
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
             ]
           },
           "tooltip": {
