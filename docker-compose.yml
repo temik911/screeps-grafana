@@ -35,11 +35,20 @@ services:
     links:
       - graphite
   graphite:
-    image: ennexa/graphite
+    # graphite-web 1.1, replacing the old ennexa/graphite, which ran graphite_api on Python 2.7 with
+    # the 0.9 function set: no aggregate / groupByNodes / filterSeries / divideSeriesLists / pow, and
+    # no /functions endpoint to even ask what exists. Whisper format is unchanged, so the data volume
+    # carries over untouched. Retention now lives in a file in this repo instead of hiding inside a
+    # named volume; the old graphite_conf volume belongs to graphite_api and is deliberately NOT
+    # mounted here. Note the port: graphite_api served 8000, graphite-web serves 80, so the Grafana
+    # datasource URL changes with this.
+    image: graphiteapp/graphite-statsd:1.1.10-5
     restart: always
     volumes:
-      - graphite_conf:/opt/graphite/conf
       - graphite_data:/opt/graphite/storage/whisper
+      - ./graphite-conf/storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf:ro
+      - ./graphite-conf/storage-aggregation.conf:/opt/graphite/conf/storage-aggregation.conf:ro
+      - ./graphite-conf/nginx-graphite.conf:/etc/nginx/sites-enabled/graphite-statsd.conf:ro
   grafana:
     image: grafana/grafana
     restart: always

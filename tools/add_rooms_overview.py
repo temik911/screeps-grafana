@@ -141,21 +141,28 @@ def target(ref, metric, kind="level"):
     # donors — the very rooms the column exists to show. removeEmptySeries drops a series only when
     # it is all-null in the window, which is exactly the dead-room test (13 of 29 paths survive).
     #
-    # currentAbove(..., 0) is not cosmetic: Graphite's wildcard returns every path within retention,
+    # Filtering dead paths is not cosmetic: Graphite's wildcard returns every path within retention,
     # and every remote we ever prep-claimed emitted rooms.<name>.* for the few hundred ticks it was
     # briefly ours. Without the filter this table shows 29 rows for 13 live rooms, 16 of them blank
-    # (verified live). The same trick guards the $room variable on this dashboard.
+    # (verified live).
     #
-    # The threshold is 0 and not -1 on purpose: this graphite-web compares NON-strictly, so a series
-    # sitting at exactly 0 survives while a dead one (all nulls in the window) is dropped — checked
-    # against rooms.*.hostiles, which is 0 in all 13 live rooms and still returned all 13. That is
-    # what lets "Достроить, энергия" print a real 0 for a room with nothing under construction
-    # instead of an empty cell. Re-check this if the Graphite image is ever upgraded.
+    # It used to be `currentAbove(..., 0)`, and the old comment here said the threshold was 0 rather
+    # than -1 because "this graphite-web compares NON-strictly" — true of graphite_api, and it ended
+    # with "re-check this if the Graphite image is ever upgraded". The upgrade happened on 09.08.2026
+    # and the check fired: **graphite-web 1.1 compares STRICTLY**, so every series sitting at exactly
+    # 0 is dropped. Measured against the copy before switching: sitesRemaining returned 16 series on
+    # the old backend and **0** on the new one, because no room had construction pending. A query that
+    # returns no series at all does not merely blank a column — the join loses a frame and every
+    # column title shifts by one, which is the silent-wrong-table failure this file warns about above.
+    #
+    # removeEmptySeries drops a series only when it is all-null in the window — exactly the dead-room
+    # test, zeros preserved — and it behaves identically on both backends (16 = 16, verified on each),
+    # which is why it could be deployed BEFORE the upgrade rather than during it.
     expr = f"{G}.rooms.*.{metric}"
     if kind == "signed-delta":
         return {"refId": ref,
                 "target": f"aliasByNode(removeEmptySeries(integral(derivative({expr}))), 4)"}
-    return {"refId": ref, "target": f"aliasByNode(currentAbove({expr}, 0), 4)"}
+    return {"refId": ref, "target": f"aliasByNode(removeEmptySeries({expr}), 4)"}
 
 
 def steps(bands):

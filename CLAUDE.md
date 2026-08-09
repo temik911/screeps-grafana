@@ -130,33 +130,38 @@ Always print the number of points and the step you actually got before trusting 
 not pass `maxDataPoints` — that is what triggered the worst of it (the whole 2-year archive at a 1-hour
 step for a 40-minute request).
 
-### The backend is graphite-API, not graphite-web — half the function reference is missing
+### The backend is graphite-web 1.1 (since 09.08.2026) — ask it what it supports
 
-The container runs `graphite_api` on Python 2.7, whose function set is a subset of the one
-graphite.readthedocs.io documents. An absent function is not a graceful error: the proxy returns an
-HTML **Python traceback** ending in `KeyError: u'<funcname>'`, which is why a client that expects JSON
-just fails to parse. Probed on the live instance:
+`GET /functions` through the datasource proxy returns the full list (154 entries). **Ask it instead of
+guessing**; that endpoint is the main practical gain of the upgrade.
 
-| available | absent |
-|---|---|
-| `integral`, `nonNegativeDerivative`, `summarize`, `timeShift`, `diffSeries`, `movingAverage`, `currentAbove`, `aliasByNode`, `sortByMinima` | `movingSum`, `applyByNode`, `sortBy` |
+Until 09.08.2026 the container ran `graphite_api` on Python 2.7 — a fork frozen at the 0.9 function
+set. Everything added in 1.1 answered 500 with an HTML **Python traceback** ending in
+`KeyError: u'<funcname>'`, which is why a client expecting JSON just failed to parse: `aggregate`,
+`groupByNodes`, `filterSeries`, `divideSeriesLists`, `pow`, `interpolate`, `delay`, `applyByNode`,
+`sortBy`, `movingSum`. All of them work now — see `UPGRADE_GRAPHITE.md` for how the swap was done and
+what was compared.
 
-Two consequences worth remembering, both hit while building the Rooms table:
+**`currentAbove(x, 0)` no longer keeps zeros — it now compares STRICTLY.** In `graphite_api` a series
+sitting at exactly 0 survived, and the Rooms table leaned on that to print real zeros instead of blank
+cells. Measured on a copy before switching: `rooms.*.sitesRemaining` returned **16 series on the old
+backend and 0 on the new one**, because no room had construction pending. That is worse than a blank
+column — a query returning no series at all costs the join a frame and shifts every column title by
+one, silently. Use **`removeEmptySeries(x)`**: it drops a series only when the whole window is null
+(the dead-room test), keeps zeros, and behaves identically on both backends, which is why the
+dashboards were migrated to it *before* the upgrade rather than during it.
 
-- **Per-series arithmetic across a wildcard has no clean form.** `diffSeries` collapses the whole
-  wildcard into ONE series, and the usual escape hatch (`applyByNode`) is missing — so
-  "value now minus value 3h ago, per room" cannot be expressed. Do it Grafana-side, or reshape the
-  question.
-- **Growth over the query window** = `integral(nonNegativeDerivative(counter))`: the derivative turns a
-  cumulative counter into per-sample increments (and swallows a counter reset as a gap rather than a
-  negative spike), the integral re-accumulates them from the window's start, so the LAST point is the
-  growth over exactly that window — per series, wildcard-safe. Verified to the unit against a
-  hand-computed last−first. The window is whatever the panel asks for, so a panel built on this reads
-  differently at 3h and at 24h; that is a feature for a dashboard and a trap for a fixed-period report.
+Two habits from the old backend that are no longer forced, but stay true:
 
-`currentAbove(x, 0)` compares **non-strictly** here: a series sitting at exactly 0 survives, only an
-all-null (dead) one is dropped. Checked against `rooms.*.hostiles` — 0 in all 13 live rooms, all 13
-returned. The Rooms table leans on this to print real zeros instead of blank cells.
+- **Per-series arithmetic across a wildcard.** `diffSeries` still collapses a wildcard into ONE series;
+  the escape hatch `applyByNode` now exists, so "value now minus value 3h ago, per room" is finally
+  expressible server-side. The signed net is still computed bot-side, and that remains the better
+  place for it.
+- **Growth over the query window** = `integral(nonNegativeDerivative(counter))` — still correct for a
+  cumulative counter, and the window is whatever the panel asks for. **But do not reach for
+  `nonNegativeDerivative` on a gauge that legitimately falls**: the rampart shell's total hits drops
+  every time the filler walks to storage (decay does not pause), and discarding those falls drew the
+  wall growing twice as fast as it does. For those, `derivative` + `summarize(..., 'avg')`.
 
 ## Don't smooth a metric the bot already smooths
 
