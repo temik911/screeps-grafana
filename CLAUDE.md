@@ -209,9 +209,17 @@ cadence, `FROM` has to move with it or that column will span more than one diges
 
 **`WIDTH`/`HEIGHT` are sized to the panel and have to be re-checked whenever it grows.** Both failure
 modes are silent — the render succeeds, the photo is just missing part of the table. Width follows the
-pinned columns (1000 clipped the seventh, 1200 clipped the eighth «План»; now 1320); height follows the
-`H` grid units in `add_rooms_overview.py` (620 cut the list off at 16 rooms; now 760 for `H = 20`,
-~18 rows). **Adding a column or an owned room means re-rendering the panel and looking at the PNG.**
+pinned columns (1000 clipped the seventh, 1200 clipped the eighth «План», 1320 clipped the ninth
+«Рампарт, мин HP» — the rampart columns added 09.08.2026 cost 260px between them; now **1440**, against
+1385 of declared column widths); height follows the `H` grid units in `add_rooms_overview.py` (620 cut
+the list off at 16 rooms; now **700**, which fits 16 rooms with a row to spare).
+**Adding a column or an owned room means re-rendering the panel and looking at the PNG** — and this is
+not hypothetical bookkeeping: the ninth column shipped in the morning and the digest was posting a
+truncated table until the evening, with nothing anywhere reporting a problem.
+
+Sum the `custom.width` overrides in the panel to get the number instead of guessing — that is what
+1385 above is. Deliberately tight rather than generous: Telegram scales the image to the phone's
+width, so every unused pixel makes the text smaller.
 
 Operational notes, each one a bug that was avoided or fixed:
 

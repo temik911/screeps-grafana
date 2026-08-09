@@ -51,10 +51,10 @@ SHARD=${SHARD:-shard1}
 # Wide enough for every pinned column: at eight of them 1200 clipped «План» off the right edge, the
 # same way 1000 clipped the last one back when there were seven. Telegram scales the photo down to
 # fit anyway, and taps open it at full size — so err wide, never narrow.
-WIDTH=${WIDTH:-1320}
+WIDTH=${WIDTH:-1440}
 # Must track the panel height in tools/add_rooms_overview.py (H grid units x ~30px + chrome).
 # At 16 rooms the old 620 cut the table off mid-list; 760 fits ~18 rows.
-HEIGHT=${HEIGHT:-760}
+HEIGHT=${HEIGHT:-700}
 THEME=${THEME:-dark}
 # Matches SEND_AT_MSK_HOURS' 3-hour cadence, and it is not just cosmetic: the «Отправил/Принял»
 # columns show the counters' growth over THIS window, so 3h is what makes them read "since the
