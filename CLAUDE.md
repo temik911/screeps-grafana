@@ -29,12 +29,18 @@ StatsProcess.writeStatsSegment    src/ScreepsStatsd.js               dashboard p
   variable (dropdown). Multi-shard: `SCREEPS_SHARD=shard2,shard3` + parallel `SCREEPS_TOKEN` list
   (per-shard tokens — the segment endpoint is rate-limited 360/h **per token**).
 
-## Two dashboards, only one of which lives in the repo
+## Three dashboards, only one of which lives in the repo
 
 | uid | title | source of truth | tooling |
 |---|---|---|---|
 | `screeps-overview` | Screeps — Overview | `sampleDashboard.json` in this repo | `tools/restructure_dashboard.py` rebuilds the layout |
 | `screeps-rooms` | Screeps — Rooms | **live Grafana only — there is no JSON for it here** | `tools/add_rooms_overview.py` (re)creates its top table |
+| `screeps-remotes` | Screeps — Remotes | **live Grafana only** | none — panels are added by GET/POST against the live dashboard |
+
+`screeps-remotes` has no generator at all, which cuts both ways: a hand-added panel is not going to be
+dropped as an orphan (the pitfall that applies to `screeps-overview`), and there is nothing to re-run
+that would recreate it if the dashboard is lost. Adding a panel there means GET, edit, POST with
+`overwrite:true`, and shifting the `y` of everything below the insertion point yourself.
 
 So for `screeps-rooms` the "keep the repo file in sync" rule cannot apply: GET the live dashboard,
 change what you mean to change, POST it back. Any script that edits it must be idempotent for the same
