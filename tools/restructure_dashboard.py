@@ -144,7 +144,7 @@ ROWS = [
     ('Logistics', [67, 68, 69, 305, 33, 34, 47, 48, 50], False),
     ('Logistics broker', [70, 71, 72], False),
     ('Remote mining', [16, 17, 304, 19, 36, 301, 303, 302], False),
-    ('Minerals', [211, 212], False),
+    ('Minerals', [211, 212, 260], False),
     ('Power creeps', [245, 246, 247, 248, 249, 250, 251], False),
     ('Inter-room sharing', [253, 254, 255, 256], False),
     ('Hostiles & Defense', [27], False),
