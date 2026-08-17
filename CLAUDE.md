@@ -175,7 +175,7 @@ Two habits from the old backend that are no longer forced, but stay true:
 overview ETA chart used to wrap it in `movingAverage(…, '6h')` — added when the metric came off a
 600-tick window and was too jumpy to read — which after the bot-side change smoothed an already-smooth
 series and added hours of lag. Before adding a Graphite-side rolling function, check whether the metric
-is already averaged in `StatsProcess` (`docs/TELEMETRY.md` in the bot repo says which are).
+is already averaged in `StatsProcess` (`docs/reference/TELEMETRY.md` in the bot repo says which are).
 
 Three panels display that metric: `screeps-overview` #46 (timeseries, log axis — the values span hours
 to weeks), and on `screeps-rooms` the overview table column «До апа, ч» plus the per-room stat panel
