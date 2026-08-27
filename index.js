@@ -14,10 +14,12 @@ import ScreepsStatsd from "./src/ScreepsStatsd.js";
 // ⚠️ THIS COMMENT USED TO RECOMMEND "bump SCREEPS_POLL_BASE_MS to 12000 for a safety margin", AND
 // THAT CURE IS WORSE THAN THE DISEASE. Measured 27.08.2026:
 //
-//   * the poller is NOT over-polling. Sampling x-ratelimit-remaining once a minute for ten minutes
-//     with nothing else running gave 6 foreign requests per 60s, four times in a row — exactly
+//   * the poller is NOT over-polling. Sampling x-ratelimit-remaining once a minute with nothing
+//     else of ours running gave 6 foreign requests per 60s window, TEN windows out of ten — exactly
 //     360/h, exactly what BASE=10s configures. (An earlier 90-second window read 11 and extrapolated
-//     to 435/h; that was a small denominator, not a rate.)
+//     to 435/h; that was a small denominator, not a rate. And do not re-derive this by dividing the
+//     total by the script's elapsed time: the loop sleeps once more than it measures, so 60 requests
+//     over "661s" prints 327/h for ten windows that were 60s each.)
 //   * the visible cost today is 44 null points out of 8640 on stats.gauges.<shard>.tick over 24h —
 //     0.5%, longest gap 80s. Over 7d at the 1m archive: 7 of 10080, longest 180s. (Nulls ARE
 //     expressible by that query: a row known dead came back 100% null, which is the control.)
